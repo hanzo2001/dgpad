@@ -2,8 +2,8 @@
 import {props_panel} from './props_panel';
 import {Checkbox} from '../GUI/elements/Checkbox';
 import {Label} from '../GUI/elements/Label';
-import {ColorPicker} from '../Utils/ColorPicker';
 
+var ColorPicker = (<any>window).ColorPicker;
 var $L = (<any>window).$L;
 
 export class props_messagePanel extends props_panel {

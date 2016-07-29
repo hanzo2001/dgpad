@@ -161,6 +161,7 @@ Uninitialized `./NotPacked/lang/LocalStrings.js`
   * BtnGroup
   * iPadDOMElt _may be considered an extension of GUIElement_ too much duplicated functionality
   * iPadList _idem_
+  * ColorPicker **moved** to libs. It's self contained
 - DeleteAll
 - Panel
   * VerticalBorderPanel
@@ -174,7 +175,11 @@ Uninitialized `./NotPacked/lang/LocalStrings.js`
   * MacroPropertiesPanel
   * MacrosManager
   * MacrosPanel
-
+- Properties
+  * most but `PropertiesPanel` and `props_colorPanel`
+- History
+  * HistoryPanel
+  * HistoryPanel_Elt
 
 ## ClusterFucks
 

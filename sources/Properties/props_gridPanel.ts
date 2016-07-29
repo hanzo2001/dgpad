@@ -3,8 +3,8 @@ import {props_panel} from './props_panel';
 import {Checkbox} from '../GUI/elements/Checkbox';
 import {slider} from '../GUI/elements/slider';
 import {Label} from '../GUI/elements/Label';
-import {ColorPicker} from '../Utils/ColorPicker';
 
+var ColorPicker = (<any>window).ColorPicker;
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
 

@@ -1,4 +1,15 @@
 
+import {props_panel} from './props_panel';
+import {props_generic_color} from './props_generic_color';
+import {InputText} from '../GUI/elements/InputText';
+import {Checkbox} from '../GUI/elements/Checkbox';
+import {slider} from '../GUI/elements/slider';
+import {ImageGroup} from '../GUI/elements/ImageGroup';
+
+var ColorPicker = (<any>window).ColorPicker;
+var $U = (<any>window).$U;
+var $L = (<any>window).$L;
+var $APP_PATH = (<any>window).$APP_PATH;
 
 function props_colorPanel(_owner) {
     var me = this;

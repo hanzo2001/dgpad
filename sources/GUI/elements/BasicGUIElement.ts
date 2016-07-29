@@ -43,7 +43,7 @@ export class BasicGUIElement {
 		this.docObject.style.width = dim.width+units;
 		this.docObject.style.height= dim.height+units;
 	}
-	setBoundStyle(style: BoundStyle) {
+	setBoundObj(style: BoundStyle) {
 		this.docObject.style.top   = style.top;
 		this.docObject.style.left  = style.left;
 		this.docObject.style.width = style.width;
