@@ -159,12 +159,22 @@ Uninitialized `./NotPacked/lang/LocalStrings.js`
   * Checkbox
   * Button
   * BtnGroup
+  * iPadDOMElt _may be considered an extension of GUIElement_ too much duplicated functionality
+  * iPadList _idem_
 - DeleteAll
 - Panel
   * VerticalBorderPanel
   * HorizontalBorderPanel
   * CentralPanel
   * viewportListPanel
+  * progressBar
+  * BubblePanel _circular reference #1_
+  * BubbleListPanel _circular reference #1_
+- Macro
+  * MacroPropertiesPanel
+  * MacrosManager
+  * MacrosPanel
+
 
 ## ClusterFucks
 

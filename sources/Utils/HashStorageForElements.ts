@@ -1,0 +1,31 @@
+
+export class HashStorageForElements<T> {
+	protected i:number;
+	protected s:string;
+	protected h:{[i:number]:T};
+	constructor(dataId:string) {
+		this.s = dataId;
+		this.i = 0;
+		this.h = Object.create(null);
+	}
+	push(e:HTMLElement, d:T) {
+		let i = ++this.i;
+		this.h[i] = d;
+		e.dataset[this.s] = i+'';
+	}
+	collect(e:HTMLElement): T {
+		let i = e.dataset[this.s];
+		return this.h[i] || null;
+	}
+	remove(e:HTMLElement): T {
+		let i = e.dataset[this.s];
+		let d = this.h[i] || null;
+		delete this.h[i];
+		return d;
+	}
+	clear() {
+		for (let i in this.h) {this.h[i] = null;}
+		this.h = Object.create(null);
+		this.i = 0;
+	}
+}
