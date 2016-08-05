@@ -1,3 +1,4 @@
+/// <reference path="../typings/iProperties.d.ts" />
 
 import {props_panel} from './props_panel';
 import {Checkbox} from '../GUI/elements/Checkbox';
@@ -7,7 +8,7 @@ var ColorPicker = (<any>window).ColorPicker;
 var $L = (<any>window).$L;
 
 export class props_messagePanel extends props_panel {
-	constructor(owner) {
+	constructor(owner:iPropertiesPanel) {
 		super(owner);
 		//$U.extend(this, new props_panel(this.owner));
 		this.setAttr("className", "props_messageDIV");
@@ -34,36 +35,36 @@ export class props_messagePanel extends props_panel {
 		cp.setHEX(this.owner.getBackgroundColor());
 		ch += 210;
 
-		let cbDemoMode = new Checkbox(this.getDocObject(), 10, ch, 200, 30, this.owner.getDemoMode(), $L.props_grid_general_demo, this.DEMOcallback);
+		let cbDemoMode = new Checkbox(this.getDocObject(), 10, ch, 200, 30, this.owner.getDemoMode(), $L.props_grid_general_demo, (b) => this.DEMOcallback(b));
 		cbDemoMode.setTextColor("#252525");
 		ch += 30;
 
-		let cbMagnifier = new Checkbox(this.getDocObject(), 10, ch, 200, 30, this.owner.getMagnifierMode(), $L.props_general_magnifier, this.MAGNIFIERcallback);
+		let cbMagnifier = new Checkbox(this.getDocObject(), 10, ch, 200, 30, this.owner.getMagnifierMode(), $L.props_general_magnifier, (b) => this.MAGNIFIERcallback(b));
 		cbMagnifier.setTextColor("#252525");
 		ch += 30;
 
-		let cbDegree = new Checkbox(this.getDocObject(), 10, ch, 200, 30, this.owner.getDegree(), $L.props_general_degree, this.DEGREEcallback);
+		let cbDegree = new Checkbox(this.getDocObject(), 10, ch, 200, 30, this.owner.getDegree(), $L.props_general_degree, (b) => this.DEGREEcallback(b));
 		cbMagnifier.setTextColor("#252525");
 		ch += 30;
 
-		let cbDragOnly = new Checkbox(this.getDocObject(), 10, ch, 200, 30, (!(this.owner.isDragOnlyMoveable())), $L.props_general_dragall, this.DRAGALLcallback);
+		let cbDragOnly = new Checkbox(this.getDocObject(), 10, ch, 200, 30, (!(this.owner.isDragOnlyMoveable())), $L.props_general_dragall, (b) => this.DRAGALLcallback(b));
 		cbMagnifier.setTextColor("#252525");
 
 	}
-	private DEMOcallback(val) {
-		//$U.setDemoMode(val);
-		this.owner.setDemoMode(val);
+	private DEMOcallback(toggle:boolean) {
+		//$U.setDemoMode(toggle);
+		this.owner.setDemoMode(toggle);
 	}
-	private MAGNIFIERcallback(val) {
-		this.owner.setMagnifierMode(val);
+	private MAGNIFIERcallback(toggle:boolean) {
+		this.owner.setMagnifierMode(toggle);
 	}
-	private COLORcallback(val) {
-		this.owner.setBackgroundColor(val)
+	private COLORcallback(color:string) {
+		this.owner.setBackgroundColor(color);
 	}
-	private DEGREEcallback(val) {
-		this.owner.setDegree(val);
+	private DEGREEcallback(toggle:boolean) {
+		this.owner.setDegree(toggle);
 	}
-	private DRAGALLcallback(_val){
-		this.owner.setDragOnlyMoveable(!(_val));
+	private DRAGALLcallback(toggle:boolean){
+		this.owner.setDragOnlyMoveable(!toggle);
 	}
 }

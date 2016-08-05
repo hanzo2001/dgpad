@@ -25,11 +25,11 @@ export class HorizontalBorderPanel extends Panel {
 		//}, 300);
 	}
 	init() {
-			let t = this.getOwnerBounds();
-			if (this.isTop) {
-					this.setBounds(t.left, t.top, t.width, this.height);
-			} else {
-					this.setBounds(t.left, t.top + t.height - this.height, t.width, this.height);
-			}
+		let t = this.getOwnerBounds();
+		if (this.isTop) {
+			this.setBounds(t.left, t.top, t.width, this.height);
+		} else {
+			this.setBounds(t.left, t.top + t.height - this.height, t.width, this.height);
+		}
 	}
 }

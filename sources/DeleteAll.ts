@@ -1,20 +1,21 @@
+/// <reference path="./typings/iDeleteAll.d.ts" />
+/// <reference path="./typings/iCanvas.d.ts" />
 
 import {Button} from './GUI/elements/Button';
-// probably not the right import
 
 var $L = (<any>window).$L;
 
-export class DeleteAll {
-	protected canvas;
+export class DeleteAll implements iDeleteAll {
+	protected canvas: iCanvas;
 	protected tmargin: number;
-	protected w: number;
-	protected h: number;
+	protected width: number;
+	protected height: number;
 	protected btn: Button;
-	constructor(canvas) {
+	constructor(canvas:iCanvas) {
 		this.canvas = canvas;
 		this.tmargin = 20;
-		this.w = 250;
-		this.h = 30;
+		this.width = 250;
+		this.height = 30;
 		this.btn = new Button(canvas);
 		//    btn.setBounds((canvas.getWidth() - w) / 2, tmargin, w, h);
 		this.btn.setText($L.clear_all);
@@ -25,7 +26,7 @@ export class DeleteAll {
 		this.exe()
 	}
 	show() {
-		this.btn.setBounds((this.canvas.getWidth() - this.w) / 2, this.tmargin, this.w, this.h);
+		this.btn.setBounds((this.canvas.getWidth() - this.width) / 2, this.tmargin, this.width, this.height);
 		this.canvas.getDocObject().parentNode.appendChild(this.btn.getDocObject());
 	}
 	hide() {

@@ -1,19 +1,21 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 
-//import {TextObject} from '../TextObject';
+import {TextObject} from '../Text/TextObject';
 
-var TextObject = (<any>window).TextObject;
 var $U = (<any>window).$U;
 
-export class UndoManager {
-	private canvas;
+type UndoAction = {add:boolean, target:any};
+
+export class UndoManager implements iUndoManager {
+	private canvas: iCanvas;
 	private Cn;
-	private actions = [];
-	private cursor = 0;
-	private Cmarker = null; // Marqueur pour les objets de la construction
-	private Tmarker = null; // Marqueur pour les textes
-	private ADD = true;
-	private REMOVE = false;
-	constructor(canvas) {
+	private actions: UndoAction[];
+	private cursor: number;
+	private Cmarker: number; // Marqueur pour les objets de la construction
+	private Tmarker: number; // Marqueur pour les textes
+	private ADD: boolean;
+	private REMOVE: boolean;
+	constructor(canvas:iCanvas) {
 		this.canvas = canvas;
 		this.Cn = canvas.getConstruction();
 		this.actions = [];
@@ -28,12 +30,10 @@ export class UndoManager {
 		this.cursor = 0;
 		this.refreshCanvas();
 	}
-	record(_t, _add) {
-		if (this.cursor < this.actions.length) {
-			this.clear();
-		}
+	record(target, add:boolean) {
+		if (this.cursor < this.actions.length) {this.clear();}
 		this.cursor++;
-		this.actions.push({add: _add, target: _t});
+		this.actions.push({add,target});
 		this.setBtns();
 	}
 	undo() {
@@ -55,32 +55,29 @@ export class UndoManager {
 		this.Tmarker = this.canvas.textManager.elements().length;
 	}
 	endAdd() {
-		if ((this.Cmarker === null) && (this.Tmarker === null))
-			return;
-		var v = this.Cn.elements();
-		var t = this.canvas.textManager.elements();
-		var elts = [];
-		for (var m = this.Cmarker; m < v.length; m++) {
-			elts.push(v[m]);
-		}
-		for (var m = this.Tmarker; m < t.length; m++) {
-			elts.push(t[m]);
-		}
-		if (elts.length > 0) {
-			this.record(elts, true);
-		}
+		if (this.Cmarker === null && this.Tmarker === null) {return;}
+		let elements = [];
+		let v = this.Cn.elements();
+		let t = this.canvas.textManager.elements();
+		let i=this.Cmarker, s=v.length;
+		while (i<s) {elements.push(v[i++]);}
+		i=this.Tmarker, s=t.length;
+		while (i<s) {elements.push(t[i++]);}
+		if (elements.length > 0) {this.record(elements, true);}
 		this.Cmarker = null;
 		this.Tmarker = null;
 	}
 	deleteObjs(_t) {
-		if (_t.length > 0)
-			this.record(_t, false);
+		if (_t.length > 0) {this.record(_t, false);}
 	}
-	swap(_o) {
-		for (var i = 0; i < this.actions.length; i++) {
-			var tab = ($U.isArray(this.actions[i].target)) ? this.actions[i].target : [this.actions[i].target];
-			if ((tab.length === 1) && (tab[0] === _o))
-				this.actions[i].add = !this.actions[i].add;
+	swap(withTarget) {
+		let i=0, s=this.actions.length;
+		while (i<s) {
+			let action = this.actions[i++];
+			let target = action.target;
+			let tab = $U.isArray(target) ? target : [target];
+			if (tab.length === 1 && tab[0] === withTarget) {action.add = !action.add;}
+			i++;
 		}
 	}
 	setBtns() {
@@ -88,14 +85,14 @@ export class UndoManager {
 		this.canvas.setRedoBtn(!this.isRight());
 	}
 
-	private isLeft = function() {
-		return (this.cursor === 0);
+	private isLeft() {
+		return this.cursor === 0;
 	}
-	private isRight = function() {
-		return (this.cursor === this.actions.length);
+	private isRight() {
+		return this.cursor === this.actions.length;
 	}
-	private refreshCanvas = function() {
-		var simulatedEvent = document.createEvent("MouseEvent");
+	private refreshCanvas() {
+		let simulatedEvent = document.createEvent("MouseEvent");
 		simulatedEvent.initMouseEvent("mouseup", true, true, window, 1, -100, -100, -100, -100, false,
 				false, false, false, 0, null);
 		this.Cn.validate(simulatedEvent);
@@ -103,37 +100,41 @@ export class UndoManager {
 		this.canvas.paint(simulatedEvent);
 		this.setBtns();
 	}
-	private add = function(_o) {
-		var _el = _o;
-		if (_o instanceof TextObject) {
-			_el = this.canvas.textManager.add(_o)
+	private add(txt:iTextObject|any) {
+		let textElement = txt;
+		if (txt instanceof TextObject) {
+			textElement = this.canvas.textManager.add(txt);
 		} else {
-			this.Cn.add(_o);
-			_o.setParentList(_o.getParent());
+			// what is it then?
+			this.Cn.add(txt);
+			txt.setParentList(txt.getParent());
 		}
-		return _el;
+		return textElement;
 	}
-	private remove = function(_o) {
-		if (_o instanceof TextObject) {
-			this.canvas.textManager.deleteTeX(_o);
+	private remove(txt:iTextObject|any) {
+		if (txt instanceof TextObject) {
+			this.canvas.textManager.deleteTeX(txt);
 		} else {
-			this.Cn.remove(_o);
+			// what is it then?
+			this.Cn.remove(txt);
 		}
 	}
-	private undo_redo = function(k) {
-		var t = this.actions[k];
-		t.add = !t.add;
-		var tab = ($U.isArray(t.target)) ? t.target : [t.target];
-		var len = tab.length;
-		for (var i = 0; i < len; i++) {
-			if (t.add)
+	private undo_redo(index:number) {
+		let action = this.actions[index];
+		action.add = !action.add;
+		let tab = $U.isArray(action.target) ? action.target : [action.target];
+		let i=0, s=tab.length;
+		while (i<s) {
+			if (action.add) {
 				tab[i] = this.add(tab[i]);
-				//                Cn.add(tab[i]);
-			else
+				// Cn.add(tab[i]);
+			} else {
 				this.remove(tab[i]);
-				//                Cn.remove(tab[i]);
-				//            if (t.add)
-				//                tab[i].setParentList(tab[i].getParent());
+				// Cn.remove(tab[i]);
+				// if (t.add)
+				// tab[i].setParentList(tab[i].getParent());
+			}
+			i++;
 		}
 	}
 }

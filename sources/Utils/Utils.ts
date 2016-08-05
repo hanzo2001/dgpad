@@ -1,3 +1,5 @@
+/// <reference path="../typings/iUtils.d.ts" />
+
 let $L = (<any>window).$L;
 let $P = (<any>window).$P;
 let $FPICKERFRAME = (<any>window).$FPICKERFRAME;
@@ -830,8 +832,8 @@ function isFullLocalStorage() {
 	return (n >= ($P.localstorage.max - 1));
 };
 
-function addDomUtils(el) {
-	el.event_proc = [];
+function addDomUtils(el): ExpandoDOMElement {
+	el.event_proc = <CommonEvent[]>[];
 	el.stl = function(_p, _v) {el.style.setProperty(_p, _v);};
 	el.att = function(_a, _v) {el[_a] = _v;};
 	el.stls = function(_st) {

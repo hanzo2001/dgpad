@@ -28,4 +28,7 @@ export class HashStorageForElements<T> {
 		this.h = Object.create(null);
 		this.i = 0;
 	}
+	each(fn:(d:T, i?:number)=>void, tArg=null) {
+		for (let i in this.h) {fn.call(tArg,this.h[i],i);}
+	}
 }

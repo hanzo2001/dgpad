@@ -1,13 +1,11 @@
 
 import {GUIElement} from './GUIElement';
-import {DlogContent} from './DlogContent.js';
+import {DlogContent} from './DlogContent';
 import {Utils} from '../../Utils/Utils';
 
 export class SimpleDialog extends GUIElement {
 	private browser;
 	private content: GUIElement;
-	//private closeBoxSize=Object.touchpad?30:20;
-	//private closeBoxMargin=5;
 	constructor(owner, left:number, top:number, width:number, height:number) {
 		super(owner,'div');
 		this.left  = left + owner.getBounds().left;
@@ -24,21 +22,6 @@ export class SimpleDialog extends GUIElement {
 			left:   this.left+'px',
 			top:   (this.top-this.height)+'px'
 		});
-		/*
-		//this.docObject.style.backgroundColor="#FFFFFF";
-		this.docObject.style.backgroundColor = "rgba(230,230,230,0.9)";
-		//this.docObject.style.background=browser+"-linear-gradient(top, #9c9ba6, #57575f)";
-		//this.docObject.style.backgroundSize = "100%";
-		//this.docObject.style.backgroundRepeat="no-repeat";
-		this.docObject.style.position = "absolute";
-		this.docObject.style.border = "1px solid #b4b4b4";
-		this.docObject.style.margin = "0px";
-		this.docObject.style.padding = "0px";
-		this.docObject.style.width = this.w + "px";
-		this.docObject.style.height = this.h + "px";
-		this.docObject.style.left = this.l + "px";
-		this.docObject.style.top = (this.t - this.h) + "px";
-		*/
 		this.content = new DlogContent(this);
 		this.appendChild((<SimpleDialog>this.content).docObject);
 		this.owner.appendChild(this.docObject);

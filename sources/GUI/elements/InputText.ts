@@ -5,18 +5,18 @@ export class InputText extends GUIElement {
 	private inp: HTMLInputElement;
 	private form: GUIElement;
 	private name: GUIElement;
-	valid_callback = function(_t) {};
-	keyup_callback = function(_t) {};
-	focus_callback = function() {};
-	constructor(_owner) {
-		super(_owner,'div');
+	valid_callback: (_t) => void;
+	keyup_callback: (_t) => void;
+	focus_callback: () => void;
+	constructor(owner:iElementContainer) {
+		super(owner,'div');
 		this.setStylesObject({
 			'position': 'relative',
 			'background-color': 'whitesmoke',
 			'border-radius': '12px'
 		});
-		this.valid_callback = function(_t) {};
-		this.keyup_callback = function(_t) {};
+		this.valid_callback = function(t) {};
+		this.keyup_callback = function(t) {};
 		this.focus_callback = function() {};
 		this.form = new GUIElement(this,'form');
 		this.form.setAttr("action", "javascript:void(0);");
@@ -25,17 +25,17 @@ export class InputText extends GUIElement {
 		this.name.setAttr("type", "text");
 		this.name.setStyles("position:absolute;background-color:whitesmoke;border:0px;font-family:Helvetica, Arial, sans-serif;font-size:16px;text-align:center;vertical-align:middle;outline-width:0px;border-radius:0px;padding:0px");
 		this.inp = <HTMLInputElement>this.name.getDocObject();
-		this.inp.onmouseup = (e: Event) => e.preventDefault();
-		this.inp.onfocus = (e: Event) => {
+		this.inp.addEventListener('mouseup',(e:Event) => e.preventDefault(),false);
+		this.inp.addEventListener('focus',(e:Event) => {
 			e.preventDefault();
 			this.inp.setSelectionRange(0, 9999);
-			if (Object.touchpad) {window.scrollTo(0, 0);}
-		}; 
-		this.inp.onkeyup = (e: Event) => {
+			Object.touchpad && window.scrollTo(0, 0);
+		},false);
+		this.inp.addEventListener('keyup',(e:Event) => {
 			e.preventDefault();
 			this.keyup_callback(this.name.getAttr("value"));
-		};
-		this.inp.onblur = (e: Event) => {if (Object.touchpad) {window.scrollTo(0, 0);}};
+		},false);
+		this.inp.addEventListener('blur',(e:Event) => Object.touchpad && window.scrollTo(0, 0),false);
 		this.form.addContent(this.name);
 		this.addContent(this.form);
 	}
@@ -56,13 +56,11 @@ export class InputText extends GUIElement {
 		this.name.setAttr("value",txt);
 	}
 	focus() {
-		let e = this.name.getDocObject();
-		e.focus();
+		this.name.getDocObject().focus();
 		this.focus_callback();
 	}
 	private valid() {
-		let e = this.name.getDocObject();
-		e.blur();
+		this.name.getDocObject().blur();
 		this.valid_callback(this.name.getAttr("value"));
 	};
 }

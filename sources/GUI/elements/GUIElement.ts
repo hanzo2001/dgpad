@@ -1,8 +1,9 @@
+/// <reference path="../../typings/GUI/iGUIElement.d.ts" />
 
 import {Utils} from '../../Utils/Utils';
 import {BasicGUIElement} from './BasicGUIElement';
 
-export class GUIElement extends BasicGUIElement {
+export class GUIElement extends BasicGUIElement implements iGUIElement {
 	protected touchNumber = 0;
 	protected preventDefault = true;
 	addImage(src:string) {
@@ -25,20 +26,20 @@ export class GUIElement extends BasicGUIElement {
 		touch.preventDefault();
 		procMouse(this.PadToMouseEvent(touch.touches[0]||touch.changedTouches[0]));
 	}
-	addDblClickEvent(proc, target?:HTMLElement) {
+	addDblClickEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.addEventListener('dblclick', this.exe(proc), false);
 		}
 	}
-	addClickEvent(proc, target?:HTMLElement) {
+	addClickEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.addEventListener('touchstart', this.exeTCH(proc), false);
 			o.addEventListener('click', this.exe(proc), false);
 		}
 	}
-	addDownEvent(proc, target?:HTMLElement) {
+	addDownEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.addEventListener('touchstart', this.exeTCH(proc), false);
@@ -47,7 +48,7 @@ export class GUIElement extends BasicGUIElement {
 			}
 		}
 	}
-	addMoveEvent(proc, target?:HTMLElement) {
+	addMoveEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.addEventListener('touchmove', this.exeTCH(proc), false);
@@ -56,7 +57,7 @@ export class GUIElement extends BasicGUIElement {
 			}
 		}
 	}
-	addUpEvent(proc, target?:HTMLElement) {
+	addUpEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.addEventListener('touchend', this.exeTCH(proc), false);
@@ -65,21 +66,21 @@ export class GUIElement extends BasicGUIElement {
 			}
 		}
 	}
-	removeDownEvent(proc, target?:HTMLElement) {
+	removeDownEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.removeEventListener('touchstart', proc.TouchEvent_Function, false);
 			o.removeEventListener('mousedown', proc.MouseEvent_Function, false);
 		}
 	}
-	removeMoveEvent(proc, target?:HTMLElement) {
+	removeMoveEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.removeEventListener('touchmove', proc.TouchEvent_Function, false);
 			o.removeEventListener('mousemove', proc.MouseEvent_Function, false);
 		}
 	}
-	removeUpEvent(proc, target?:HTMLElement) {
+	removeUpEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
 			var o = (arguments.length > 1) ? target : this.docObject;
 			o.removeEventListener('touchend', proc.TouchEvent_Function, false);
@@ -105,22 +106,22 @@ export class GUIElement extends BasicGUIElement {
 		});
 		return event;
 	}
-	protected exe(p: any): (e: Event)=>void {
+	protected exe(p:iGUIElementEvent): (e:MouseEvent)=>void {
 		if (this.preventDefault) {
-			p.MouseEvent_Function = function(event: Event) {
+			p.MouseEvent_Function = function(event: MouseEvent) {
 				event.preventDefault();
 				p(event);
 			};
 		} else {
-			p.MouseEvent_Function = function(event: Event) {
+			p.MouseEvent_Function = function(event: MouseEvent) {
 				p(event);
 			};
 		}
 		return p.MouseEvent_Function;
 	}
-	protected exeTCH(p: any): (e: Event)=>void {
+	protected exeTCH(p:iGUIElementEvent): (e:TouchEvent)=>void {
 		if (this.preventDefault) {
-			p.TouchEvent_Function = function(tch) {
+			p.TouchEvent_Function = function(tch:TouchEvent) {
 				tch.preventDefault();
 				var touch = tch.touches[this.touchNumber] || tch.changedTouches[this.touchNumber];
 				p(touch);

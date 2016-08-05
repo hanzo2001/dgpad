@@ -1,3 +1,4 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 
 import {HorizontalBorderPanel} from '../GUI/panels/HorizontalBorderPanel';
 import {BtnGroup} from '../GUI/elements/BtnGroup';
@@ -10,7 +11,7 @@ var $SCALE = (<any>window).$SCALE;
 var $FPICKERFRAME = (<any>window).$FPICKERFRAME;
 
 export class ControlPanel extends HorizontalBorderPanel {
-	protected canvas;
+	protected canvas: iCanvas;
 	protected propBtn;
 	protected left;
 	protected size;
@@ -27,10 +28,10 @@ export class ControlPanel extends HorizontalBorderPanel {
 	protected copyBtn;
 	protected calcBtn;
 	protected historyBtn;
-	constructor(_canvas) {
-		super(_canvas, _canvas.prefs.controlpanel.size, false);
+	constructor(canvas:iCanvas) {
+		super(canvas, canvas.prefs.controlpanel.size, false);
 		//$U.extend(this, new HorizontalBorderPanel(this.canvas, this.canvas.prefs.controlpanel.size, false));
-		this.canvas = _canvas;
+		this.canvas = canvas;
 		var left = 10 * $SCALE;
 		var size = 30 * $SCALE;
 		var margintop = 5 * $SCALE;

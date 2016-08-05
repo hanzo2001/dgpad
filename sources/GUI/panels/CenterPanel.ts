@@ -1,14 +1,15 @@
+/// <reference path="../../typings/iCanvas.d.ts" />
 
 import {Panel} from './Panel';
 
 export class CenterPanel extends Panel {
-	protected canvas;
-	constructor(_canvas, _w, _h) {
-		super(_canvas.getDocObject());
+	protected canvas: iCanvas;
+	constructor(canvas:iCanvas, width:number, height:number) {
+		super(canvas);
 		//$U.extend(this, new Panel(_canvas.getDocObject()));
-		this.canvas = _canvas;
-		this.height = _h;
-		this.width = _w;
+		this.canvas = canvas;
+		this.width = width;
+		this.height = height;
 		this.setAttr("className", "centerPanel");
 		this.transition("scale", 0.2);
 		this.init();
@@ -19,9 +20,7 @@ export class CenterPanel extends Panel {
 	}
 	close() {
 		this.applyTransitionOUT();
-		setTimeout(() => {
-			this.canvas.getDocObject().parentNode.removeChild(this.getDocObject());
-		}, 300);
+		setTimeout(() => {this.canvas.getDocObject().parentNode.removeChild(this.getDocObject());}, 300);
 	}
 	init() {
 		let t = this.getOwnerBounds();

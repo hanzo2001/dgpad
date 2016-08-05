@@ -1,4 +1,5 @@
-import {ColorStringParser as Parser} from "./Utils/ColorStringParser";
+
+import {ColorStringParser as Parser} from "./ColorStringParser";
 
 export class Color {
 	protected r: number = 0;
@@ -48,7 +49,7 @@ export class Color {
 		if (!cache) {throw Error(color+' is not supported...');}
 		this.setCache(cache);
 	}
-	protected setCache(cache: number[]) {
+	protected setCache(cache:number[]) {
 		// Performs RGB->RGBA conversion by default
 		!cache[3] && (cache[3] = 1);
 		[this.r,this.g,this.b,this.a] = cache;

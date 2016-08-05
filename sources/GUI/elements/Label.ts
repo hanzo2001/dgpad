@@ -1,11 +1,10 @@
 
-import {Utils} from '../../Utils/Utils';
 import {GUIElement} from './GUIElement';
 
 var $SCALE = (<any>window).$SCALE;
 
 export class Label extends GUIElement {
-	constructor(owner) {
+	constructor(owner:iElementContainer) {
 		super(owner,'div');
 		this.setAttr("type", "div");
 		this.setAbsolute();

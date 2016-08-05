@@ -20,9 +20,9 @@ export class Checkbox {
 	protected label: HTMLElement;
 	protected wrapper: HTMLElement;
 	protected checkbox: HTMLElement;
-	protected callback;
+	protected callback: (toggle:boolean) => void;
 	private static checkboxes: Checkbox[] = [];
-	constructor(owner, left, top, width, height, value, label, callback) {
+	constructor(owner:HTMLElement, left:number, top:number, width:number, height:number, value:boolean, label:string, callback:(toggle:boolean)=>void) {
 		this.boxwidth = 16;
 		this.value = value;
 		this.callback = callback;
@@ -63,7 +63,7 @@ export class Checkbox {
 		});
 		this.setText(label);
 		this.setValue(this.value);
-		let index = Checkbox.checkboxes.push(this);
+		let index = Checkbox.checkboxes.push(this) - 1;
 		this.wrapper.dataset[dataId] = index+'';
 		this.wrapper.addEventListener('touchstart', this.mousedown, false);
 		this.wrapper.addEventListener('mousedown', this.mousedown, false);

@@ -3,7 +3,7 @@ var w: any = window;
 // this loads 145 files !!
 
 w.$INCLUDE("Docs/Preferences.js");
-w.$INCLUDE("Color.js");
+w.$INCLUDE("Color.js");// -> Utils
 w.$INCLUDE("Utils.js");
 w.$INCLUDE("Ghost.js");
 w.$INCLUDE("Undo/UndoManager.js");

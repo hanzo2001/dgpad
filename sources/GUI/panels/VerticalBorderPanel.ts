@@ -1,16 +1,16 @@
+/// <reference path="../../typings/iCanvas.d.ts" />
 
 import {Panel} from './Panel';
 
 export class VerticalBorderPanel extends Panel {
-	protected canvas;
-	protected isLeft;
-	constructor(_canvas, _w, _isLeft) {
-		super(_canvas.getDocObject());
-		// have this in mind when instantiating
+	protected canvas: iCanvas;
+	protected isLeft: boolean;
+	constructor(canvas:iCanvas, width:number, isLeft:boolean) {
+		super(canvas);
 		//$U.extend(this, new Panel(_canvas.getDocObject()));
-		this.canvas = _canvas;
-		this.width  = _w;
-		this.isLeft = _isLeft;
+		this.canvas = canvas;
+		this.width  = width;
+		this.isLeft = isLeft;
 		this.setAttr('className', 'verticalPanel');
 		this.transition('translate_x', 0.2, (this.isLeft) ? -this.width : this.width);
 		//this.transition('translate_y', 0.2, (isLeft) ? -width : width);
@@ -23,7 +23,7 @@ export class VerticalBorderPanel extends Panel {
 	}
 	close() {
 		this.applyTransitionOUT();
-		setTimeout(function() {
+		setTimeout(() => {
 			//document.body.parentNode.removeChild(this.getDocObject());
 			this.canvas.getDocObject().parentNode.removeChild(this.getDocObject());
 		}, 300);

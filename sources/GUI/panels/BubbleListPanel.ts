@@ -15,22 +15,22 @@ var dataId = 'bblLsPanel';
 export class BubbleListPanel extends Panel {
 	private static storage = new Storage<StoredData>(dataId);
 	protected panel: BubblePanel;
-	constructor(_panel: BubblePanel, _t, _w, _h, _titleheight, _title) {
-		super(_panel.getDocObject());
+	constructor(panel: BubblePanel, _t, width:number, height:number, titleheight:number, titleStr:string) {
+		super(panel);
 		//$U.extend(this, new Panel(_panel.getDocObject()));
 		this.setAttr('className', 'coincidenceListDIV bulle');
-		this.setBounds(10, 10, _w - 20, _h - 20);
-		this.panel = _panel;
+		this.setBounds(10, 10, width - 20, height - 20);
+		this.panel = panel;
 		var viewportmask = new Panel(this);
 		var viewport = new Panel(this);
 		var title = new Label(this);
 		var col = '#333';
 		viewportmask.setAttr('className', 'coincidenceListViewportMask');
-		viewportmask.setBounds(10, _titleheight, _w - 40, _h - (_titleheight + 35));
+		viewportmask.setBounds(10, titleheight, width - 40, height - (titleheight + 35));
 		viewport.setAttr('className', 'coincidenceListViewport');
-		viewport.setBounds(-1, -1, _w + 10, _h - (_titleheight + 35));
-		title.setText(_title);
-		title.setBounds(10, 10, _w - 40, _titleheight);
+		viewport.setBounds(-1, -1, width + 10, height - (titleheight + 35));
+		title.setText(titleStr);
+		title.setBounds(10, 10, width - 40, titleheight);
 		let i=0, s=_t.length;
 		while (i<s) {
 			var div = new GUIElement(this, 'div');

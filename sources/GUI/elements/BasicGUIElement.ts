@@ -1,36 +1,17 @@
+/// <reference path="../../typings/GUI/iBasicGUIElement.d.ts" />
 
-declare type GUIStyleObject = {[name:string]: string};
+import {ElementContainer} from './ElementContainer';
 
-declare type BoundStyle = {
-	top: string;
-	left: string;
-	width: string;
-	height: string;
-};
-
-declare type BoundDim = {
-	top: number;
-	left: number;
-	width: number;
-	height: number;
-}
-
-export class BasicGUIElement {
-	protected owner: BasicGUIElement;
-	protected docObject: HTMLElement;
+export class BasicGUIElement extends ElementContainer implements iBasicGUIElement {
+	protected owner: iElementContainer;
 	protected top: number;
 	protected left: number;
 	protected width: number;
 	protected height: number;
-	constructor(owner: BasicGUIElement, type: string) {
+	constructor(owner: iElementContainer, type: string) {
+		super();
 		this.owner = owner;
 		this.docObject = document.createElement(type);
-	}
-	getDocObject(): HTMLElement {
-		return this.docObject;
-	}
-	appendChild(e: HTMLElement) {
-		return this.docObject.appendChild(e);
 	}
 	setBoundDim(dim: BoundDim, units?:string) {
 		this.top   = dim.top;
@@ -61,11 +42,12 @@ export class BasicGUIElement {
 		};
 	}
 	getOwnerBounds(): BoundDim {
-		let top   = this.owner.docObject.offsetTop   || 0;
-		let left  = this.owner.docObject.offsetLeft  || 0;
-		let width = this.owner.docObject.offsetWidth || 0;
-		let height= this.owner.docObject.offsetHeight|| 0;
-		return {top,left,width,height};
+		// let top   = this.owner.docObject.offsetTop   || 0;
+		// let left  = this.owner.docObject.offsetLeft  || 0;
+		// let width = this.owner.docObject.offsetWidth || 0;
+		// let height= this.owner.docObject.offsetHeight|| 0;
+		// return {top,left,width,height};
+		return this.owner.getDocObjectBounds();
 	}
 	getStyle(p:string): string {
 		return this.docObject.style.getPropertyValue(p);

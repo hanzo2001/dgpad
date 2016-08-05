@@ -1,13 +1,14 @@
+/// <reference path="../../typings/GUI/iPanel.d.ts" />
 
 import {GUIElement} from '../elements/GUIElement';
 
 var $U = (<any>window).$U;
 
-export class Panel extends GUIElement {
+export class Panel extends GUIElement implements iPanel {
 	protected effect: string;
 	protected effect_var1: number;
-	constructor(_owner) {
-		super(_owner,'div');
+	constructor(owner:iElementContainer) {
+		super(owner,'div');
 		this.effect = '';
 		this.effect_var1 = 0;
 		this.setAbsolute();
@@ -36,34 +37,34 @@ export class Panel extends GUIElement {
 	isVisible() {
 		return this.docObject.parentNode !== null;
 	}
-	transition(_type, _speed, _x?) {
-		this.effect = _type;
+	transition(type:string, speed:number, x?:number) {
+		this.effect = type;
 		switch (this.effect) {
 			case "translate_x":
-				this.setStyle("transition", "transform " + _speed + "s linear");
-				this.setStyle("-webkit-transition", "-webkit-transform " + _speed + "s linear");
-				this.setStyle("-moz-transition", "-moz-transform " + _speed + "s linear");
-				this.setStyle("-o-transition", "-o-transform " + _speed + "s linear");
-				this.effect_var1 = _x;
+				this.setStyle("transition", "transform " + speed + "s linear");
+				this.setStyle("-webkit-transition", "-webkit-transform " + speed + "s linear");
+				this.setStyle("-moz-transition", "-moz-transform " + speed + "s linear");
+				this.setStyle("-o-transition", "-o-transform " + speed + "s linear");
+				this.effect_var1 = x;
 				break;
 			case "translate_y":
-				this.setStyle("transition", "transform " + _speed + "s linear");
-				this.setStyle("-webkit-transition", "-webkit-transform " + _speed + "s linear");
-				this.setStyle("-moz-transition", "-moz-transform " + _speed + "s linear");
-				this.setStyle("-o-transition", "-o-transform " + _speed + "s linear");
-				this.effect_var1 = _x;
+				this.setStyle("transition", "transform " + speed + "s linear");
+				this.setStyle("-webkit-transition", "-webkit-transform " + speed + "s linear");
+				this.setStyle("-moz-transition", "-moz-transform " + speed + "s linear");
+				this.setStyle("-o-transition", "-o-transform " + speed + "s linear");
+				this.effect_var1 = x;
 				break;
 			case "scale":
-				this.setStyle("transition", "transform " + _speed + "s linear");
-				this.setStyle("-webkit-transition", "-webkit-transform " + _speed + "s linear");
-				this.setStyle("-moz-transition", "-moz-transform " + _speed + "s linear");
-				this.setStyle("-o-transition", "-o-transform " + _speed + "s linear");
+				this.setStyle("transition", "transform " + speed + "s linear");
+				this.setStyle("-webkit-transition", "-webkit-transform " + speed + "s linear");
+				this.setStyle("-moz-transition", "-moz-transform " + speed + "s linear");
+				this.setStyle("-o-transition", "-o-transform " + speed + "s linear");
 				break;
 			case "opacity":
-				this.setStyle("transition", "opacity " + _speed + "s ease-in-out");
-				this.setStyle("-webkit-transition", "opacity " + _speed + "s ease-in-out");
-				this.setStyle("-moz-transition", "opacity " + _speed + "s ease-in-out");
-				this.setStyle("-o-transition", "opacity " + _speed + "s ease-in-out");
+				this.setStyle("transition", "opacity " + speed + "s ease-in-out");
+				this.setStyle("-webkit-transition", "opacity " + speed + "s ease-in-out");
+				this.setStyle("-moz-transition", "opacity " + speed + "s ease-in-out");
+				this.setStyle("-o-transition", "opacity " + speed + "s ease-in-out");
 				break;
 		}
 	}
@@ -145,12 +146,12 @@ export class Panel extends GUIElement {
 				break;
 		}
 	}
-	setBackground(_grad) {
+	setBackground(grad) {
 		let browser = $U.browserCode();
-		this.setStyle("background",browser+_grad);
+		this.setStyle("background",browser+grad);
 	}
 	// For overflow panels(speed : 1-10) :
-	scroll(_dir, tf, _speed) {
+	scroll(_dir, tf, speed) {
 		let s = "";
 		switch (_dir) {
 			case "top": s = "scrollTop"; break;
@@ -158,11 +159,11 @@ export class Panel extends GUIElement {
 		}
 		let t0 = this.docObject[s];
 		if (t0 !== tf) {
-			let i = _speed * (tf - t0) / Math.abs(tf - t0);
+			let i = speed * (tf - t0) / Math.abs(tf - t0);
 			let interval = setInterval(() => {
 				this.docObject[s] = t0;
 				t0 += i;
-				if (Math.abs(tf - t0) < _speed) {
+				if (Math.abs(tf - t0) < speed) {
 					this.docObject[s] = tf;
 					clearInterval(interval);
 				}

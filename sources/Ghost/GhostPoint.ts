@@ -8,26 +8,23 @@ export class GhostPoint {
 		this.x = x;
 		this.y = y;
 	}
-	getX = function() {
+	getX() {
 		if (this.P) {
 			return this.P.getX();
 		}
 		return this.x;
 	}
-
-	getY = function() {
+	getY() {
 		if (this.P) {
 			return this.P.getY();
 		}
 		return this.y;
 	}
-
-	isLimited = function() {
+	isLimited() {
 		return this.limited;
 	}
-
 	//Only for P2 :
-	setXY = function(x, y) {
+	setXY(x, y) {
 		this.x = x;
 		this.y = y;
 		if (this.P) {
@@ -36,12 +33,10 @@ export class GhostPoint {
 			this.limited = ((this.x - x0) * (this.x - x0) + (this.y - y0) * (this.y - y0)) < 10000;
 		}
 	}
-
-	getPointObject = function() {
+	getPointObject() {
 		return this.P;
 	}
-
-	setPointObject = function(P) {
+	setPointObject(P) {
 		this.P = P;
 		var x0 = this.P.getX();
 		var y0 = this.P.getY();
@@ -49,8 +44,7 @@ export class GhostPoint {
 		this.x = x0;
 		this.y = y0;
 	}
-
-	draw = function(ctx) {
+	draw(ctx) {
 		if (!this.P) {
 			ctx.beginPath();
 			ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, true);

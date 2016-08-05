@@ -1,14 +1,13 @@
+/// <reference path="../typings/iProperties.d.ts" />
 
 import {Panel} from '../GUI/panels/Panel';
 
 export class props_panel extends Panel {
-	obj;
-	owner;
-	constructor(_owner) {
-		super(_owner.getDocObject());
+	protected obj;
+	constructor(owner:iProperties) {
+		super(owner);
 		//$U.extend(this, new Panel(_owner.getDocObject()));
 		this.obj = null;
-		this.owner = _owner;
 	}
 	set(_obj) {
 		this.obj = _obj;

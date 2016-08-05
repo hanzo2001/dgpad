@@ -10,7 +10,7 @@
   4. `window [load]` Main Init
   5. _IIFE_ create canvas
 
-## global vars
+## Global vars
 
 ##### $BODY\_SCRIPT
 holds the last script loaded. How does it work? this isn't set when the window is loaded
@@ -181,6 +181,10 @@ Uninitialized `./NotPacked/lang/LocalStrings.js`
   * HistoryPanel
   * HistoryPanel_Elt
 
+### currently
+
+ExpresionObject, ListObject, CurvusOject
+
 ## ClusterFucks
 
 ### CoordsSystem.js
@@ -204,3 +208,7 @@ There are basic utilities mixed with initializers and monster-expando dom manipu
 ### GUI/Elements/slider.js
 
 this is a function that I haven't looked into
+
+### Calc/MainCalcPanel
+
+what a crazy piece of shite. Encapsulated and forgotten

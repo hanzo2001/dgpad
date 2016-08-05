@@ -1,3 +1,4 @@
+/// <reference path="../typings/iProperties.d.ts" />
 
 import {props_panel} from './props_panel';
 import {Checkbox} from '../GUI/elements/Checkbox';
@@ -9,8 +10,8 @@ var $U = (<any>window).$U;
 var $L = (<any>window).$L;
 
 export class props_gridPanel extends props_panel {
-	constructor(_owner) {
-		super(_owner);
+	constructor(owner:iPropertiesPanel) {
+		super(owner);
 		//$U.extend(this, new props_panel(_owner));
 		var CS = this.owner.getCS();
 		var ch = 120; // Color picker height

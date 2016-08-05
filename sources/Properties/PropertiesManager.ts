@@ -1,11 +1,12 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 
 import {PropertiesPanel} from './PropertiesPanel';
 
 export class PropertiesManager {
-	protected canvas;
+	protected canvas: iCanvas;
 	protected propsPanel: PropertiesPanel;
-	constructor(_canvas) {
-		this.canvas = _canvas;
+	constructor(canvas:iCanvas) {
+		this.canvas = canvas;
 		this.propsPanel = null;
 		// On a cliqué sur l'icône Properties :
 	}
@@ -22,8 +23,7 @@ export class PropertiesManager {
 		}
 	}
 	clearEditMode() {
-		var Cn = this.canvas.getConstruction();
-		var v = Cn.elements();
+		var v = this.canvas.getConstruction().elements();
 		let i=0, s=v.length;
 		while (i<s) {v[i++].setEditMode(0);}
 	}
