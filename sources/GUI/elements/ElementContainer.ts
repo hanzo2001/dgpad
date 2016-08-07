@@ -5,7 +5,7 @@ export abstract class ElementContainer implements iElementContainer {
 	getDocObject(): HTMLElement {
 		return this.docObject;
 	}
-	getDocObjectBounds(): BoundDim {
+	getDocObjectBounds(): BoundDimensions {
 		let top   = this.docObject.offsetTop   || 0;
 		let left  = this.docObject.offsetLeft  || 0;
 		let width = this.docObject.offsetWidth || 0;

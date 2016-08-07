@@ -1,3 +1,5 @@
+/// <reference path="../typings/iCalc.d.ts" />
+/// <reference path="../typings/iCommons.d.ts" />
 
 import {Panel} from '../GUI/panels/Panel';
 import {GUIElement} from '../GUI/elements/GUIElement';
@@ -7,18 +9,18 @@ var $U = (<any>window).$U;
 var $APPLICATION = (<any>window).$APPLICATION;
 var $STANDARD_KBD = (<any>window).$STANDARD_KBD;
 
-export class CustomTextInput extends Panel {
-	lb;
-	inp;
-	sel;
+export class CustomTextInput extends Panel implements iCustomTextInput {
+	lb: GUIElement;
+	inp: GUIElement;
+	sel: CustomTextSelection;
 	man;
-	content;
-	bounds;
-	active;
-	click_on;
-	standard;
-	preferredKB;
-	LabelWidth;
+	content: GUIElement;
+	bounds: BoundDimensions;
+	active: boolean;
+	click_on: boolean;
+	standard: GUIElement;
+	preferredKB: number;
+	LabelWidth: number;
 	constructor(_man, _ownerdiv, _lbl) {
 		super(_ownerdiv);
 		//$U.extend(this, new GUIElement(_ownerdiv, "div"));

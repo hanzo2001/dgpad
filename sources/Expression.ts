@@ -86,7 +86,7 @@ export class Expression implements iExpression {
 		this.DT = null;
 	}
 	// Pour Blockly :
-	forcevalue(x, y, z, t) {
+	forcevalue(x?, y?, z?, t?) {
 		return this.f(x, y, z, t);
 	}
 	value(x?, y?, z?, t?) {

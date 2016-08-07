@@ -1,7 +1,8 @@
+/// <reference path="../typings/Utils/iColor.d.ts" />
 
 import {ColorStringParser as Parser} from "./ColorStringParser";
 
-export class Color {
+export class Color implements iColor {
 	protected r: number = 0;
 	protected g: number = 0;
 	protected b: number = 0;
@@ -9,25 +10,25 @@ export class Color {
 	protected hex: string = '';
 	protected rgb: string = '';
 	protected rgba:string = '';
-	getHEX() {
+	getHEX(): string {
 		return this.hex;
 	}
-	getRGB() {
+	getRGB(): string {
 		return this.rgb;
 	}
-	getRGBA() {
+	getRGBA(): string {
 		return this.rgba;
 	}
-	getR() {
+	getR(): number {
 		return this.r;
 	}
-	getG() {
+	getG(): number {
 		return this.g;
 	}
-	getB() {
+	getB(): number {
 		return this.b;
 	}
-	getOpacity() {
+	getOpacity(): number {
 		return this.a;
 	}
 	setOpacity(alpha:number) {

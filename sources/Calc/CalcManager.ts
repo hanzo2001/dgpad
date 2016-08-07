@@ -1,12 +1,13 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 
 import {MainCalcPanel} from './MainCalcPanel';
 import {DigitCalcPanel} from './DigitCalcPanel';
 
 export class CalcManager {
-	protected canvas;
-	protected maincalc;
-	protected digitcalc;
-	constructor(_canvas) {
+	protected canvas: iCanvas;
+	protected maincalc: MainCalcPanel;
+	protected digitcalc: DigitCalcPanel;
+	constructor(_canvas:iCanvas) {
 		this.canvas = _canvas;
 		this.maincalc = null;
 		this.digitcalc = null;
@@ -30,7 +31,7 @@ export class CalcManager {
 			this.digitcalc = null;
 		}
 	}
-	getCustomKB() {
+	getCustomKB(): DigitCalcPanel {
 		return this.digitcalc;
 	}
 	activateBtns(_b) {

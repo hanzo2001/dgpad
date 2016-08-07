@@ -1,12 +1,13 @@
+/// <reference path="../typings/iCalc.d.ts" />
 
 import {CustomTextInput} from './CustomTextInput';
 
-export class CustomTexts {
+export class CustomTexts implements iCustomTexts {
 	protected owner;
-	protected txts;
+	protected txts: iCustomTextInput[];
 	protected active_elt;
-	protected firstActivation;
-	protected maybesimplequote;
+	protected firstActivation: boolean;
+	protected maybesimplequote: boolean;
 	constructor(_owner) {
 		this.owner = _owner;
 		this.txts = [];
@@ -19,7 +20,7 @@ export class CustomTexts {
 	getActive() {
 		return this.active_elt;
 	}
-	add(_lbl, _l, _t, _w, _h) {
+	add(_lbl:string, _l:number, _t:number, _w:number, _h:number): iCustomTextInput {
 		var txt = new CustomTextInput(this, this.owner, _lbl);
 		txt.setBounds(_l, _t, _w, _h);
 		//this.owner.addContent(txt);
@@ -74,7 +75,7 @@ export class CustomTexts {
 		if (this.active_elt != null)
 			this.active_elt.nextCar();
 	}
-	setKeyEvents(_standardKB) {
+	setKeyEvents(_standardKB:boolean) {
 		if (Object.touchpad)
 			return;
 		if (_standardKB) {

@@ -13,7 +13,7 @@ export class BasicGUIElement extends ElementContainer implements iBasicGUIElemen
 		this.owner = owner;
 		this.docObject = document.createElement(type);
 	}
-	setBoundDim(dim: BoundDim, units?:string) {
+	setBoundDim(dim: BoundDimensions, units?:string) {
 		this.top   = dim.top;
 		this.left  = dim.left;
 		this.width = dim.width;
@@ -33,7 +33,7 @@ export class BasicGUIElement extends ElementContainer implements iBasicGUIElemen
 	setBounds(left:number, top:number, width:number, height:number, units?:string) {
 		this.setBoundDim({top,left,width,height},units||'px');
 	}
-	getBounds(): BoundDim {
+	getBounds(): BoundDimensions {
 		return {
 			left:  this.left,
 			top:   this.top,
@@ -41,7 +41,7 @@ export class BasicGUIElement extends ElementContainer implements iBasicGUIElemen
 			height:this.height
 		};
 	}
-	getOwnerBounds(): BoundDim {
+	getOwnerBounds(): BoundDimensions {
 		// let top   = this.owner.docObject.offsetTop   || 0;
 		// let left  = this.owner.docObject.offsetLeft  || 0;
 		// let width = this.owner.docObject.offsetWidth || 0;

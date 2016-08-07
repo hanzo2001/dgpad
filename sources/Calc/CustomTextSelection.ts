@@ -2,16 +2,16 @@
 import {GUIElement} from '../GUI/elements/GUIElement';
 
 export class CustomTextSelection extends GUIElement {
-	ti;
-	offsetX;
-	clickpos;
-	selStart;
-	selEnd;
-	selStartX;
-	selEndX;
-	blinkvar;
-	ONECAR;
-	marginOffsetX;
+	private ti;
+	private offsetX: number;
+	private clickpos: number;
+	private selStart: number;
+	private selEnd: number;
+	private selStartX: number;
+	private selEndX: number;
+	private blinkvar: number;
+	private ONECAR: number;
+	private marginOffsetX: number;
 	constructor(_ti) {
 		super(_ti,'div');
 		//$U.extend(this, new GUIElement(_ti, "div"));
@@ -27,10 +27,10 @@ export class CustomTextSelection extends GUIElement {
 		this.marginOffsetX = 0;
 		this.setStyles("pointer-events:none;z-index:2;visibility:hidden;position:absolute;background-color:blue;left:0px;top:2px;width:3px");
 	}
-	setOffset(_x) {
+	setOffset(_x:number) {
 		this.offsetX = _x;
 	}
-	setHide(_h) {
+	setHide(_h:boolean) {
 		if (_h)
 			this.setStyle("display", "none");
 		else {
@@ -49,13 +49,13 @@ export class CustomTextSelection extends GUIElement {
 			this.display(true);
 		}
 	}
-	getSelStart() {
+	getSelStart(): number {
 		return this.selStart;
 	}
-	getSelEnd() {
+	getSelEnd(): number {
 		return this.selEnd;
 	}
-	setSelectionRange(_start, _end) {
+	setSelectionRange(_start:number, _end:number) {
 		this.selStart = _start;
 		this.selStartX = this.ONECAR * this.selStart;
 		this.selEnd = _end;
@@ -63,19 +63,17 @@ export class CustomTextSelection extends GUIElement {
 		this.clickpos = this.selStart;
 		this.display(true);
 	}
-	setCarLength(x) {
+	setCarLength(x:number) {
 		this.ONECAR = x;
 	}
-	getCarLength() {
+	getCarLength(): number {
 		return this.ONECAR;
 	}
-	mousedown(x) {
-		if (!this.ti.isActive())
-			return;
+	mousedown(x:number) {
+		if (!this.ti.isActive()) {return;}
 		x = x - this.marginOffsetX;
 		this.selStart = Math.round(x / this.ONECAR);
-		if (this.selStart > this.ti.getText().length)
-			this.selStart = this.ti.getText().length;
+		if (this.selStart > this.ti.getText().length) {this.selStart = this.ti.getText().length;}
 		this.selStartX = this.ONECAR * this.selStart;
 		this.selEnd = this.selStart;
 		this.selEndX = this.selStartX;
@@ -83,16 +81,13 @@ export class CustomTextSelection extends GUIElement {
 		this.display(false);
 	}
 	mousemove(x) {
-		if (!this.ti.isActive())
-			return;
+		if (!this.ti.isActive()) {return;}
 		x = x - this.marginOffsetX;
 		var xpos = Math.round(x / this.ONECAR);
-		if (xpos < 0)
-			xpos = 0;
+		if (xpos < 0) {xpos = 0;}
 		this.selStart = Math.min(xpos, this.clickpos);
 		this.selEnd = Math.max(xpos, this.clickpos);
-		if (this.selEnd > this.ti.getText().length)
-			this.selEnd = this.ti.getText().length;
+		if (this.selEnd > this.ti.getText().length) {this.selEnd = this.ti.getText().length;}
 		this.selStartX = this.ONECAR * this.selStart;
 		this.selEndX = this.ONECAR * this.selEnd;
 		this.display(false);
@@ -106,7 +101,7 @@ export class CustomTextSelection extends GUIElement {
 	getText() {
 		return (this.ti.getText().substring(this.selStart, this.selEnd));
 	}
-	executeCommand(_st) {
+	executeCommand(_st:string) {
 		switch (_st) {
 			case "DEL":
 				if (this.selStart > 0) {
@@ -143,7 +138,7 @@ export class CustomTextSelection extends GUIElement {
 		this.setStyle("visibility", "visible");
 		this.display(true);
 	}
-	insertText(_st) {
+	insertText(_st:string) {
 		if (!this.command(_st)) {
 			if (!this.particularCases(_st)) {
 				var s = this.ti.getText();
@@ -177,7 +172,7 @@ export class CustomTextSelection extends GUIElement {
 			this.marginOffsetX = 0;
 		}
 	}
-	private display(_withOffset) {
+	private display(_withOffset:boolean) {
 		if (_withOffset)
 			this.setMarginOffset();
 		if (isNaN(this.selStart)) {
@@ -197,35 +192,23 @@ export class CustomTextSelection extends GUIElement {
 				this.setStyles("visibility:visible;background-color:rgba(0,0,255,0.2);left:" + (this.selStartX + this.offsetX + this.marginOffsetX) + "px;width:" + (this.selEndX - this.selStartX) + "px");
 			}
 		}
-		//console.log("display:" + this.selStartX); 
 	}
 	private blink() {
-		if (this.getStyle("visibility") === "hidden")
-			this.setStyle("visibility", "visible");
-		else
-			this.setStyle("visibility", "hidden");
+		let b = this.getStyle("visibility") === "hidden";
+		this.setStyle("visibility", b ? "visible" : 'hidden');
 	}
-	private command(_st) {
-		if (_st.indexOf("cmd_") !== 0)
-			return false;
+	private command(_st:string): boolean {
+		if (_st.indexOf("cmd_") !== 0) {return false;}
 		_st = _st.replace("cmd_", "");
 		switch (_st) {
-			case "DEL":
-				this.executeCommand("DEL");
-				break;
-			case "CLR":
-				this.executeCommand("CLR");
-				break;
-			case "◀":
-				this.executeCommand("LEFT");
-				break;
-			case "▶":
-				this.executeCommand("RIGHT");
-				break;
+			case "DEL": this.executeCommand("DEL"); break;
+			case "CLR": this.executeCommand("CLR"); break;
+			case "◀": this.executeCommand("LEFT"); break;
+			case "▶": this.executeCommand("RIGHT"); break;
 		}
 		return true;
 	}
-	private particularCases(_st) {
+	private particularCases(_st): boolean {
 		var s = this.ti.getText();
 		var before = s.slice(0, this.selStart);
 		var middle = s.substring(this.selStart, this.selEnd);

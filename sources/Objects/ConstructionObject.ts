@@ -1,52 +1,54 @@
+/// <reference path="../typings/Objects/iConstructionObject.d.ts" />
 
 import {Color} from '../Utils/Color';
-import {BlocklyObjects} from '';
+import {BlocklyObjects} from './BlocklyObjects';
 
 var $U = (<any>window).$U;
 
-export class ConstructionObject {
-	private Cn;
+var noop = function () {};
+
+export class ConstructionObject implements iConstructionObject {
+	protected Cn;
 	private name;
 	private subname;
-	private showname;
-	private indicated;
-	private selected;
-	private hidden;
-	private color;
-	private fillcolor;
-	private selectedcolor;
-	private indicatedcolor;
-	private fontsize;
-	private dash;
-	private track;
-	private size;
-	private realsize;
-	private oversize;
-	private magnifyfactor;
-	private selectedfactor;
-	private onbounds;
-	private precision;
-	private serial;
-	private layer;
-	private paintorder;
-	private floatObj;
+	private showname: boolean;
+	private indicated: boolean;
+	private selected: boolean;
+	private hidden: number;
+	private color: Color;
+	private fillcolor: Color;
+	private selectedcolor: string;
+	private indicatedcolor: string;
+	private fontsize: number;
+	private dash: number[];
+	private track: boolean;
+	private size: number;
+	private realsize: number;
+	private oversize: number;
+	private magnifyfactor: number;
+	private selectedfactor: number;
+	private onbounds: boolean;
+	private precision: number;
+	private serial: number;
+	private layer: number;
+	private paintorder: number;
+	private floatObj: boolean;
 	private magnets; 
 	private blocklies;
 	private parentList;
 	private childList;
-	private is_3D;
+	private is_3D: boolean;
 	private dragPoints;
 	private dragCoords;
 	private freeDragPts;
 	private PtsChilds;
-	private timestamp;
-	private mode;
-	private macroMode;
-	private editMode;
+	private timestamp: number;
+	private mode: number;
+	private macroMode: number;
+	private editMode: number;
 	private valid_normal;
 	private valid_gomme;
 	private validTab;
-	private null_proc;
 	private paint_normal;
 	private paint_gomme;
 	private paintTab;
@@ -62,19 +64,19 @@ export class ConstructionObject {
 	paintName_exe;
 	paintLength_exe;
 	validate;
-	Flag;
-	Flag2;
-	Scratch;
-	blocks;
-	dragTo;
+	Flag: boolean;
+	Flag2: boolean;
+	Scratch: number;
+	blocks: BlocklyObjects;
+	//dragTo;
 	ORGMOUSEINSIDE;
 	mouseX;
 	mouseY;
 	prefs;
 	getWidth;
 	getHeight;
-	getSegmentsSize;
-	is360;
+	//getSegmentsSize;
+	is360: boolean;
 	getArcRay;
 	constructor(_construction, _name) {
 		this.Cn = _construction;
@@ -127,7 +129,6 @@ export class ConstructionObject {
 			proto.valid_hidden_normal
 		];
 		this.validTab = this.valid_normal;
-		this.null_proc = function (ctx) { };
 		this.paint_normal = [
 			proto.paint_show_normal,
 			proto.paint_hidden_normal,
@@ -172,8 +173,8 @@ export class ConstructionObject {
 		this.objModeTab = this.objModeTab_normal;
 		this.objMode = this.objMode_normal;
 		this.paint = this.paintTab[this.hidden];
-		this.paintName_exe = this.null_proc;
-		this.paintLength_exe = this.null_proc;
+		this.paintName_exe = noop;
+		this.paintLength_exe = noop;
 		this.validate = this.validTab[this.hidden];
 		this.Flag = false; // For various construction process
 		this.Flag2 = false; // For various construction process
@@ -186,13 +187,13 @@ export class ConstructionObject {
 		this.prefs = this.Cn.prefs;
 		this.getWidth = this.Cn.getWidth;
 		this.getHeight = this.Cn.getHeight;
-		this.getSegmentsSize = null;
+		//this.getSegmentsSize = null;
 		this.is360 = null;
 		this.getArcRay = null;
 	}
-	setExpression() {
+	setExpression(v) {
 	}
-	getRoot() {
+	getRoot(): iConstructionObject {
 		return this;
 	}
 	newTimeStamp() {
@@ -390,17 +391,17 @@ export class ConstructionObject {
 		if (this.parentList.length === 0 && this.getCode() === 'point')
 			this.is_3D = false;
 	}
-	setParent() {
-		this.parentList = Array.prototype.slice.call(arguments, 0);
+	setParent(...args) {
+		//this.parentList = Array.prototype.slice.call(arguments, 0);
+		this.parentList = args;
 		// console.log(this.getName() + ' : ' + this.parentList);
-		//        console.log(this.parentList.length+' nom:'+this.getName());
+		// console.log(this.parentList.length+' nom:'+this.getName());
 		for (var i = 0, len = this.parentList.length; i < len; i++) {
-			//            console.log('this='+this.getName()+'  parent='+this.parentList[i].getName());
+			// console.log('this='+this.getName()+'  parent='+this.parentList[i].getName());
 			this.addAsChild(this, this.parentList[i]);
 			this.is_3D = (this.is_3D) || (this.parentList[i].is3D());
 		}
-		if (this.parentList.length === 0 && this.getCode() === 'point')
-			this.is_3D = false;
+		if (this.parentList.length === 0 && this.getCode() === 'point') {this.is_3D = false;}
 	}
 	addParent(_o) {
 		// Pour éviter les références circulaires : si this
@@ -477,14 +478,14 @@ export class ConstructionObject {
 	setT(_t) { };
 	setMin(_t) { };
 	setMax(_t) { };
-	getValue() {
+	getValue(v): any {
 		return NaN;
 	}
 	setDeps() { };
 	getCoordsSystem() {
 		return this.Cn.coordsSystem;
 	}
-	isCoincident() {
+	isCoincident(v) {
 		return false;
 	}
 	getUnit() {
@@ -496,7 +497,7 @@ export class ConstructionObject {
 	isDash() {
 		return (this.dash.length !== 0);
 	}
-	setIncrement() { };
+	setIncrement(v) { };
 	getIncrement() {
 		return 0;
 	}
@@ -513,7 +514,7 @@ export class ConstructionObject {
 			this.paintLength_exe = this.paintLength;
 		} else {
 			this.precision = -1;
-			this.paintLength_exe = this.null_proc;
+			this.paintLength_exe = noop;
 		}
 	}
 	getPrecision() {
@@ -553,16 +554,16 @@ export class ConstructionObject {
 	}
 	setShowName(_bool) {
 		this.showname = _bool;
-		this.paintName_exe = (_bool) ? this.paintName : this.null_proc;
+		this.paintName_exe = (_bool) ? this.paintName : noop;
 	}
-	getShowName() {
+	getShowName(): boolean {
 		return this.showname;
 	}
-	setNamePosition() { };
+	setNamePosition(v) { };
 	getNamePosition() {
 		return null;
 	}
-	setShape() { };
+	setShape(v) { };
 	getShape() {
 		return -1;
 	}
@@ -578,7 +579,7 @@ export class ConstructionObject {
 		this.selected = _sel;
 		this.objMode = this.objModeTab[2 * _sel];
 	}
-	isSelected() {
+	isSelected(): boolean {
 		return this.selected;
 	}
 	setHidden(_sel) {
@@ -695,7 +696,7 @@ export class ConstructionObject {
 		return this.macroMode;
 	}
 	setMacroAutoObject() { };
-	setMacroSource() { };
+	setMacroSource(v) { };
 	isAutoObjectFlags() {
 		return false;
 	}
@@ -1040,6 +1041,6 @@ export class ConstructionObject {
 		src.styleWrite(true, this.name, 'STL', this.getStyleString());
 	}
 	getBlock(src) {
-		if (!this.blocks.isEmpty()) src.blockWrite(this.name, this.blocks.getSource(), 'BLK');
+		if (!this.blocks.isEmpty()) {src.blockWrite(this.name, this.blocks.getSource(), 'BLK');}
 	}
 }

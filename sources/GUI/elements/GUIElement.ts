@@ -22,9 +22,9 @@ export class GUIElement extends BasicGUIElement implements iGUIElement {
 	setPreventDefault(on:boolean) {
 		this.preventDefault = on;
 	}
-	touch(touch, procMouse:(MouseEvent)=>void) {
-		touch.preventDefault();
-		procMouse(this.PadToMouseEvent(touch.touches[0]||touch.changedTouches[0]));
+	touch(event:TouchEvent, procMouse:(MouseEvent)=>void) {
+		event.preventDefault();
+		procMouse(this.PadToMouseEvent(event.touches[0]||event.changedTouches[0]));
 	}
 	addDblClickEvent(proc:iGUIElementEvent, target?:HTMLElement) {
 		if (proc) {
@@ -87,7 +87,7 @@ export class GUIElement extends BasicGUIElement implements iGUIElement {
 			o.removeEventListener('mouseup', proc.MouseEvent_Function, false);
 		}
 	}
-	protected PadToMouseEvent(touch:MouseEvent): MouseEvent {
+	protected PadToMouseEvent(touch:Touch): MouseEvent {
 		var event = new MouseEvent('mouseup',{
 			bubbles: true,// canBubble? which one is it
 			cancelable: true,
@@ -121,14 +121,14 @@ export class GUIElement extends BasicGUIElement implements iGUIElement {
 	}
 	protected exeTCH(p:iGUIElementEvent): (e:TouchEvent)=>void {
 		if (this.preventDefault) {
-			p.TouchEvent_Function = function(tch:TouchEvent) {
-				tch.preventDefault();
-				var touch = tch.touches[this.touchNumber] || tch.changedTouches[this.touchNumber];
+			p.TouchEvent_Function = function(event:TouchEvent) {
+				event.preventDefault();
+				var touch = event.touches[this.touchNumber] || event.changedTouches[this.touchNumber];
 				p(touch);
 			};
 		} else {
-			p.TouchEvent_Function = function(tch) {
-				var touch = tch.touches[this.touchNumber] || tch.changedTouches[this.touchNumber];
+			p.TouchEvent_Function = function(event:TouchEvent) {
+				var touch = event.touches[this.touchNumber] || event.changedTouches[this.touchNumber];
 				p(touch);
 			};
 		}

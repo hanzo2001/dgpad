@@ -1,11 +1,11 @@
-
-type BlocklyObjects = {};
+/// <reference path="../iBlockly.d.ts" />
+/// <reference path="../Utils/iColor.d.ts" />
 
 interface iConstructionObject {
 	Flag: boolean; // For various construction process
 	Flag2: boolean; // For various construction process
 	Scratch: number; // For various construction process
-	blocks: BlocklyObjects;
+	blocks: iBlocklyObjects;
 	paintName_exe: ()=>void;
 	paintLength_exe: ()=>void;
 	validate: any;
@@ -17,7 +17,7 @@ interface iConstructionObject {
 	getWidth: number;
 	getHeight: number;
 	dragTo: (_x:number, _y:number)=>void;
-	setExpression();
+	setExpression(v);
 	getRoot(): iConstructionObject;
 	newTimeStamp();
 	setTimeStamp(_millis:number);
@@ -79,14 +79,14 @@ interface iConstructionObject {
 	setT(_t:any);
 	setMin(_t:any);
 	setMax(_t:any);
-	getValue(): number;
+	//getValue(): any;
 	setDeps();
 	getCoordsSystem(): any;
 	isCoincident(v?:any): boolean;
 	getUnit(): any;
 	setDash(_d:boolean);
 	isDash(): boolean;
-	setIncrement();
+	setIncrement(v);
 	getIncrement(): number;
 	getSerial(): any;
 	getPaintOrder(): any;
@@ -105,21 +105,21 @@ interface iConstructionObject {
 	getSubName(): string;
 	getVarName(): string;
 	setShowName(_bool:boolean);
-	getShowName(): string;
-	setNamePosition();
+	getShowName(): boolean;
+	setNamePosition(v);
 	getNamePosition(): any;
 	// Seulement pour les points :
-	setShape();
+	setShape(shape:number);
 	getShape(): number;
 	setIndicated(_ind:any): any;
 	isIndicated(): any;
 	setSelected(_sel:number);
-	isSelected():number;
+	isSelected():boolean;
 	setHidden(_sel:number);
 	isHidden(): number;
 	isSuperHidden(): boolean;
 	setColor(_col:string);
-	getColor(): string;
+	getColor(): iColor;
 	setRGBColor(r:number, g:number, b:number);
 	isFilledObject(): boolean;
 	getOpacity(): number;
@@ -141,7 +141,7 @@ interface iConstructionObject {
 	// Pour un segment initial, P=First et P=Second au lieu de P=Point
 	setMacroAutoObject();
 	// Surchargé dans l'objet Point :
-	setMacroSource();
+	setMacroSource(v);
 	// For macro process only :
 	isAutoObjectFlags(): boolean;
 	// Seulement pour le mode édition : 0 signifie neutre, 1 objet édité

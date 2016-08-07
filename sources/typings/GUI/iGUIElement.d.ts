@@ -2,15 +2,15 @@
 
 interface iGUIElementEvent {
 	(event?:MouseEvent|Touch): void;
-	MouseEvent_Function?: (event:MouseEvent) => void;
-	TouchEvent_Function?: (event:TouchEvent) => void;
+	MouseEvent_Function?: (event:MouseEvent) => void;// used for removing the listener, very handy but limited
+	TouchEvent_Function?: (event:TouchEvent) => void;// used for removing the listener, very handy but limited
 }
 
 interface iGUIElement extends iBasicGUIElement {
 	addImage(src:string);
 	setTouchNumber(i:number);
 	setPreventDefault(on:boolean);
-	touch(touch, procMouse:(MouseEvent)=>void);
+	touch(touch:TouchEvent, procMouse:(MouseEvent)=>void);
 	addDblClickEvent(proc:iGUIElementEvent, target?:HTMLElement);
 	addClickEvent(proc:iGUIElementEvent, target?:HTMLElement);
 	addDownEvent(proc:iGUIElementEvent, target?:HTMLElement);

@@ -9,9 +9,9 @@ export class CoordsSystem {
 	private P; // Properties
 	private OX = null;
 	private OY = null;
-	private Unit = 40; // x and y Axis units, in pixels
-	private x0; // x origin coord, in canvas coord system
-	private y0; // y origin coord, in canvas coord system
+	private Unit: number = 40; // x and y Axis units, in pixels
+	private x0: number; // x origin coord, in canvas coord system
+	private y0: number; // y origin coord, in canvas coord system
 	private lockOx = false; // Dit si l'axe Ox doit être fixe (ne peut pas se déplacer verticalement) ou non
 	private lockOy = false;
 	private centerZoom = false;
@@ -35,10 +35,10 @@ export class CoordsSystem {
 		this.paint_Oy = this.paintOy;
 		this.paint = $U.nullproc;
 	}
-	getX0() {
+	getX0(): number {
 		return this.x0;
 	}
-	getY0() {
+	getY0(): number {
 		return this.y0;
 	}
 	// Pour la restriction 3D de l'angle theta :
@@ -71,7 +71,7 @@ export class CoordsSystem {
 		this.y0 = _yz + (this.y0 - _yz) * _h;
 		this.Unit *= _h;
 	}
-	translate(_xt, _yt) {
+	translate(_xt:number, _yt:number) {
 		this.Cn.getTrackManager().clear();
 		_yt = (this.islockOx()) ? 0 : _yt;
 		_xt = (this.islockOy()) ? 0 : _xt;
@@ -86,15 +86,16 @@ export class CoordsSystem {
 		this.y0 += _yt;
 		this.restrict3D();
 	}
-	translateANDzoom(_xt, _yt, _xz, _yz, _h) {
+	translateANDzoom(_xt:number, _yt:number, _xz:number, _yz:number, _h:number) {
 		this.Cn.getTrackManager().clear();
-		_yt = (this.islockOx()) ? 0 : _yt;
-		_xt = (this.islockOy()) ? 0 : _xt;
-		_xz = ((this.centerZoom) || (this.islockOy())) ? this.x0 : _xz;
-		_yz = ((this.centerZoom) || (this.islockOx())) ? this.y0 : _yz;
-		_h = ((this.Unit * _h) > this.maxInt) ? 1 : _h;
+		_yt = this.islockOx() ? 0 : _yt;
+		_xt = this.islockOy() ? 0 : _xt;
+		_xz = (this.centerZoom || this.islockOy()) ? this.x0 : _xz;
+		_yz = (this.centerZoom || this.islockOx()) ? this.y0 : _yz;
+		_h = (this.Unit * _h) > this.maxInt ? 1 : _h;
 		var V = this.Cn.elements();
-		for (var i = 0, len = V.length; i < len; i++) {
+		let i=0, s=V.length;
+		while (i<s) {
 			if ((V[i].isInstanceType("point")) && V[i].free()) {
 				// S'il s'agit d'un point libre :
 				V[i].setXY(V[i].getX() + _xt, V[i].getY() + _yt);
@@ -102,6 +103,7 @@ export class CoordsSystem {
 			} else if (V[i].getCode() === "circle1") {
 				V[i].setZoom(_h);
 			}
+			i++;
 		}
 		this.x0 += _xt;
 		this.y0 += _yt;
@@ -111,47 +113,43 @@ export class CoordsSystem {
 		this.Unit *= _h;
 	}
 	// Translate length in pixel to this coords system :
-	l(_l) {
+	l(_l): number {
 		return _l / this.Unit;
 	}
 	// Le contraire :
-	lx(_l) {
+	lx(_l): number {
 		return _l * this.Unit;
 	}
 	// Translate area in square pixel to this coords system :
-	a(_a) {
+	a(_a): number {
 		return _a / (this.Unit * this.Unit);
 	}
 	// Translate canvas coords to this coords system :
-	x(_px) {
+	x(_px): number {
 		return (_px - this.x0) / this.Unit;
 	}
-	y(_py) {
+	y(_py): number {
 		return (this.y0 - _py) / this.Unit;
 	}
-	xy(_t) {
+	xy(_t): number[] {
 		return [this.x(_t[0]), this.y(_t[1])];
 	}
 	// Translate this coords system to canvas coords :
-	px(_x) {
-		var x = (_x * this.Unit + this.x0);
-		if (x > this.maxInt)
-			return this.maxInt;
-		if (x < -this.maxInt)
-			return -this.maxInt;
-		//        return (Math.round(x));
-		return (x);
+	px(_x:number): number {
+		var x = _x * this.Unit + this.x0;
+		if (x > this.maxInt) {return  this.maxInt;}
+		if (x < -this.maxInt){return -this.maxInt;}
+		// return (Math.round(x));
+		return x;
 	}
-	py(_y) {
+	py(_y:number): number {
 		var y = (this.y0 - _y * this.Unit);
-		if (y > this.maxInt)
-			return this.maxInt;
-		if (y < -this.maxInt)
-			return -this.maxInt;
-		//        return (Math.round(y));
+		if (y > this.maxInt) {return this.maxInt;}
+		if (y < -this.maxInt){return -this.maxInt;}
+		// return (Math.round(y));
 		return (y);
 	}
-	setCoords(_x, _y, _u, _md3D) {
+	setCoords(_x:number, _y:number, _u:number, _md3D:boolean) {
 		this.x0 = _x;
 		this.y0 = _y;
 		this.Unit = _u;

@@ -37,7 +37,7 @@ export class Construction {
 	mouseX;
 	mouseY;
 	prefs;
-	coordsSystem;
+	coordsSystem: CoordsSystem;
 	paint;
 	computeAll;
 	constructor(_canvas:iCanvas) {

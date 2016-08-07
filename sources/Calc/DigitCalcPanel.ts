@@ -38,8 +38,7 @@ export class DigitCalcPanel extends Panel {
 		var nums = ("|d|x|7|8|9|+_|" + pi + "|y|4|5|6|-_||z|1|2|3|*_||t|0|.|^|/").split("_");
 		var g = 0;
 		for (var i = 0; i < nums.length; i++) {
-			if (nums[i].length === 0)
-				g += bgap;
+			if (nums[i].length === 0) {g += bgap;}
 			else {
 				var line = nums[i].split("|");
 				for (var k = 0; k < line.length; k++) {
@@ -84,15 +83,13 @@ export class DigitCalcPanel extends Panel {
 		var smallBtnW = 35 * scl;
 		h += btnH + gap;
 		for (var i = 0; i < fcts.length; i++) {
-			if (fcts[i].length === 0)
-				h += bgap;
+			if (fcts[i].length === 0) {h += bgap;}
 			else {
 				var line = fcts[i].split("|");
 				var col = 0;
 				for (var k = 0; k < line.length; k++) {
 					var ww = btnW;
-					if (k > lim)
-						ww = smallBtnW;
+					if (k > lim) {ww = smallBtnW;}
 					var btn = new DigitBtn(this);
 					btn.setBounds(col, h, ww, btnH);
 					btn.setStyles("font-size:16px");
@@ -116,8 +113,7 @@ export class DigitCalcPanel extends Panel {
 		var cmds = "DEL|CLR_◀|▶".split("_");
 		var m = 0;
 		for (var i = 0; i < cmds.length; i++) {
-			if (cmds[i].length === 0)
-				m += bgap;
+			if (cmds[i].length === 0) {m += bgap;}
 			else {
 				var line = cmds[i].split("|");
 				for (var k = 0; k < line.length; k++) {

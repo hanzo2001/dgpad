@@ -1,20 +1,23 @@
-/// <reference path="../typings/iBlocklyObject.d.ts" />
+/// <reference path="../typings/iBlockly.d.ts" />
 
 import {Expression} from '../Expression';
 
 var $U = (<any>window).$U
 
+// GLOBAL MULTILINE [start] (zero+) SPACE 'var' (zero+) SPACE WORD (zero+) SPACE ';' <-- example: var word;
+var re_ = /^\s*var\s*\w+\s*;/gm;
+
 export class BlocklyObject implements iBlocklyObject {
-	private owner;
+	private owner: iBlocklyObjects;
 	private Cn;
-	private EX;
-	private type;
+	private EX: Expression;
+	private type: string;
 	private xml;
-	private sync;
+	private sync: string;
 	private async;
 	private childs;
 	private parents;
-	constructor(_owner, _construction) {
+	constructor(_owner:iBlocklyObjects, _construction) {
 		this.owner = _owner;
 		this.Cn = _construction;
 		this.EX = null;
@@ -25,21 +28,21 @@ export class BlocklyObject implements iBlocklyObject {
 		this.childs = {};
 		this.parents = {};
 	}
-	getXML() {
+	getXML(): string {
 		return this.xml;
 	}
 	getSNC() {
 		return this.sync;
 	}
-	setBehavior(_m, _xml, _sync, _async) {
+	setBehavior(_m:string, _xml:string, _sync:string, _async) {
 		this.type = _m;
 		this.xml = _xml;
 		if (this.xml === null) {
 			this.sync = null;
 			this.async = null;
 			this.setEX(null);
-			if (this.type === "oncompute") this.owner.getObj().setExpression("NaN");
-			if (this.type === "onlogo") this.Cn.removeTurtleExpression(this.owner.getObj().getVarName());
+			if (this.type === "oncompute") {this.owner.getObj().setExpression("NaN");}
+			if (this.type === "onlogo") {this.Cn.removeTurtleExpression(this.owner.getObj().getVarName());}
 		} else {
 			this.sync = _sync.replace(/^\s*var\s*\w+\s*;/gm, "").trim();
 			// console.log(this.sync);
@@ -108,8 +111,9 @@ export class BlocklyObject implements iBlocklyObject {
 		for (var o in this.parents) {ch.push(o);}
 		return ch;
 	}
-	private setEX(_cod) {
-		this.EX = Expression.delete(this.EX);
+	private setEX(_cod) {// I dont understand what's going on
+		Expression.delete(this.EX);
+		this.EX = null;
 		if (_cod) {
 			this.EX = new Expression(this.owner, _cod);
 			Expression.delete(this.EX);

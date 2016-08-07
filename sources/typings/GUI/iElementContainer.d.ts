@@ -1,13 +1,7 @@
-
-declare type BoundDim = {
-	top: number;
-	left: number;
-	width: number;
-	height: number;
-}
+/// <reference path="../iCommons.d.ts" />
 
 interface iElementContainer {
 	getDocObject(): HTMLElement;
-	getDocObjectBounds(): BoundDim;
+	getDocObjectBounds(): BoundDimensions;
 	appendChild(e: HTMLElement): HTMLElement;
 }
