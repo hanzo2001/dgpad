@@ -13,7 +13,6 @@ export class Ghost {
 	Cn;
 	prec2: number;
 	minLength:number = 5;
-
 	constructor(canvas) {
 		this.canvas = canvas;
 		this.Cn = canvas.getConstruction();
@@ -260,14 +259,14 @@ export class Ghost {
 			this.setXY(ev);
 			this.ghostOn = true;
 			this.mousedown = true;
-	};
+	}
 	private mouseMoved = function(ev) {
 			if (this.mousedown) {
 					this.recordXY(ev);
 					this.Cn.validate(ev);
 					this.canvas.paint(ev);
 			}
-	};
+	}
 	private mouseReleased = function(ev) {
 			this.mousedown = false;
 			this.create(ev);
@@ -276,11 +275,5 @@ export class Ghost {
 			this.Cn.clearIndicated();
 			this.canvas.paint(ev);
 			this.ghostOn = false;
-	};
+	}
 }
-
-function Ghost2(_canvas) {
-
-
-
-};

@@ -4,6 +4,7 @@ import {ListObject} from './Objects/ListObject';
 import {ExpressionObject} from './Objects/ExpressionObject';
 import {CoordsSystem} from './CoordsSystem';
 import {SourceWriter} from './SourceWriter';
+import {TrackManager} from './TrackManager';
 
 var $U = (<any>window).$U;
 var $APP_PATH = (<any>window).$APP_PATH;
@@ -73,7 +74,7 @@ export class Construction {
 		this.paint = this.standardPaint;
 		this.computeAll = this.computeAll2D;
 	}
-	createTurtleExpression(_startpt) {
+	createTurtleExpression(_startpt:string): any {
 		let name = "blk_turtle_exp_" + _startpt;
 		let o = this.find(name);
 		if (!o) {
@@ -89,7 +90,7 @@ export class Construction {
 		};
 		return o;
 	}
-	removeTurtleExpression(_startpt) {
+	removeTurtleExpression(_startpt:string) {
 		let exp = this.find("blk_turtle_exp_" + _startpt);
 		let lst = this.find("blk_turtle_list_" + _startpt);
 		if (exp) {
@@ -97,67 +98,66 @@ export class Construction {
 			this.remove(exp);
 		};
 	}
-	getObjectsFromType(_t) {
+	getObjectsFromType(_t:string): any[] {
 		let tab = [];
 		for (let i = 0; i < this.V.length; i++) {
-			if (this.V[i].getCode() === "expression_cursor") continue;
-			if (this.V[i].isHidden()) continue;
+			if (this.V[i].getCode() === "expression_cursor") {continue;}
+			if (this.V[i].isHidden()) {continue;}
 			if (_t === "any") tab.push(this.V[i])
-			else if ((this.V[i].getCode() === _t) || ((this.V[i].getFamilyCode() === _t))) tab.push(this.V[i])
+			else if (this.V[i].getCode() === _t || this.V[i].getFamilyCode() === _t) {tab.push(this.V[i]);}
 		};
 		return tab
 	}
-	isDragOnlyMoveable() {
+	isDragOnlyMoveable(): boolean {
 		return this.DragOnlyMoveable;
 	}
-	setDragOnlyMoveable(_d) {
+	setDragOnlyMoveable(_d:boolean) {
 		this.DragOnlyMoveable = _d
 	}
-	isDEG() {
+	isDEG(): boolean {
 		return this.DEGmode;
 	}
-	setDEG(_d) {
+	setDEG(_d:boolean) {
 		this.DEGmode = _d;
 		this.canvas.getInterpreter().setDegreeMode(_d);
 	}
-	cos(_a) {
+	cos(_a:number): number {
 		return Math.cos(this.DEGmode ? _a * Math.PI / 180 : _a);
 	}
-	sin(_a) {
+	sin(_a:number): number {
 		return Math.sin(this.DEGmode ? _a * Math.PI / 180 : _a);
 	}
-	tan(_a) {
+	tan(_a:number): number {
 		return Math.tan(this.DEGmode ? _a * Math.PI / 180 : _a);
 	}
-	getInterpreter() {
+	getInterpreter(): Interpreter {
 		return this.canvas.getInterpreter();
 	}
-	getTrackManager() {
+	getTrackManager(): iTrackManager {
 		return this.canvas.trackManager;
 	}
-	getVarName(_n) {
-		if (this.AV.hasOwnProperty(_n))
-			return this.AV[_n];
-		else
-			return this.getNewVarName(_n);
+	getVarName(_n:string) {
+		return this.AV.hasOwnProperty(_n)
+			? this.AV[_n]
+			: this.getNewVarName(_n);
 	}
-	isVarName(_n) {
-		return (this.AV.hasOwnProperty(_n));
+	isVarName(_n): boolean {
+		return this.AV.hasOwnProperty(_n);
 	}
 	getCanvas() {
 		return this.canvas;
 	}
-	getSerial() {
-		return (this.serial++);
+	getSerial(): number {
+		return this.serial++;
 	}
 	getBounds() {
 		return this.canvas.getBounds();
 	}
-	getHeight() {
-		return (this.canvas.getBounds().height - this.canvas.prefs.controlpanel.size);
+	getHeight(): number {
+		return this.canvas.getBounds().height - this.canvas.prefs.controlpanel.size;
 	}
-	getWidth() {
-		return (this.canvas.getBounds().width);
+	getWidth(): number {
+		return this.canvas.getBounds().width;
 	}
 	reconstructChilds() {
 		for (let i = 0, len = this.V.length; i < len; i++) {
@@ -171,7 +171,7 @@ export class Construction {
 	// 4 pour construction de macros, 5 pour execution de macros
 	// 6 pour les propriétés, 7 pour le tracé, 9 pour le magnetisme,
 	// 11 pour la dépendance :
-	setMode(_mode) {
+	setMode(_mode:number) {
 		this.mode = _mode;
 		this.setObjectsMode(this.mode);
 		this.clearMacroMode();
@@ -190,37 +190,37 @@ export class Construction {
 			case 11:this.paint = this.macroPaint; break;
 		}
 	}
-	getMode() {
+	getMode(): number {
 		return this.mode;
 	}
-	isMode() {
+	isMode(...args:number[]): boolean {
 		let res = false;
-		let i=0, s=arguments.length;
-		while (i<s) {res = res || (this.mode === arguments[i]);}
+		let i=0, s=args.length;
+		while (i<s) {res = res || (this.mode === args[i]);}
 		return res;
 	}
-	isConsultOrArrowMode() {
+	isConsultOrArrowMode(): boolean {
 		return this.mode === 0 || this.mode === 1;
 	}
-	isConsultMode() {
+	isConsultMode(): boolean {
 		return this.mode === 0;
 	}
-	isArrowMode() {
+	isArrowMode(): boolean {
 		return this.mode === 1;
 	}
-	isHideMode() {
+	isHideMode(): boolean {
 		return this.mode === 2;
 	}
-	isDeleteMode() {
+	isDeleteMode(): boolean {
 		return this.mode === 3;
 	}
-	isMacroMode() {
+	isMacroMode(): boolean {
 		return this.mode === 4;
 	}
-	isMacroEXEMode() {
+	isMacroEXEMode(): boolean {
 		return this.mode === 5;
 	}
-	isPropertiesMode() {
+	isPropertiesMode(): boolean {
 		return this.mode === 6;
 	}
 	add(_obj) {
@@ -254,32 +254,32 @@ export class Construction {
 		this.varnames = [];
 		this.canvas.getInterpreter().BLK_GLOB_DELETE();
 	}
-	setAllSize(_type, _sze) {
+	setAllSize(_type, size:number) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type)
-				this.V[i].setSize(_sze);
+				this.V[i].setSize(size);
 		}
 	}
-	setAllSegSize(_type, _sze) {
+	setAllSegSize(_type, size:number) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type) {
-				if ((_sze === 0) && (this.V[i].getSize() === 0)) {
+				if ((size === 0) && (this.V[i].getSize() === 0)) {
 					this.V[i].setSize(0.1);
 				}
-				this.V[i].setSegmentsSize(_sze);
+				this.V[i].setSegmentsSize(size);
 			}
 		}
 	}
-	setAllColor(_type, _col) {
+	setAllColor(_type, color:string) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type)
-				this.V[i].setColor(_col);
+				this.V[i].setColor(color);
 		}
 	}
-	setAllOpacity(_type, _alpha) {
+	setAllOpacity(_type, alpha:number) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type)
-				this.V[i].setOpacity(_alpha);
+				this.V[i].setOpacity(alpha);
 		}
 	}
 	setAllLayer(_type, _lay) {
@@ -294,16 +294,16 @@ export class Construction {
 				this.V[i].setShape(_shape);
 		}
 	}
-	setAllFontSize(_type, _v) {
+	setAllFontSize(_type, size:number) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type)
-				this.V[i].setFontSize(_v);
+				this.V[i].setFontSize(size);
 		}
 	}
-	setAllPrecision(_type, _v) {
+	setAllPrecision(_type, precision:number) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type) {
-				this.V[i].setPrecision(_v);
+				this.V[i].setPrecision(precision);
 				if ((_type === "locus") || (_type === "quadric")) {
 					this.V[i].compute();
 					// this.V[i].computeChilds();
@@ -323,7 +323,7 @@ export class Construction {
 				this.V[i].setDash(_v);
 		}
 	}
-	setAll360(_type, _is360) {
+	setAll360(_type, _is360:boolean) {
 		for (let i = 0, len = this.V.length; i < len; i++) {
 			if (this.V[i].getFamilyCode() === _type)
 				this.V[i].set360(_is360);
@@ -344,20 +344,20 @@ export class Construction {
 	elements() {
 		return this.V;
 	}
-	isEmpty() {
+	isEmpty(): boolean {
 		return this.V.length === 0;
 	}
 	// homothétie de centre (_x;_y) et de rapport _h :
-	zoom(_x, _y, _h) {
+	zoom(_x:number, _y:number, _h:number) {
 		$U.changed();
 		this.coordsSystem.zoom(_x, _y, _h);
 	}
 	// translation de vecteur (_x;_y) :
-	translate(_x, _y) {
+	translate(_x:number, _y:number) {
 		$U.changed();
 		this.coordsSystem.translate(_x, _y);
 	}
-	translateANDzoom(_xt, _yt, _xz, _yz, _h) {
+	translateANDzoom(_xt:number, _yt:number, _xz:number, _yz:number, _h:number) {
 		$U.changed();
 		this.coordsSystem.translateANDzoom(_xt, _yt, _xz, _yz, _h);
 	}
@@ -370,17 +370,17 @@ export class Construction {
 		}
 		return c.length === 1 ? null : c;
 	}
-	getNames() {
+	getNames(): string[] {
 		return Object.keys(this.AO);
 	}
-	find(_oName) {
-		return this.AO[_oName];
+	find(oName:string) {
+		return this.AO[oName];
 	}
-	findVar(_vName) {
-		return this.AO[this.VARS[_vName]];
+	findVar(vName:string) {
+		return this.AO[this.VARS[vName]];
 	}
 	// Pour l'affichage des indices des noms d'objets :
-	getSubName(_n) {
+	getSubName(_n): string {
 		let t = _n.toString().split("");
 		let n = [];
 		let i = t.length - 1;
@@ -390,9 +390,9 @@ export class Construction {
 		}
 		n.reverse();
 		let s = t.slice(0, i + 1).join("") + n.join("");
-		return (s);
+		return s;
 	}
-	getUnusedName(_n, _o) {
+	getUnusedName(_n:string, _o) {
 		switch (_n) {
 			case "":
 				_n = "_O";
@@ -440,7 +440,7 @@ export class Construction {
 		if (bp) {return -1;}
 		return (a.getPaintOrder() - b.getPaintOrder());
 	}
-	private standardPaint(ctx, coords) {
+	private standardPaint(ctx:CanvasRenderingContext2D, coords) {
 		// ctx.beginPath();
 		this.coordsSystem.paint(ctx);
 		// Réalise une copie de l'array V :
@@ -457,7 +457,7 @@ export class Construction {
 		this.canvas.magnifyManager.magnifierPaint(coords);
 		this.canvas.blocklyManager.paintTurtle();
 	}
-	private macroPaint(ctx, coords) {
+	private macroPaint(ctx:CanvasRenderingContext2D, coords) {
 		// console.log("macropaint");
 		this.standardPaint(ctx, coords);
 		ctx.globalAlpha = 1;
@@ -490,13 +490,13 @@ export class Construction {
 			}
 		}
 	}
-	private magnetPaint(ctx, coords) {
+	private magnetPaint(ctx:CanvasRenderingContext2D, coords) {
 		// this.canvas.magnetManager.paint(ctx);
 		this.macroPaint(ctx, coords);
 		this.canvas.magnetManager.paint(ctx);
 		// this.canvas.magnetManager.paintIcon(ctx);
 	}
-	private macroEXEPaint(ctx, coords) {
+	private macroEXEPaint(ctx:CanvasRenderingContext2D, coords) {
 		this.standardPaint(ctx, coords);
 		ctx.globalAlpha = 1;
 		ctx.shadowColor = '';
@@ -524,7 +524,7 @@ export class Construction {
 			}
 		}
 	}
-	private deletePaint(ctx, coords) {
+	private deletePaint(ctx:CanvasRenderingContext2D, coords) {
 		this.standardPaint(ctx, coords);
 		ctx.globalAlpha = 1;
 		ctx.shadowColor = '';
@@ -543,10 +543,8 @@ export class Construction {
 	private slowfind(_oName, _o) {
 		let len = this.V.length;
 		for (let i = 0; i < len; i++) {
-			if (this.V[i] === _o)
-				continue;
-			if (_oName === this.V[i].getName())
-				return this.V[i];
+			if (this.V[i] === _o) {continue;}
+			if (_oName === this.V[i].getName()) {return this.V[i];}
 		}
 		return null;
 	}
@@ -560,7 +558,7 @@ export class Construction {
 		}
 		return name;
 	}
-	private genericName(_base, _o) {
+	private genericName(_base:string, _o): string {
 		let baseName = "";
 		if (_base) {
 			baseName = _base;
@@ -568,9 +566,7 @@ export class Construction {
 			baseName = "O";
 		}
 		let num = 1;
-		while (this.slowfind(baseName + num, _o)) {
-			num++;
-		}
+		while (this.slowfind(baseName + num, _o)) {num++;}
 		return (baseName + num);
 	}
 	private findFreePointsRecursive(_o) {
@@ -586,7 +582,7 @@ export class Construction {
 	// 		console.log(nom_indice + ":" + this.AV[nom_indice].getName());
 	// 	}
 	// }
-	private dependsOnRecursive(o, on) {
+	private dependsOnRecursive(o, on): boolean {
 		o.Flag = true;
 		if (o === on) {return true;}
 		let o1 = o.getParent();
@@ -597,7 +593,7 @@ export class Construction {
 		}
 		return false;
 	}
-	private dependsOn(o, on) {
+	private dependsOn(o, on): boolean {
 		let len = this.V.length;
 		for (let i = 0; i < len; i++) {
 			this.V[i].Flag = false;

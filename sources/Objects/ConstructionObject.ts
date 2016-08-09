@@ -78,6 +78,7 @@ export class ConstructionObject implements iConstructionObject {
 	//getSegmentsSize;
 	is360: boolean;
 	getArcRay;
+	dragTo: (x, y) => void;
 	constructor(_construction, _name) {
 		this.Cn = _construction;
 		this.name = this.Cn.getUnusedName(_name, this);
@@ -180,7 +181,7 @@ export class ConstructionObject implements iConstructionObject {
 		this.Flag2 = false; // For various construction process
 		this.Scratch = 0; // For various construction process
 		this.blocks = new BlocklyObjects(this, this.Cn);
-		this.dragTo = (this.Cn.is3D()) ? this.dragTo3D : this.dragTo2D;
+		this.dragTo = this.Cn.is3D() ? this.dragTo3D : this.dragTo2D;
 		this.ORGMOUSEINSIDE = null;
 		this.mouseX = this.Cn.mouseX;
 		this.mouseY = this.Cn.mouseY;

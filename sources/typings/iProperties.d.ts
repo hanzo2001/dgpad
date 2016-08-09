@@ -33,3 +33,10 @@ interface iPropertiesPanel extends iPanel {
 	setTrack(_o, _val);
 	setAllTrack(_type, _val);
 }
+
+interface iPropertiesManager {
+	showPanel();
+	hidePanel();
+	clearEditMode();
+	edit(_obj);
+}

@@ -5,7 +5,7 @@ import {GUIElement} from './GUIElement';
 export class Button extends GUIElement implements iButton {
 	constructor(owner:iElementContainer) {
 		super(owner,'button');
-		this.setAttr("type","button");
+		this.setAttr('type','button');
 		this.setAbsolute();
 	}
 	setText(text:string) {

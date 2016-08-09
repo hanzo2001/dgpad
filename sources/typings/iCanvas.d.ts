@@ -1,50 +1,50 @@
 /// <reference path="./GUI/iBasicGUIElement.d.ts" />
+/// <reference path="./iConstruction.d.ts" />
+/// <reference path="./iCalc.d.ts" />
+/// <reference path="./iMagnifier.d.ts" />
+/// <reference path="./iMagnets.d.ts" />
+/// <reference path="./iNames.d.ts" />
+/// <reference path="./iEraser.d.ts" />
+/// <reference path="./iDeleteAll.d.ts" />
+/// <reference path="./iUndo.d.ts" />
+/// <reference path="./iLongPress.d.ts" />
+/// <reference path="./iText.d.ts" />
+/// <reference path="./iGhost.d.ts" />
+/// <reference path="./iMacros.d.ts" />
+/// <reference path="./iCoincedences.d.ts" />
+/// <reference path="./GUI/iControlPanel.d.ts" />
+/// <reference path="./iDepends.d.ts" />
+/// <reference path="./iProperties.d.ts" />
+/// <reference path="./Objects/iVirtualPointObject.d.ts" />
+/// <reference path="./iTools.d.ts" />
+/// <reference path="./iTrack.d.ts" />
+/// <reference path="./Constructors/iPointConstructor.d.ts" />
+/// <reference path="./iExpression.d.ts" />
 
-type ControlPanel = {};
-type Construction = {};
-type PropertiesManager = {};
-type MacrosManager = {};
-type DeleteAll = {};
-type CoincidenceManager = {};
-type EraserManager = {};
-type TrackManager = {};
-type CalcManager = {};
-type MagnetManager = {};
-type MagnifierManager = {};
-type DemoModeManager = {};
-type DependsManager = {};
-type NamesManager = {};
+
 type BlocklyManager = {};
-type LongpressManager = {};
-type PointConstructor = {};
-type Ghost = {};
-type ToolsManager = {};
-type VirtualPointObject = {};
-type Expression = {};
 
 interface iCanvas extends iElementContainer {
-	mainpanel: ControlPanel;
+	mainpanel: iControlPanel;
 	bounds: any;
 	prefs: any;// clone of $P
-	undoManager: UndoManager;
-	propertiesManager: PropertiesManager;
-	macrosManager: MacrosManager;
-	deleteAll: DeleteAll;
-	coincidenceManager: CoincidenceManager;
-	eraserPanel: EraserManager;
-	trackManager: TrackManager;
-	calcManager: CalcManager;
-	magnetManager: MagnetManager;
-	magnifyManager: MagnifierManager;
-	demoModeManager: DemoModeManager;
+	undoManager: iUndoManager;
+	propertiesManager: iPropertiesManager;
+	macrosManager: iMacrosManager;
+	deleteAll: iDeleteAll;
+	coincidenceManager: iCoincidenceManager;
+	eraserPanel: iEraserManager;
+	trackManager: iTrackManager;
+	calcManager: iCalcManager;
+	magnetManager: iMagnetManager;
+	magnifyManager: iMagnifierManager;
+	demoModeManager: iDemoModeManager;
 	textManager: iTextManager;
-	dependsManager: DependsManager;
-	namesManager: NamesManager;
+	dependsManager: iDependsManager;
+	namesManager: iNamesManager;
 	blocklyManager: BlocklyManager;
-	longpressManager: LongpressManager;
-	clearBackground: ()=>void;
-
-	/*protected*/ context: CanvasRenderingContext2D;
+	longpressManager: iLongpressManager;
+	clearBackground: () => void;
 
 	refreshKeyboard();
 	getID(): string;
@@ -76,7 +76,7 @@ interface iCanvas extends iElementContainer {
 	getHeight(): number;
 	mouseX(ev:any): number;
 	mouseY(ev:any): number;
-	mouse(ev:any): VirtualPointObject;
+	mouse(ev:any): iVirtualPointObject;
 	getConstruction();
 	addText(_m, _l, _t, _w, _h, _stl);// textManager.addTeXElement(_m, _l, _t, _w, _h, _stl);
 	// 0 pour consultation
@@ -95,7 +95,7 @@ interface iCanvas extends iElementContainer {
 	getMode(): number;
 	stopChrono();
 	addTool(_oc);// toolsManager.addTool(_oc);
-	getConstructor(_code: number);
+	getConstructor(code:string);
 	initTools(ev:any, obj:any);
 	setObjectConstructor(_oc);// sets OC
 	isObjectConstructor(_oc): boolean;
@@ -134,94 +134,11 @@ interface iCanvas extends iElementContainer {
 	addObject(o:any);
 	InterpretScript(_o:any, s:any);
 	Interpret(s:any);
-	getExpression(s): Expression;
+	getExpression(s): iExpression;
 	InterpretExpression(s:any): any;
 	InterpretMacro(s:any);
 	getInterpreter(): any;
 	getCn(): any;
 	OpenFile(_fname, _src);
 	getStyle(): string;
-	/*protected*/ cloneCanvas();
-	/*protected*/ setFullScreen();
-	/*protected*/ resizeWindow();
-	/*protected*/ initBounds();
-	/*protected*/ initContext(cx:CanvasRenderingContext2D);
-	/*protected*/ getNewContext(): CanvasRenderingContext2D;
-	/*protected*/ closeTools();
-	// Lorsque le navigateur mobile ne connaît pas les évenements "gesture"
-	/* Les variables globales sont en fait des propriétés
-		de l'objet window. Interpréter un script utilisateur risque
-		d'ajouter des globales susceptibles de mettre la 
-		pagaille dans l'objet window dans lesquel s'execute
-		DGPad. Pour éviter cela, on execute les scripts (lecture
-		de fichier aussi) dans un bac à sable : une iframe invisible.
-		*/
-	///*protected*/ createSandbox(){}();
-}
-
-interface iTextPanel extends iElementContainer {
-	addTeXObject();
-	edit(txt:iTextObject);
-	addName(name:string);
-}
-
-interface iTextObject extends iPanel {
-	parseExpressions();
-	exec(index:number);
-	print(txt:string);
-	refreshInputs();
-	noedit();
-	setEditFocus();
-	doedit();
-	edit();
-	compute();
-	evaluateString();
-	getColor(): string;
-	setColor(color:string);
-	getOpacity(): number;
-	setOpacity(opacity:number);
-	getBorderSize(): number;
-	setBorderSize(size:number);
-	getBorderRadius(): number;
-	setBorderRadius(radius:number);
-	setNumPrec(pow:number);
-	getNumPrec(): number;
-	addName(name:string);
-	setStyles(styles:string);
-	getStyles(): string;
-	setText(txt:string);
-	getRawText(): string;
-	getText(): string;
-	init();
-}
-
-interface iTextManager {
-	compute();
-	refreshInputs();
-	evaluateStrings();
-	executeScript(index:number, srcIndex:number);
-	getPosition(txt:iTextObject);
-	edit(txt:iTextObject);
-	deleteTeX(txt:iTextObject);
-	addName(name:string);
-	addTeXElement(str:string, left, top, width, height, styles?:string);
-	add(txt:iTextObject);
-	addText(str:string, left, top, width, height, styles?:string);
-	elements();
-	getSource();
-	clear();
-	showPanel();
-	hidePanel();
-}
-
-interface iUndoManager {
-	clear();
-	record(target, add:boolean);
-	undo();
-	redo();
-	beginAdd();
-	endAdd();
-	deleteObjs(_t);
-	swap(withTarget);
-	setBtns();
 }

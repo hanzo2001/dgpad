@@ -1,6 +1,8 @@
 
 import {GhostPoint} from './GhostPoint';
 
+var $U = (<any>window).$U;
+
 export class GhostLine {
 	prec = 200;
 	P1;

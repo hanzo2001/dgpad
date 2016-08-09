@@ -1,9 +1,10 @@
 /// <reference path="../typings/iTools.d.ts" />
+/// <reference path="../typings/iCanvas.d.ts" />
 
 import {Tool} from './Tool';
 
 export class ToolsManager implements iToolsManager {
-	private canvas: any;
+	private canvas: iCanvas;
 	private context: CanvasRenderingContext2D;
 	private toolsize: number;
 	private toolgap: number;
@@ -15,7 +16,7 @@ export class ToolsManager implements iToolsManager {
 	private visible: boolean;
 	private tool: iTool;
 	private objectConstructor;
-	constructor(canvas) {
+	constructor(canvas:iCanvas) {
 		this.canvas = canvas;
 		this.context = this.canvas.getContext();
 		this.toolsize = parseInt(this.canvas.prefs.tool.size);

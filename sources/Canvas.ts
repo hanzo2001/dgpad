@@ -1,6 +1,8 @@
 /// <reference path="./typings/iCanvas.d.ts" />
 
 import {ElementContainer} from './GUI/elements/ElementContainer';
+import {Construction} from './Construction';
+import {Expression} from './Expression';
 import {ControlPanel} from './ControlPanel/ControlPanel';
 import {ToolsManager} from './Tools/ToolsManager';
 import {TextManager} from './Text/TextManager';
@@ -10,22 +12,20 @@ import {EraserManager} from './Eraser/EraserManager';
 import {MagnetManager} from './Magnets/MagnetManager';
 import {CoincidenceManager} from './Coincidence/CoincidenceManager';
 import {PropertiesManager} from './Properties/PropertiesManager';
+import {CalcManager} from './Calc/CalcManager';
+import {MagnifierManager} from './Magnifier/MagnifierManager';
+import {DemoModeManager} from './Magnifier/DemoModeManager';
+import {MacrosManager} from './Macros/MacrosManager';
+import {LongpressManager} from './Longpress/LongpressManager';
+import {DependsManager} from './Depends/DependsManager';
+import {TrackManager} from './TrackManager';
 import {DeleteAll} from './DeleteAll';
 import {Ghost} from './Ghost/Ghost';
 import {VirtualPointObject} from './Objects/VirtualPointObject';
+import {PointConstructor} from './Constructors/PointConstructor';
 
 type SVGCanvas = {};
-type Construction = {};
-type MacrosManager = {};
-type TrackManager = {};
-type CalcManager = {};
-type MagnifierManager = {};
-type DemoModeManager = {};
-type DependsManager = {};
 type BlocklyManager = {};
-type LongpressManager = {};
-type PointConstructor = {};
-type Expression = {};
 
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
@@ -93,7 +93,7 @@ class Canvas extends ElementContainer implements iCanvas {
 	private iPadDidFirstEnterBackground: boolean;
 	private mousedown: boolean;
 	private Cn: Construction;
-	/*protected*/ context: CanvasRenderingContext2D;
+	private context: CanvasRenderingContext2D;
 	private OC: PointConstructor;//ObjectConstructor?
 	private PC: PointConstructor;
 	private myTimeOut: any;
@@ -295,7 +295,7 @@ class Canvas extends ElementContainer implements iCanvas {
 		var ctx = buff.getContext('2d');
 		ctx.imageSmoothingEnabled = true;
 		ctx.mozImageSmoothingEnabled = true;
-		ctx.drawImage(this.docObject, (d - w) / 2, (d - h) / 2, w, h);
+		ctx.drawImage(<HTMLCanvasElement>this.docObject, (d - w) / 2, (d - h) / 2, w, h);
 		t.img = buff.toDataURL();
 		this.Cn.zoom(this.width / 2, this.height / 2, 1 / scale);
 		var stringified = JSON.stringify(t);
@@ -393,7 +393,7 @@ class Canvas extends ElementContainer implements iCanvas {
 			this.Cn.clearSelected();
 			this.Cn.paint(this.context);
 		}
-		var svg = this.context.toDataURL("image/svg+xml");
+		var svg = this.context.canvas.toDataURL("image/svg+xml");
 		this.context = this.getNewContext();
 		this.resizeWindow();
 		return svg;
@@ -582,7 +582,7 @@ class Canvas extends ElementContainer implements iCanvas {
 	addTool(_oc) /* toolsManager.addTool(_oc); */ {
 		this.toolsManager.addTool(_oc);
 	}
-	getConstructor(code: number) {
+	getConstructor(code:string) {
 		return this.toolsManager.getConstructor(code);
 	}
 	initTools(event:any, obj:any) {
@@ -867,7 +867,7 @@ class Canvas extends ElementContainer implements iCanvas {
 		} else {
 			this.Cn.validate(event);
 			this.cleanInds();
-			var sels = Cn.getIndicated();
+			var sels = this.Cn.getIndicated();
 			if (this.isClick(event)) {
 				if (sels.length === 0) {
 					if (this.Cn.isMode(1, 5, 7, 8)) {
@@ -1083,7 +1083,7 @@ class Canvas extends ElementContainer implements iCanvas {
 		t += "\");\n";
 		return t;
 	}
-	/*protected*/ cloneCanvas() {
+	private cloneCanvas() {
 		var parent = this.docObject.parentNode;
 		var newcanvas = document.createElement('canvas');
 		parent.insertBefore(newcanvas, this.docObject);
@@ -1094,7 +1094,7 @@ class Canvas extends ElementContainer implements iCanvas {
 		this.initBounds();
 		this.context = this.getNewContext();
 	}
-	/*protected*/ setFullScreen() {
+	private setFullScreen() {
 		var ww = window.innerWidth;
 		var wh = window.innerHeight - 1;
 		var cw = ww - 2 * this.prefs.size.marginwidth;
@@ -1118,7 +1118,7 @@ class Canvas extends ElementContainer implements iCanvas {
 		};
 		if (Object.touchpad) {window.scrollTo(0, 0);}
 	}
-	/*protected*/ resizeWindow() {
+	private resizeWindow() {
 		this.setFullScreen();
 		this.trackManager.resize();
 		if (this.mainpanel) {
@@ -1140,7 +1140,7 @@ class Canvas extends ElementContainer implements iCanvas {
 			this.paint();
 		}
 	}
-	/*protected*/ initBounds() {
+	private initBounds() {
 		if (this.docObject.hasAttribute("data-hidectrlpanel")) {
 			if (this.docObject.getAttribute("data-hidectrlpanel") === "true") {
 				this.prefs.controlpanel.size = 0;
@@ -1186,7 +1186,7 @@ class Canvas extends ElementContainer implements iCanvas {
 				} else {
 					window.onorientationchange = this.resizeWindow;
 				}
-				window.onunload = function() {this.saveToLocalStorage();};
+				window.onunload = () => this.saveToLocalStorage();
 				// Seulement utilisée par l'application iPad (stockage de la figure dans
 				// l'historique à chaque fois que DGPad est désactivé (passe en background) :
 				(<any>window).$IPADUNLOAD = () => {
@@ -1203,7 +1203,7 @@ class Canvas extends ElementContainer implements iCanvas {
 			}
 		}
 	}
-	/*protected*/ initContext(ctx:CanvasRenderingContext2D) {
+	private initContext(ctx:CanvasRenderingContext2D) {
 		// cx.imageSmoothingEnabled = true;
 		// cx.mozImageSmoothingEnabled = true;
 		// cx.webkitImageSmoothingEnabled=true;
@@ -1218,12 +1218,12 @@ class Canvas extends ElementContainer implements iCanvas {
 		ctx.rect(0, 0, this.width, this.height);
 		ctx.clip();
 	}
-	/*protected*/ getNewContext(): CanvasRenderingContext2D {
-		var ctx = this.docObject.getContext('2d');
+	private getNewContext(): CanvasRenderingContext2D {
+		var ctx = (<HTMLCanvasElement>this.docObject).getContext('2d');
 		this.initContext(ctx);
 		return ctx;
 	}
-	/*protected*/ closeTools() {
+	private closeTools() {
 		this.toolsManager.closeTools();
 		this.setPointConstructor();
 		this.clearFilters();
@@ -1247,9 +1247,9 @@ class Canvas extends ElementContainer implements iCanvas {
 	// Trie les indicateds pour éviter la prédominance des
 	// polygone lorsqu'on clique :
 	private cleanInds() {
-		var inds = Cn.getIndicated();
+		var inds = this.Cn.getIndicated();
 		// On trie en laissant les polygones en fin de liste :
-		inds.sort(moveableSortFilter);
+		inds.sort(this.moveableSortFilter);
 		// Si le premier indiqué n'est pas un polygone et que
 		// le dernier indiqué en est un, on vire tous les polygones :
 		if ((inds.length > 1) && (inds[0].getCode() !== "area") && (inds[inds.length - 1].getCode() === "area")) {

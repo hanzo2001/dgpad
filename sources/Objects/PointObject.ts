@@ -1,3 +1,4 @@
+/// <reference path="../typings/Objects/iPointObject.d.ts" />
 
 import {ConstructionObject} from './ConstructionObject';
 import {VirtualPointObject} from './VirtualPointObject';
@@ -6,15 +7,9 @@ import {Expression} from '../Expression';
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
 
-type Animation = {
-	speed: number,
-	direction: number,
-	ar: boolean,
-	timestamp?: number,
-	delay?: number,
-};
+// external definition of PointObjectAnimation in *.d.ts
 
-export class PointObject extends ConstructionObject {
+export class PointObject extends ConstructionObject implements iPointObject {
 	private shape;
 	private X: number;
 	private Y: number;
@@ -94,7 +89,7 @@ export class PointObject extends ConstructionObject {
 	getAnimationParams(mx, my) {
 		return this.getParentAt(0).getAnimationParams(this.X, this.Y, mx, my);
 	}
-	incrementAlpha(anim:Animation) {
+	incrementAlpha(anim:PointObjectAnimation) {
 		var v = anim.speed;
 		var s = anim.direction;
 		var ar = anim.ar;
