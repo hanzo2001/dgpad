@@ -1,3 +1,4 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 /// <reference path="./GUI/iPanel.d.ts" />
 
 interface iToolBtn extends iPanel {
@@ -8,7 +9,7 @@ interface iToolBtn extends iPanel {
 }
 
 interface iTool {
-	getConstructor()
+	getConstructor();
 	getX(): number;
 	getY(): number;
 	getW(): number;

@@ -11,7 +11,7 @@ var ColorPicker: ColorPicker;
 
 var $L = (<any>window).$L;
 
-export class props_textPanel extends Panel {
+export class TextPanelProperties extends Panel {
 	private currentObj: iTextObject;
 	private cp: ColorPicker;
 	private op: slider;

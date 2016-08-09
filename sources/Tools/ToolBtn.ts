@@ -6,12 +6,12 @@ var $U = (<any>window).$U;
 var $APP_PATH = (<any>window).$APP_PATH;
 
 export class ToolBtn extends Panel implements iToolBtn {
-	private canvas;
+	private canvas: iCanvas;
 	private objectConstructor;
-	private code;
+	private code: string;
 	private procDown;
 	private procUp;
-	constructor(canvas, objectConstructor:any, _procDown, _procUp) {
+	constructor(canvas:iCanvas, objectConstructor:any, _procDown, _procUp) {
 		super(canvas.getDocObject());
 		this.canvas = canvas;
 		this.objectConstructor = objectConstructor;

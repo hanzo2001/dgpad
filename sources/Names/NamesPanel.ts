@@ -7,7 +7,7 @@ var $U = (<any>window).$U;
 var $APP_PATH = (<any>window).$APP_PATH;
 
 export class NamesPanel implements iNamesPanel {
-	private owner;
+	private owner: HTMLBodyElement;
 	private getNames: () => string[];
 	private cb_src: string;
 	private top: number;
@@ -52,7 +52,7 @@ export class NamesPanel implements iNamesPanel {
 	private tb: ExpandoDOMElement;
 	private dragEvents: {[type:string]:(e:MouseEvent) => void};
 	private resizeEvents: {[type:string]:(e:MouseEvent) => void};
-	constructor(_owner, _l: number, _t: number, _w: number, _h: number, _observerproc:()=>string[], _closeproc:()=>void) {
+	constructor(_owner: HTMLBodyElement, _l: number, _t: number, _w: number, _h: number, _observerproc:()=>string[], _closeproc:()=>void) {
 		this.owner = _owner;
 		this.top = _t;
 		this.left = _l;
@@ -310,7 +310,7 @@ export class NamesPanel implements iNamesPanel {
 		this.mods[_s].stls('background-color:rgba(200,200,200,1);color:rgba(30,30,30,1)');
 		this.initkeyboard();
 	}
-	private createmod(_c, _m:string[]) {
+	private createmod(_c:string, _m:string[]) {
 		let t = <ExpandoDOMElement>$U.createDiv();
 		let h = (this.height - this.tl_height - this.tb_height);
 		let gap = (h - _m.length * this.mod_height) / (_m.length + 1);
@@ -322,7 +322,7 @@ export class NamesPanel implements iNamesPanel {
 		this.md.add(t);
 		this.mods.push(t);
 	}
-	private initmods(_c, _m) {
+	private initmods(_c:string, _m:string) {
 		this.mods = [];
 		this.md.innerHTML = '';
 		let i=0, s=_m.length;

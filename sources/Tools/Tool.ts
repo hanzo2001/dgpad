@@ -3,7 +3,7 @@
 import {ToolBtn} from './ToolBtn';
 
 export class Tool implements iTool {
-	protected canvas;
+	protected canvas: iCanvas;
 	protected toolmanager: iToolsManager;
 	protected objectConstructor: any;
 	protected image: ToolBtn;
@@ -11,7 +11,7 @@ export class Tool implements iTool {
 	protected y: number;
 	protected width: number;
 	protected height: number;
-	constructor(canvas, toolmanager:iToolsManager, objectConstructor) {
+	constructor(canvas:iCanvas, toolmanager:iToolsManager, objectConstructor) {
 		this.canvas = canvas;
 		this.toolmanager = toolmanager;
 		this.objectConstructor = objectConstructor;

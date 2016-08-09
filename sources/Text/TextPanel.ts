@@ -1,18 +1,18 @@
 /// <reference path="../typings/iCanvas.d.ts" />
 
 import {VerticalBorderPanel} from '../GUI/panels/VerticalBorderPanel';
-import {props_textPanel} from './props_textPanel';
+import {TextPanelProperties} from './TextPanelProperties';
 
 var $L = (<any>window).$L;
 
 export class TextPanel extends VerticalBorderPanel {
-	private props: props_textPanel;
+	private props: TextPanelProperties;
 	constructor(canvas:iCanvas) {
 		super(canvas,240,false);
 		//$U.extend(this, new VerticalBorderPanel(canvas, 240, false));
 		this.setBounds(this.getBounds().left + 15, -5, 0, 0); // Le fond n'est pas affiché
 		this.show();
-		this.props = new props_textPanel(this);
+		this.props = new TextPanelProperties(this);
 		// Une ineptie necessaire parce que sinon le clavier virtuel
 		// de l'ipad change la position du panneau de propriété :
 		if (Object.touchpad) {window.scrollTo(0, 0);}

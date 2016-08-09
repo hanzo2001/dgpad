@@ -1,29 +1,44 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 
 import {GhostLine} from './GhostLine';
 
+type Position = {x:number, y:number};
+type Vector = {x:number, y:number};
+
 export class Ghost {
-	X: number;
-	Y: number;
-	path = [];
-	lines = [];
-	currentLine = null;
-	ghostOn = false;
-	polygon = false;
-	canvas;
-	Cn;
-	prec2: number;
-	minLength:number = 5;
-	constructor(canvas) {
+	private canvas: iCanvas;
+	private Cn: iConstruction;
+	private X: number;
+	private Y: number;
+	private path: Position[];
+	private lines: GhostLine[];
+	private currentLine: GhostLine;
+	private ghostOn: boolean;
+	private polygon: boolean;
+	private prec2: number;
+	private minLength: number;
+	private mousedown: boolean;
+	constructor(canvas:iCanvas) {
 		this.canvas = canvas;
 		this.Cn = canvas.getConstruction();
 		this.prec2 = canvas.prefs.precision.caress;
 		this.prec2 *= this.prec2;
+		this.path = [];
+		this.lines = [];
+		this.currentLine = null;
+		this.ghostOn = false;
+		this.polygon = false;
+		this.canvas;
+		this.Cn;
+		this.prec2;
+		this.minLength = 5;
+		this.mousedown = false;
 //		if (Object.touchpad) {
 //			minLength*=canvas.prefs.precision.over.touchfactor;
 //		}
 	}
-	ghost(_sim) {
-		this.ghostOn = ((_sim) && (this.canvas.getConstruction().getMode() === 7));
+	ghost(sim:boolean) {
+		this.ghostOn = sim && this.canvas.getConstruction().getMode() === 7;
 	}
 	clear() {
 		this.path = [];
@@ -31,52 +46,50 @@ export class Ghost {
 		this.ghostOn = false;
 		this.polygon = false;
 	}
-	setXY(ev) {
+	setXY(event:MouseEvent) {
 		this.clear();
-		this.X = this.canvas.mouseX(ev);
-		this.Y = this.canvas.mouseY(ev);
+		this.X = this.canvas.mouseX(event);
+		this.Y = this.canvas.mouseY(event);
 		this.currentLine = new GhostLine(this.X, this.Y);
 		this.lines.push(this.currentLine);
 		this.record(this.X, this.Y);
 	}
-	recordXY(ev) {
+	recordXY(event:MouseEvent) {
 		if (this.ghostOn) {
-			let x = this.canvas.mouseX(ev);
-			let y = this.canvas.mouseY(ev);
+			let x = this.canvas.mouseX(event);
+			let y = this.canvas.mouseY(event);
 			this.record(x, y);
 			this.currentLine.record(this.getIndicatedPoint(), x, y);
-
 			if (this.linesLength() < this.minLength) return;
-
 			this.canvas.stopChrono();
 			let cornerPos = this.findCorner();
 			if (cornerPos) {
 				this.polygon = true;
-				let corner = this.path[cornerPos];
+				let corner = this.path[<number>cornerPos];
 				let P1 = this.currentLine.getP1();
 				let P2 = this.currentLine.getP2();
-				this.createPoint(P1, ev);
-				this.createPoint(P2, ev, true);
-				this.path = this.path.slice(cornerPos);
+				this.createPoint(P1, event);
+				this.createPoint(P2, event, true);
+				this.path = this.path.slice(<number>cornerPos);
 				this.currentLine = new GhostLine(corner.x, corner.y);
 				this.lines.push(this.currentLine);
 				this.currentLine.getP1().setPointObject(P2.getPointObject());
-			};
+			}
 		}
 	}
-	isInside(ev) {
-		let x0 = this.canvas.mouseX(ev);
-		let y0 = this.canvas.mouseY(ev);
+	isInside(event:MouseEvent) {
+		let x0 = this.canvas.mouseX(event);
+		let y0 = this.canvas.mouseY(event);
 		return (((this.X - x0) * (this.X - x0) + (this.Y - y0) * (this.Y - y0)) < this.prec2);
 	};
-	paint(ctx) {
+	paint(ctx:CanvasRenderingContext2D) {
 		if (this.ghostOn) {
 			if (this.linesLength() < this.minLength) return;
 			this.paintPath(ctx);
 			this.paintLines(ctx);
 		}
 	};
-	create(ev) {
+	create(event:MouseEvent) {
 		if (this.ghostOn) {
 			this.ghostOn = false;
 			if (this.linesLength() < this.minLength) return;
@@ -86,16 +99,16 @@ export class Ghost {
 				Aoc.clearC();
 				let len = this.lines.length;
 				for (let i = 0; i < len; i++) {
-					this.createPoint(this.lines[i].getP1(), ev);
+					this.createPoint(this.lines[i].getP1(), event);
 					Aoc.addC(this.lines[i].getP1().getPointObject());
 				}
-				this.createPoint(this.lines[len - 1].getP2(), ev, true);
+				this.createPoint(this.lines[len - 1].getP2(), event, true);
 				// A décommenter pour le rendu du polygone :
 				//    Aoc.addC(lines[len-1].getP2().getPointObject());
 				//      if (lines[0].getP1().getPointObject()!=lines[len-1].getP2().getPointObject()) {
 				//      Aoc.addC(lines[0].getP1().getPointObject());
 				//    }
-				//    Aoc.createObj(canvas, ev);
+				//    Aoc.createObj(canvas, event);
 				// Création des segments :
 				let Soc = this.canvas.getConstructor("segment");
 				len = this.lines.length;
@@ -103,13 +116,13 @@ export class Ghost {
 					Soc.clearC();
 					Soc.addC(this.lines[i].getP1().getPointObject());
 					Soc.addC(this.lines[i].getP2().getPointObject());
-					Soc.createObj(this.canvas, ev);
+					Soc.createObj(this.canvas, event);
 				}
 				if (this.lines[0].getP1().getPointObject() !== this.lines[len - 1].getP2().getPointObject()) {
 					Soc.clearC();
 					Soc.addC(this.lines[0].getP1().getPointObject());
 					Soc.addC(this.lines[len - 1].getP2().getPointObject());
-					Soc.createObj(this.canvas, ev);
+					Soc.createObj(this.canvas, event);
 				}
 			} else {
 				let P1 = this.lines[0].getP1();
@@ -127,29 +140,23 @@ export class Ghost {
 					P1 = P2;
 					P2 = P;
 				}
-				this.createPoint(P1, ev);
-				this.createPoint(P2, ev, true);
+				this.createPoint(P1, event);
+				this.createPoint(P2, event, true);
 				oc2.clearC();
 				oc2.addC(P1.getPointObject());
 				oc2.addC(P2.getPointObject());
-				oc2.createObj(this.canvas, ev);
+				oc2.createObj(this.canvas, event);
 			}
-			this.canvas.paint(ev);
+			this.canvas.paint(event);
 		}
 	}
 	start() {
-		this.canvas.setPressedFilter(this.mousePressed);
-		this.canvas.setMovedFilter(this.mouseMoved);
-		this.canvas.setReleasedFilter(this.mouseReleased);
+		this.canvas.setPressedFilter((e) => this.mousePressed(e));
+		this.canvas.setMovedFilter((e) => this.mouseMoved(e));
+		this.canvas.setReleasedFilter((e) => this.mouseReleased(e));
 	}
-
-
-	private record(_x, _y) {
-		let pos = {
-			"x": _x,
-			"y": _y
-		};
-		this.path.push(pos);
+	private record(x, y) {
+		this.path.push({x,y});
 	}
 	private getIndicatedPoint() {
 		let inds = this.canvas.getConstruction().getIndicated();
@@ -161,22 +168,19 @@ export class Ghost {
 		}
 		return null;
 	}
-	private vector(x, y) {
-		return {
-			x: x,
-			y: y
-		};
+	private vector(x:number, y:number): Vector {
+		return {x,y};
 	}
-	private delta(a, b) {
+	private delta(a, b): Vector {
 		return this.vector(a.x - b.x, a.y - b.y);
 	}
-	private angle_between(a, b) {
+	private angle_between(a, b): number {
 		return Math.acos((a.x * b.x + a.y * b.y) / (this.len(a) * this.len(b)));
 	}
-	private len(v) {
+	private len(v): number {
 		return Math.sqrt(v.x * v.x + v.y * v.y);
 	}
-	private findCorner(): any {
+	private findCorner(): number|boolean {
 		let n = 0;
 		let t = 0;
 		let angleMin = (this.lines.length === 1) ? Math.PI / 3 : Math.PI / 4;
@@ -193,29 +197,29 @@ export class Ghost {
 		}
 		return false;
 	}
-	private linesLength() {
+	private linesLength(): number {
 		let ln = this.lines.length;
 		let totalLength = 0;
 		for (let i = 0; i < ln - 1; i++) {
-				totalLength += this.lines[i].length();
+			totalLength += this.lines[i].length();
 		}
 		if (ln > 0) totalLength += this.len(this.delta(this.path[0], this.path[this.path.length - 1]));
 		return totalLength;
 	}
-	private createPoint = function(_P, ev, checkPointOn?) {
+	private createPoint(_P, event:MouseEvent, checkPointOn?:boolean) {
 		if (!_P.getPointObject()) {
 			let pc = this.canvas.getPointConstructor();
 			if (checkPointOn) {
 				pc.setInitialObjects(this.canvas.getConstruction().getIndicated());
 			}
-			let o1 = pc.createObj(this.canvas, ev);
+			let o1 = pc.createObj(this.canvas, event);
 			o1.setXY(_P.getX(), _P.getY());
 			_P.setPointObject(o1);
 			pc.clearC();
-			this.canvas.getConstruction().validate(ev);
+			this.canvas.getConstruction().validate(event);
 		}
 	}
-	private paintPath(ctx) {
+	private paintPath(ctx:CanvasRenderingContext2D) {
 		ctx.globalAlpha = 0.2;
 		ctx.lineWidth = 10;
 		ctx.lineJoin = "round";
@@ -230,7 +234,7 @@ export class Ghost {
 		ctx.closePath();
 		ctx.stroke();
 	}
-	private paintLines(ctx) {
+	private paintLines(ctx:CanvasRenderingContext2D) {
 		let len = this.lines.length;
 		ctx.lineWidth = this.canvas.prefs.size.line;
 		ctx.globalAlpha = 0.5;
@@ -253,27 +257,26 @@ export class Ghost {
 			this.lines[i].draw(ctx, this.polygon);
 		}
 	}
-	private mousedown = false;
-	private mousePressed = function(ev) {
-			this.clear();
-			this.setXY(ev);
-			this.ghostOn = true;
-			this.mousedown = true;
+	private mousePressed = function(event:MouseEvent) {
+		this.clear();
+		this.setXY(event);
+		this.ghostOn = true;
+		this.mousedown = true;
 	}
-	private mouseMoved = function(ev) {
-			if (this.mousedown) {
-					this.recordXY(ev);
-					this.Cn.validate(ev);
-					this.canvas.paint(ev);
-			}
+	private mouseMoved = function(event:MouseEvent) {
+		if (this.mousedown) {
+			this.recordXY(event);
+			this.Cn.validate(event);
+			this.canvas.paint(event);
+		}
 	}
-	private mouseReleased = function(ev) {
-			this.mousedown = false;
-			this.create(ev);
-			this.Cn.validate(ev);
-			this.Cn.clearSelected();
-			this.Cn.clearIndicated();
-			this.canvas.paint(ev);
-			this.ghostOn = false;
+	private mouseReleased = function(event:MouseEvent) {
+		this.mousedown = false;
+		this.create(event);
+		this.Cn.validate(event);
+		this.Cn.clearSelected();
+		this.Cn.clearIndicated();
+		this.canvas.paint(event);
+		this.ghostOn = false;
 	}
 }

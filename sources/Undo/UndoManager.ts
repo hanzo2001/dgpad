@@ -8,7 +8,7 @@ type UndoAction = {add:boolean, target:any};
 
 export class UndoManager implements iUndoManager {
 	private canvas: iCanvas;
-	private Cn;
+	private Cn: iConstruction;
 	private actions: UndoAction[];
 	private cursor: number;
 	private Cmarker: number; // Marqueur pour les objets de la construction

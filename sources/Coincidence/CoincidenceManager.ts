@@ -5,12 +5,12 @@ import {BubblePanel} from '../GUI/panels/BubblePanel';
 
 var $L = (<any>window).$L;
 
-export class CoincidenceManager implements iCoincedences {
+export class CoincidenceManager implements iCoincidenceManager {
 	private canvas: iCanvas;
 	private panel: BubblePanel;
 	private event: MouseEvent;
-	constructor(_canvas:iCanvas) {
-		this.canvas = _canvas;
+	constructor(canvas:iCanvas) {
+		this.canvas = canvas;
 		this.panel = null;
 		this.event = null;
 	}
