@@ -12,6 +12,7 @@ export class PrintPanel extends CenterPanel {
 	private x: number;
 	private y: number;
 	private closeProc:iGUIElementEvent;
+	private dragListeners: {[type:string]: (e) => void};
 	constructor(canvas:iCanvas, closeProc:iGUIElementEvent) {
 		var width = 450;
 		var height = 300;
@@ -69,15 +70,20 @@ export class PrintPanel extends CenterPanel {
 		// this.removeContent(editBox);
 		this.x = event.pageX;
 		this.y = event.pageY;
-		window.addEventListener('touchmove',(e) => this.dragmove(<any>e), false);
-		window.addEventListener('touchend', (e) => this.dragup(), false);
-		window.addEventListener('mousemove',(e) => this.dragmove(e), false);
-		window.addEventListener('mouseup',  (e) => this.dragup(), false);
+		this.dragListeners = {
+			'touchmove':(e) => this.dragmove(<any>e),
+			'touchend': (e) => this.dragup(),
+			'mousemove':(e) => this.dragmove(e),
+			'mouseup':  (e) => this.dragup()
+		};
+		for (let type in this.dragListeners) {
+			window.addEventListener(type,this.dragListeners[type],false);
+		}
 	}
 	private dragup() {
-		window.removeEventListener('touchmove',(e) => this.dragmove(<any>e), false);
-		window.removeEventListener('touchend', (e) => this.dragup(), false);
-		window.removeEventListener('mousemove',(e) => this.dragmove(<MouseEvent>e), false);
-		window.removeEventListener('mouseup',  (e) => this.dragup(), false);
+		for (let type in this.dragListeners) {
+			window.removeEventListener(type,this.dragListeners[type],false);
+		}
+		this.dragListeners = null;
 	}
 }

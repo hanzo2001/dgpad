@@ -13,7 +13,7 @@ export class CustomTextInput extends Panel implements iCustomTextInput {
 	lb: GUIElement;
 	inp: GUIElement;
 	sel: CustomTextSelection;
-	man;
+	man: iCustomTexts;
 	content: GUIElement;
 	bounds: BoundDimensions;
 	active: boolean;
@@ -21,7 +21,7 @@ export class CustomTextInput extends Panel implements iCustomTextInput {
 	standard: GUIElement;
 	preferredKB: number;
 	LabelWidth: number;
-	constructor(_man, _ownerdiv, _lbl) {
+	constructor(_man:iCustomTexts, _ownerdiv, _lbl) {
 		super(_ownerdiv);
 		//$U.extend(this, new GUIElement(_ownerdiv, "div"));
 		//$U.extend(this, new Panel(_ownerdiv.getDocObject()));
@@ -84,14 +84,14 @@ export class CustomTextInput extends Panel implements iCustomTextInput {
 		if (this.isHidden()) {
 			this.applyTransitionIN();
 			this.inp.addDownEvent(this.mousedown);
-			this.inp.addUpEvent(this.mouseup, window);
+			this.inp.addUpEvent(this.mouseup, <any>window);
 			this.inp.addMoveEvent(this.mousemove);
 		}
 	}
 	hide() {
 		this.applyTransitionOUT();
 		this.inp.removeDownEvent(this.mousedown);
-		this.inp.removeUpEvent(this.mouseup, window);
+		this.inp.removeUpEvent(this.mouseup, <any>window);
 		this.inp.removeMoveEvent(this.mousemove);
 	}
 	setPreferredKB(_kb) {

@@ -1,15 +1,16 @@
+/// <reference path="./typings/iConstruction.d.ts" />
 
 var $U = (<any>window).$U;
 
 export class SourceWriter {
-	Cn;
-	geom: string;
-	style: string;
-	block: string;
-	vars;
-	names;
-	constructor(_Cn) {
-		this.Cn = _Cn;
+	private Cn: iConstruction;
+	private geom: string;
+	private style: string;
+	private block: string;
+	private vars;
+	private names;
+	constructor(Cn:iConstruction) {
+		this.Cn = Cn;
 		this.geom = "";
 		this.style = "";
 		this.block = "";

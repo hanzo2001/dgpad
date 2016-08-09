@@ -1,9 +1,10 @@
+/// <reference path="../typings/iCalc.d.ts" />
 /// <reference path="../typings/iCanvas.d.ts" />
 
 import {MainCalcPanel} from './MainCalcPanel';
 import {DigitCalcPanel} from './DigitCalcPanel';
 
-export class CalcManager {
+export class CalcManager implements iCalcManager {
 	protected canvas: iCanvas;
 	protected maincalc: MainCalcPanel;
 	protected digitcalc: DigitCalcPanel;

@@ -18,10 +18,10 @@ var $APP_PATH = (<any>window).$APP_PATH;
 var $APPLICATION = (<any>window).$APPLICATION;
 var $STANDARD_KBD = (<any>window).$STANDARD_KBD;
 
-export class MainCalcPanel extends Panel {
+export class MainCalcPanel extends Panel implements iMainCalcPanel {
 	private man: iCalcManager;
 	private canvas: iCanvas;
-	private Cn;
+	private Cn: iConstruction;
 	private txtman: CustomTexts;
 	private scl: number;
 	private OBJ: ExpressionObject;
@@ -424,7 +424,7 @@ export class MainCalcPanel extends Panel {
 			[0, "DEG"],
 			[1, "DEG"]
 		]);
-		this.deg_slider.setValue(1 * this.Cn.isDEG());
+		this.deg_slider.setValue(1 * ~~this.Cn.isDEG());
 	}
 	private showBtns() {
 		this.validBtn.show();

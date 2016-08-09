@@ -1,3 +1,4 @@
+/// <reference path="./typings/iConstruction.d.ts" />
 /// <reference path="./typings/iCanvas.d.ts" />
 
 import {ListObject} from './Objects/ListObject';
@@ -9,7 +10,7 @@ import {TrackManager} from './TrackManager';
 var $U = (<any>window).$U;
 var $APP_PATH = (<any>window).$APP_PATH;
 
-export class Construction {
+export class Construction implements iConstruction {
 	private canvas: iCanvas;
 	private mode3D: boolean;
 	private ORG3D;

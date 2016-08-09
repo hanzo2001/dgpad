@@ -8,7 +8,7 @@ var $U = (<any>window).$U;
 var noop = function () {};
 
 export class ConstructionObject implements iConstructionObject {
-	protected Cn;
+	protected Cn: iConstruction;
 	private name;
 	private subname;
 	private showname: boolean;

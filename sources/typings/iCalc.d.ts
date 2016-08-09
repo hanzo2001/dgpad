@@ -1,5 +1,6 @@
 /// <reference path="./GUI/iPanel.d.ts" />
 /// <reference path="../typings/iCommons.d.ts" />
+/// <reference path="./GUI/iButton.d.ts" />
 
 interface iCustomTextSelection extends iGUIElement {
 	setOffset(_x:number);
@@ -73,3 +74,16 @@ interface iCalcManager {
 	edit(_obj);
 }
 
+interface iDigitBtn extends iButton {
+	setEnabled(off:boolean);
+}
+
+interface iMainCalcPanel extends iPanel {
+	show();
+	close();
+	cancel();
+	valid();
+	createObj();
+	insertText(_st);
+	edit(_obj);
+}

@@ -3,12 +3,12 @@
 import {CustomTextInput} from './CustomTextInput';
 
 export class CustomTexts implements iCustomTexts {
-	protected owner;
+	protected owner: iMainCalcPanel;
 	protected txts: iCustomTextInput[];
 	protected active_elt;
 	protected firstActivation: boolean;
 	protected maybesimplequote: boolean;
-	constructor(_owner) {
+	constructor(_owner:iMainCalcPanel) {
 		this.owner = _owner;
 		this.txts = [];
 		this.active_elt = null;

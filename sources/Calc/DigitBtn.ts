@@ -1,7 +1,8 @@
+/// <reference path="../typings/iCalc.d.ts" />
 
 import {Button} from '../GUI/elements/Button';
 
-export class DigitBtn extends Button {
+export class DigitBtn extends Button implements iDigitBtn {
 	constructor(_owner) {
 		super(_owner);
 		//$U.extend(this, new Button(_owner));
@@ -14,8 +15,8 @@ export class DigitBtn extends Button {
 			this.setStyles("background-color:#FAFAFA");
 		});
 	}
-	setEnabled(_b) {
-		(<HTMLButtonElement>this.docObject).disabled = !_b;
-		this.setStyle("color", _b ? "#666" : "#999");
-	};
+	setEnabled(off:boolean) {
+		(<HTMLButtonElement>this.docObject).disabled = !off;
+		this.setStyle("color", off ? "#666" : "#999");
+	}
 }

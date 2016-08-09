@@ -1,4 +1,5 @@
 /// <reference path="../typings/iBlockly.d.ts" />
+/// <reference path="../typings/iConstruction.d.ts" />
 
 import {Expression} from '../Expression';
 
@@ -9,15 +10,15 @@ var re_ = /^\s*var\s*\w+\s*;/gm;
 
 export class BlocklyObject implements iBlocklyObject {
 	private owner: iBlocklyObjects;
-	private Cn;
+	private Cn: iConstruction;
 	private EX: Expression;
 	private type: string;
-	private xml;
+	private xml: string;
 	private sync: string;
 	private async;
 	private childs;
 	private parents;
-	constructor(_owner:iBlocklyObjects, _construction) {
+	constructor(_owner:iBlocklyObjects, _construction:iConstruction) {
 		this.owner = _owner;
 		this.Cn = _construction;
 		this.EX = null;
@@ -31,7 +32,7 @@ export class BlocklyObject implements iBlocklyObject {
 	getXML(): string {
 		return this.xml;
 	}
-	getSNC() {
+	getSNC(): string {
 		return this.sync;
 	}
 	setBehavior(_m:string, _xml:string, _sync:string, _async) {

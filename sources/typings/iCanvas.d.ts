@@ -20,9 +20,7 @@
 /// <reference path="./iTrack.d.ts" />
 /// <reference path="./Constructors/iPointConstructor.d.ts" />
 /// <reference path="./iExpression.d.ts" />
-
-
-type BlocklyManager = {};
+/// <reference path="./iBlockly.d.ts" />
 
 interface iCanvas extends iElementContainer {
 	mainpanel: iControlPanel;
@@ -42,7 +40,7 @@ interface iCanvas extends iElementContainer {
 	textManager: iTextManager;
 	dependsManager: iDependsManager;
 	namesManager: iNamesManager;
-	blocklyManager: BlocklyManager;
+	blocklyManager: iBlocklyManager;
 	longpressManager: iLongpressManager;
 	clearBackground: () => void;
 
@@ -77,7 +75,7 @@ interface iCanvas extends iElementContainer {
 	mouseX(ev:any): number;
 	mouseY(ev:any): number;
 	mouse(ev:any): iVirtualPointObject;
-	getConstruction();
+	getConstruction(): iConstruction;
 	addText(_m, _l, _t, _w, _h, _stl);// textManager.addTeXElement(_m, _l, _t, _w, _h, _stl);
 	// 0 pour consultation
 	// 1 pour pointeur

@@ -36,7 +36,7 @@ export class SimpleDialog extends GUIElement {
 			   '-moz-transform': 'translate3d(0,'+this.height+'px, 0)'
 		}),1);
 	}
-	getTitleBarHeight() {
+	getTitleBarHeight(): number {
 		return 0;
 	}
 	getCloseBoxBounds() {

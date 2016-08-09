@@ -1,4 +1,5 @@
 /// <reference path="./typings/iCoordsSystem.d.ts" />
+/// <reference path="./typings/iConstruction.d.ts" />
 
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
@@ -7,7 +8,7 @@ var OXObject;
 var OYObject;
 
 export class CoordsSystem implements iCoordsSystem {
-	private Cn;
+	private Cn: iConstruction;
 	private P; // Properties
 	private OX = null;
 	private OY = null;
@@ -27,8 +28,8 @@ export class CoordsSystem implements iCoordsSystem {
 	private paint_Ox;
 	private paint_Oy;
 	paint: (ctx:CanvasRenderingContext2D) => void;
-	constructor(_C) {
-		this.Cn = _C;
+	constructor(Cn:iConstruction) {
+		this.Cn = Cn;
 		this.P = this.Cn.prefs; // Properties
 		this.x0 = this.Cn.getBounds().width / 2; // x origin coord, in canvas coord system
 		this.y0 = this.Cn.getBounds().height / 2; // y origin coord, in canvas coord system

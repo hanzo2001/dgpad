@@ -19,13 +19,13 @@ import {MacrosManager} from './Macros/MacrosManager';
 import {LongpressManager} from './Longpress/LongpressManager';
 import {DependsManager} from './Depends/DependsManager';
 import {TrackManager} from './TrackManager';
+import {BlocklyManager} from './Blockly/BlocklyManager';
 import {DeleteAll} from './DeleteAll';
 import {Ghost} from './Ghost/Ghost';
 import {VirtualPointObject} from './Objects/VirtualPointObject';
 import {PointConstructor} from './Constructors/PointConstructor';
 
 type SVGCanvas = {};
-type BlocklyManager = {};
 
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
@@ -501,7 +501,7 @@ class Canvas extends ElementContainer implements iCanvas {
 	mouse(event:MouseEvent): VirtualPointObject {
 		return new VirtualPointObject(this.mouseX(event), this.mouseY(event));
 	}
-	getConstruction(): any {
+	getConstruction(): iConstruction {
 		return this.Cn;
 	}
 	addText(_m, left, top, width, height, _stl) /* textManager.addTeXElement(_m, _l, _t, _w, _h, _stl);*/ {

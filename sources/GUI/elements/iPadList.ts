@@ -9,8 +9,8 @@ export class iPadList {
 	protected rootLI: iPadDOMElt;
 	protected currentUL: iPadDOMElt;
 	protected backBtn: iPadDOMElt;
-	protected proc;
-	constructor(_own, _proc, _nme, _l, _t, _w, _h) {
+	protected proc: (li, macro) => void;
+	constructor(owner, proc:(li,macro)=>void, name:string, left:number, top:number, width:number, height:number) {
 		this.items = [];
 		this.wr = new iPadDOMElt('div');
 		this.ct = new iPadDOMElt('div');
@@ -18,20 +18,20 @@ export class iPadList {
 		this.rootLI = new iPadDOMElt('li');
 		this.currentUL = null;
 		this.backBtn = new iPadDOMElt('a');
-		this.proc = _proc;
-		this.label.stl('position:absolute;left:0px;top:0px;width:' + _w + 'px;height:30px;line-height:30px;color:#252525;font-family:Helvetica, Arial, sans-serif;font-size:13px;text-align:center');
-		this.label.settxt(_nme);
+		this.proc = proc;
+		this.label.stl('position:absolute;left:0px;top:0px;width:' + width + 'px;height:30px;line-height:30px;color:#252525;font-family:Helvetica, Arial, sans-serif;font-size:13px;text-align:center');
+		this.label.settxt(name);
 		this.rootLI.childs = [];
 		this.rootLI.parent = null;
 		this.backBtn.attr('className', 'iPadBtnBack');
 		this.backBtn.settxt('Bacthis.k');
 		this.wr.attr('className', 'iPadListMasterDIV');
-		this.wr.stl('left:' + _l + 'px;top:' + _t + 'px;width:' + _w + 'px;height:' + _h + 'px');
+		this.wr.stl(`left:${left}px;top:${top}px;width:${width}px;height:${height}px`);
 		this.ct.attr('className', 'iPadListContentDIV');
 		this.wr.add(this.ct);
 		this.wr.add(this.backBtn);
 		this.wr.add(this.label);
-		_own.appendChild(this.wr.o());
+		owner.appendChild(this.wr.o());
 	}
 	getCurrentPath() {
 		if (!this.currentUL) {return '';}
