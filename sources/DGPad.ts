@@ -83,10 +83,10 @@ if (!w.$APP_PATH) {
 	 */
 	w.$MAIN_INIT = function() {
 		let canvas = document.getElementsByTagName("canvas");
-		let c: HTMLElement, i=0, s= canvas.length;
+		let c: HTMLElement, i=0, s=canvas.length;
 		while (i<s) {
 			c = canvas[i++];
-			let id: string = c.getAttribute('ID');
+			let id = c.getAttribute('ID');
 			// ES6! String.prototype.startsWith
 			if (id && id.substr(0,5) === 'DGPad') {w.$U.initCanvas(id);}
 		}
@@ -243,7 +243,7 @@ if (!w.$APP_PATH) {
 
 	/**
 	 * The following extends the Object constructor!! WHY??? why not global vars like always???
-	 * Found reference: Ghost.ts -> paintLines
+	 * Found reference: Everywhere!!!!!
 	 */
 	// Est-ce une tablette tactile ? :
 	Object.touchpad = false;

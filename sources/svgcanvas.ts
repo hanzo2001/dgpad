@@ -9,19 +9,7 @@
  *
  * Date: Tue Aug 09 2011 -0400
  */
-
-type Point = {
-	x?: number,
-	y?: number,
-	x1?: number,
-	y1?: number,
-	x2?: number,
-	y2?: number,
-	action?: string,
-	r?: number,
-	wa?: number,
-	acw?: number
-};
+/// <reference path="./typings/iSVGCanvas.d.ts" />
 
 type CanvasOptions = {
 	lineDash?: number[]
@@ -42,7 +30,15 @@ type CanvasOptions = {
 	globalCompositeOperation: string;
 }
 
-type SVGCanvasPath = {type: string, points: Point[], style: Object, x?:number, y?:number, text?:string, TRANSFORM?:string};
+type SVGCanvasPath = {
+	type: string,
+	points?: SVGCanvasPoint[],
+	style: Object,
+	x?: number,
+	y?: number,
+	text?: string,
+	TRANSFORM?: string
+};
 
 class CanvasUtils {
 	public currentPath: SVGCanvasPath;
@@ -143,7 +139,7 @@ class CanvasUtils {
 		xml += '</svg>'
 		return xml;
 	}
-	pushPoint(point:Point) {
+	pushPoint(point:SVGCanvasPoint) {
 		this.currentPath.points.push(point);
 	}
 	pathLength(): number {
@@ -154,7 +150,7 @@ class CanvasUtils {
 export class SVGCanvas {
 	protected canvas: HTMLCanvasElement;
 	protected ctx: CanvasRenderingContext2D;
-	protected elements: any[] = [];
+	protected elements: SVGCanvasPath[] = [];
 	protected TRANSFORM: string[] = [];
 	protected util: CanvasUtils;
 	lineDash: number[] = [];
@@ -193,7 +189,7 @@ export class SVGCanvas {
 	getContext(): CanvasRenderingContext2D {
 		return this.ctx;
 	}
-	polarToCartesian(centerX:number, centerY:number, radius:number, angleInRadians:number): Point {
+	polarToCartesian(centerX:number, centerY:number, radius:number, angleInRadians:number): SVGCanvasPoint {
 		var x = centerX + radius * Math.cos(angleInRadians);
 		var y = centerY + radius * Math.sin(angleInRadians);
 		return {x,y};
@@ -354,7 +350,7 @@ export class SVGCanvas {
 	}
 	fillText(text:string, x:number, y:number) {
 		this.ctx.font = this.font;
-		var items = {
+		var items: SVGCanvasPath = {
 			type: "text",
 			text: text,
 			x: x,

@@ -12,8 +12,8 @@ export class NamesManager implements iNamesManager {
 	private width: number;
 	private height: number;
 	private panel: NamesPanel;
-	constructor(_canvas:iCanvas) {
-		this.canvas = _canvas;
+	constructor(canvas:iCanvas) {
+		this.canvas = canvas;
 		this.Cn = this.canvas.getConstruction();
 		this.visible = false;
 		this.left = 0;

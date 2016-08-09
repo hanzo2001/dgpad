@@ -1,9 +1,10 @@
-/// <reference path="./ConstructionObject.d.ts" />
+/// <reference path="../typings/Objects/iConstructionObject.d.ts" />
+/// <reference path="../typings/Objects/iVirtualPointObject.d.ts" />
 
-type VirtualPointObject = {};
+// type VirtualPointObject = {}; // how do I know that this is not a regular PointObject!!!!! revisit this!!!!
 
-interface PrimitiveLineObject extends ConstructionObject {
-	P1: VirtualPointObject;
+interface PrimitiveLineObject extends iConstructionObject {
+	P1: iVirtualPointObject;
 	getAssociatedTools():string;
 	isCoincident(_C:any):boolean;
 	getXmax():number;
@@ -19,28 +20,28 @@ interface PrimitiveLineObject extends ConstructionObject {
 	getNDY():number;
 	getDX():number;
 	getDY():number;
-	getP1():VirtualPointObject;
+	getP1():iVirtualPointObject;
 	mouseInside(ev:MouseEvent): boolean;
 	dragObject(_x:number, _y:number);
 	computeDrag();
 	// Calcule les coordonnées du symétrique d'un point _M par rapport à moi :
-	reflect(_M:any, _P:VirtualPointObject);
-	intersectLineCircle(_C:any, _P:VirtualPointObject);
-	intersectLineLine(_D, _P:VirtualPointObject);
-	intersectLineQuadric(_Q:any, _P:VirtualPointObject);
-	intersect(_C:any, _P:VirtualPointObject);
-	initIntersect2(_C:any, _P:VirtualPointObject);
+	reflect(_M:any, _P:iVirtualPointObject);
+	intersectLineCircle(_C:any, _P:iVirtualPointObject);
+	intersectLineLine(_D, _P:iVirtualPointObject);
+	intersectLineQuadric(_Q:any, _P:iVirtualPointObject);
+	intersect(_C:any, _P:iVirtualPointObject);
+	initIntersect2(_C:any, _P:iVirtualPointObject);
 	// Calcule les coordonnées du symétrique d'un point P(_x;_y) par rapport à moi :
 	reflectXY(_x:number, _y:number): number[];
 	intersectXY(_C:any, _x:number, _y:number): number[];
 	projectXY(_x:number, _y:number): number[];
-	project(p:VirtualPointObject);
-	projectAlpha(p:VirtualPointObject);
-	setAlpha(p:VirtualPointObject);
+	project(p:iVirtualPointObject);
+	projectAlpha(p:iVirtualPointObject);
+	setAlpha(p:iVirtualPointObject);
 	// Pour les objets "locus". Initialise le polygone à partir de la donnée
 	// du nombre _nb de sommets voulus :
 	initLocusArray(_nb:number, _linear:boolean): any[];
-	setLocusAlpha(p:VirtualPointObject, a:number);
+	setLocusAlpha(p:iVirtualPointObject, a:number);
 	compute();
 	paintObject(ctx:CanvasRenderingContext2D);
 	beginTrack();

@@ -1,5 +1,61 @@
 # dgpad
 
+## Guía del BootLoader
+```typescript
+/*
+ * index.html
+ */
+
+// configure viewPort
+// load DGPad.js
+
+DGPad.js // Heavily commented by me, not well understood
+	// define global functions !!
+	// if we need to stop mouse events
+		Element.prototype.addEventListener; // modify
+	// init or load
+		// style
+		// LANG: load appropriate file
+		// MAIN: load all dependencies
+		// FilePicker: load external lib
+		// FPICKERFRAME: ?? what's this for ??
+	// !! bad practice !! must make a global S&R !!
+	window.onload();
+		$MAIN_INIT(); // <- Utils.js
+		$ECHO_SOURCE(); // ?? debugging ??
+
+Utils.js/
+	$MAIN_INIT();
+		initCanvas();
+		new Canvas();
+		initEvents();
+			// attach all the events from Canvas
+		Event.prototype // modify
+		Canvas.addTool(); // add all tools, constructors, etc... !!??
+		Canvas.clearBackground();
+		
+// Application has loaded and is waiting for user events
+```
+
+## Ficheros más importantes
+- `sources/Canvas.ts`
+- `sources/Construction.ts`
+- `sources/Constructors/ObjectConstructor.ts`
+- `sources/Objects/PointObject.ts`
+
+## Roadmap / TODOs
+- [ ] transcribe as many files as possible
+  - [ ] `Constructors` directory
+  - [ ] `Objects` directory
+- [ ] split `Utils.ts` into _utilities_ and _bootloading_
+- [ ] create as many `*.d.ts` files as possible
+- [ ] eliminate duplicate functionality
+- [ ] **SYNC:** incorporate changes introduced by Eric for **Blockly** on last push
+- [ ] improve `README`
+- [ ] tackle global variables... probably just create an `Application` instance to hold all the relevant information
+- [ ] involve Eric for a better understanding of the app
+- [ ] TEST! TEST! TEST!
+
 ## Bootstrap procedure
 
 1. DetermineViewport. This could be integrated into **DGPad**

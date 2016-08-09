@@ -1,5 +1,6 @@
+/// <reference path="../typings/Objects/iVirtualPointObject.d.ts" />
 
-export class VirtualPointObject {
+export class VirtualPointObject implements iVirtualPointObject {
 	protected x: number;
 	protected y: number;
 	protected alpha: number;
@@ -10,10 +11,10 @@ export class VirtualPointObject {
 		this.alpha = 0;
 		this.is_3D = false;
 	}
-	getX() {
+	getX(): number {
 		return this.x;
 	}
-	getY() {
+	getY(): number {
 		return this.y;
 	}
 	setXY(x: number, y: number) {
@@ -23,13 +24,13 @@ export class VirtualPointObject {
 	setAlpha(alpha: number) {
 		this.alpha = alpha;
 	}
-	getAlpha() {
+	getAlpha(): number {
 		return this.alpha;
 	}
 	near(x: number, y: number) {
 		return (Math.abs(this.x - x) < 1E-10 && Math.abs(this.y - y) < 1E-10);
 	}
-	is3D() {
+	is3D(): boolean {
 		return this.is_3D;
 	}
 	set3D(on: boolean) {

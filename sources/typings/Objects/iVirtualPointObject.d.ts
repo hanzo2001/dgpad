@@ -1,11 +1,11 @@
 
 interface iVirtualPointObject {
-	getX();
-	getY();
+	getX(): number;
+	getY(): number;
 	setXY(x: number, y: number);
 	setAlpha(alpha: number);
-	getAlpha();
+	getAlpha(): number;
 	near(x: number, y: number);
-	is3D();
+	is3D(): boolean;
 	set3D(on: boolean);
 }
