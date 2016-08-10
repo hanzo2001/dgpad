@@ -10,6 +10,10 @@ type Point = {
 	d: boolean
 };
 
+/**
+ * Some strange assignments: dx, dy, dz, dt??
+ */
+
 export class CurvusObject extends ConstructionObject {
 	private MIN: number;
 	private MAX: number;
