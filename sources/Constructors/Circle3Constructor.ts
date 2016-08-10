@@ -6,10 +6,8 @@ import {Circle3Object} from '../Objects/Circle3Object';
 var $U = (<any>window).$U;
 
 export class Circle3Constructor extends ObjectConstructor {
-	private R;
 	constructor() {
 		super(); //Héritage
-    this.R = 0;
 		// $U.extend(this, new ObjectConstructor()); //Héritage
 	}
 	getCode(): string {
@@ -25,7 +23,7 @@ export class Circle3Constructor extends ObjectConstructor {
 	newObj(_zc, _C): Circle3Object {
 			return new Circle3Object(_zc.getConstruction(), "_C", _C[0], _C[1], _C[2]);
 	}
-	preview(ev, zc) {
+	preview(events:MouseEvent, zc:iCanvas) {
 			var ctx = zc.getContext();
 			ctx.strokeStyle = zc.prefs.color.hilite;
 			ctx.lineWidth = zc.prefs.size.line;
@@ -35,8 +33,8 @@ export class Circle3Constructor extends ObjectConstructor {
 			ctx.beginPath();
 			switch (len) {
 					case 1:
-							r = $U.computeRay(this.getC(0).getX(), this.getC(0).getY(), zc.mouseX(ev), zc.mouseY(ev));
-							ctx.arc(zc.mouseX(ev), zc.mouseY(ev), r, 0, Math.PI * 2, true);
+							r = $U.computeRay(this.getC(0).getX(), this.getC(0).getY(), zc.mouseX(events), zc.mouseY(events));
+							ctx.arc(zc.mouseX(events), zc.mouseY(events), r, 0, Math.PI * 2, true);
 							break;
 					case 2:
 							r = $U.computeRay(this.getC(0).getX(), this.getC(0).getY(), this.getC(1).getX(), this.getC(1).getY());
@@ -44,7 +42,7 @@ export class Circle3Constructor extends ObjectConstructor {
 									ctx.arc(this.getC(1).getX(), this.getC(1).getY(), r, 0, Math.PI * 2, true);
 									this.isSelectCreatePoint = false;
 							} else {
-									ctx.arc(zc.mouseX(ev), zc.mouseY(ev), r, 0, Math.PI * 2, true);
+									ctx.arc(zc.mouseX(events), zc.mouseY(events), r, 0, Math.PI * 2, true);
 							}
 							break;
 			}
