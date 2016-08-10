@@ -7,6 +7,10 @@ var $U = (<any>window).$U;
 
 var noop = function () {};
 
+/**
+ * duck typing: getSegmentsSize is not defined anywhere but might be tagged on at some point
+ */
+
 export class ConstructionObject implements iConstructionObject {
 	protected Cn: iConstruction;
 	private name;
@@ -76,10 +80,10 @@ export class ConstructionObject implements iConstructionObject {
 	getWidth;
 	getHeight;
 	//getSegmentsSize;
-	is360: boolean;
+	is360;
 	getArcRay;
 	dragTo: (x, y) => void;
-	constructor(_construction, _name) {
+	constructor(_construction:iConstruction, _name:string) {
 		this.Cn = _construction;
 		this.name = this.Cn.getUnusedName(_name, this);
 		this.subname = this.Cn.getSubName(this.name);
@@ -174,8 +178,8 @@ export class ConstructionObject implements iConstructionObject {
 		this.objModeTab = this.objModeTab_normal;
 		this.objMode = this.objMode_normal;
 		this.paint = this.paintTab[this.hidden];
-		this.paintName_exe = noop;
-		this.paintLength_exe = noop;
+		this.paintName_exe = $U.noop;
+		this.paintLength_exe = $U.noop;
 		this.validate = this.validTab[this.hidden];
 		this.Flag = false; // For various construction process
 		this.Flag2 = false; // For various construction process
@@ -192,8 +196,7 @@ export class ConstructionObject implements iConstructionObject {
 		this.is360 = null;
 		this.getArcRay = null;
 	}
-	setExpression(v) {
-	}
+	setExpression(v) {}
 	getRoot(): iConstructionObject {
 		return this;
 	}
@@ -201,18 +204,17 @@ export class ConstructionObject implements iConstructionObject {
 		var d = new Date()
 		this.timestamp = d.getTime();
 	}
-	setTimeStamp(_millis) {
+	setTimeStamp(_millis:number) {
 		this.timestamp = _millis;
 	}
-	getTimeStamp() {
+	getTimeStamp(): number {
 		return this.timestamp;
 	}
-	isAnimationPossible() {
+	isAnimationPossible(): boolean {
 		return false;
 	}
 	initDragPoints() {
-		if (this.dragPoints === null)
-			this.dragPoints = this.Cn.findFreePoints(this);
+		if (this.dragPoints === null) {this.dragPoints = this.Cn.findFreePoints(this);}
 	}
 	getDragPoints() {
 		return this.dragPoints;
@@ -220,15 +222,15 @@ export class ConstructionObject implements iConstructionObject {
 	add_removeDragPoint(_o) {
 		var i = this.dragPoints.indexOf(_o);
 		if (i > -1)
-			this.dragPoints.splice(i, 1);
+			this.dragPoints.splice(i, 1, _o);// this seems wrong in the original1!?
 		else
 			this.dragPoints.push(_o);
 	}
 	setDragPoints(_d) {
 		this.dragPoints = _d;
 	}
-	private PtsChildSortFilter(a, b) {
-		return (b.getChildLength() - a.getChildLength());
+	private PtsChildSortFilter(a, b): number {
+		return b.getChildLength() - a.getChildLength();
 	}
 	startDrag(_x, _y) {
 		if ((this.Cn.isDragOnlyMoveable()) && (!this.isMoveable())) return;
@@ -245,7 +247,6 @@ export class ConstructionObject implements iConstructionObject {
 					y: _y
 				});
 			}
-
 			var t;
 			for (var i = 0, len2 = this.PtsChilds.length; i < len2; i++) {
 				t = this.PtsChilds.indexOf(this.PtsChilds[i], i + 1);
@@ -307,10 +308,10 @@ export class ConstructionObject implements iConstructionObject {
 		this.Cn.computeAll();
 		this.Cn.computeAll();
 	}
-	is3D() {
+	is3D(): boolean {
 		return this.is_3D;
 	}
-	set3D(_b) {
+	set3D(_b: boolean) {
 		this.is_3D = _b;
 	}
 	private addAsChild(_child, _parent) {
@@ -345,13 +346,12 @@ export class ConstructionObject implements iConstructionObject {
 	getChildList() {
 		return this.childList;
 	}
-	getChildLength() {
+	getChildLength(): number {
 		return this.childList.length;
 	}
 	addChild(_o) {
-		//        console.log('addChild : '+_o.getName());
-		if (this.childList.indexOf(_o) === -1)
-			this.childList.push(_o);
+		// console.log('addChild : '+_o.getName());
+		if (this.childList.indexOf(_o) === -1) {this.childList.push(_o);}
 	}
 	getChildAt(_i) {
 		return this.childList[_i];
@@ -361,27 +361,24 @@ export class ConstructionObject implements iConstructionObject {
 	}
 	deleteChild(_o) {
 		var i = this.childList.indexOf(_o);
-		if (i !== -1) {
-			this.childList.splice(i, 1);
-		}
+		if (i !== -1) {this.childList.splice(i, 1);}
 	}
 	computeChilds() {
 		// console.log(this.getName());
 		// if (this.childList.length) console.log('****** '+this.childList.length);
 		for (var i = 0; i < this.childList.length; i++) {
-			//            console.log(this.childList[i].getName());
+			// console.log(this.childList[i].getName());
 			this.childList[i].compute();
 		}
 	}
 	refreshChildsNames() {
-		//        console.log('refreshChildsNames ='+this.childList.length);
+		// console.log('refreshChildsNames ='+this.childList.length);
 		this.Cn.doOrder(this.childList);
 		for (var i = 0; i < this.childList.length; i++) {
 			this.childList[i].refreshNames();
 		}
 	}
-	refreshNames() {
-	}
+	refreshNames() {}
 	setParentList(_p) {
 		this.parentList = _p;
 		// console.log(this.getName() + ' : ' + this.parentList);
@@ -408,18 +405,18 @@ export class ConstructionObject implements iConstructionObject {
 		// Pour éviter les références circulaires : si this
 		// est un parent de _o, _o ne peut pas être un parent
 		// de this :
-		if ((this.isParent(_o))) return;
+		if (this.isParent(_o)) {return;}
 		this.parentList.push(_o);
 		this.addAsChild(this, _o);
-		this.is_3D = (this.is_3D) || (_o.is3D());
+		this.is_3D = this.is_3D || _o.is3D();
 	}
 	getParent() {
 		return this.parentList;
 	}
-	isParent(_o) {
-		return (_o.getParent().indexOf(this) !== -1);
+	isParent(_o): boolean {
+		return _o.getParent().indexOf(this) !== -1;
 	}
-	getParentLength() {
+	getParentLength(): number {
 		return this.parentList.length;
 	}
 	getParentAt(_i) {
@@ -431,8 +428,7 @@ export class ConstructionObject implements iConstructionObject {
 			this.parentList.splice(i, 1);
 		}
 	}
-	redefine() {
-	}
+	redefine(_a?, _b?) {}
 	setMagnets(_tab) {
 		this.magnets = _tab;
 	}
@@ -460,56 +456,52 @@ export class ConstructionObject implements iConstructionObject {
 	getMagnets() {
 		return this.magnets;
 	}
-	checkMagnets() {
-	}
-	computeMagnets() {
-	}
-	setOnBoundary(_b) {
+	checkMagnets() {}
+	computeMagnets() {}
+	setOnBoundary(_b:boolean) {
 		this.onbounds = _b;
 	}
-	getOnBoundary() {
+	getOnBoundary(): boolean {
 		return this.onbounds;
 	}
-	setBoundaryMode(P) {
-	}
-	storeX() {
-	}
-	setE1(_t) { };
-	setE2(_t) { };
-	setT(_t) { };
-	setMin(_t) { };
-	setMax(_t) { };
+	setBoundaryMode(P) {}
+	storeX() {}
+	setE1(_t) {}
+	setE2(_t) {}
+	setT(_t) {}
+	setMin(_t) {}
+	setMax(_t) {}
 	getValue(v): any {
 		return NaN;
 	}
-	setDeps() { };
-	getCoordsSystem() {
+	setDeps() {}
+	getCoordsSystem(): iCoordsSystem {
 		return this.Cn.coordsSystem;
 	}
-	isCoincident(v) {
+	isCoincident(v): boolean {
 		return false;
 	}
-	getUnit() {
+	getUnit(): number {
 		return this.Cn.coordsSystem.getUnit();
 	}
-	setDash(_d) {
-		this.dash = (_d) ? this.Cn.prefs.size.dash : [];
+	setDash(_d: boolean) {
+		this.dash = _d ? this.Cn.prefs.size.dash : [];
 	}
-	isDash() {
-		return (this.dash.length !== 0);
+	isDash(): boolean {
+		return this.dash.length !== 0;
 	}
-	setIncrement(v) { };
-	getIncrement() {
+	setIncrement(v) {}
+	getIncrement(): number {
 		return 0;
 	}
-	getSerial() {
+	getSerial(): number {
 		return this.serial;
 	}
-	getPaintOrder() {
+	getPaintOrder(): number {
 		return this.paintorder;
 	}
 	// -1 pour pas d'affichage, 0,1,2,3,4,... pour indiquer le nombre de chiffres après la virgule
-	setPrecision(_prec) {
+	setPrecision(_prec:number) {
 		if (_prec > -1) {
 			this.precision = Math.pow(10, _prec);
 			this.paintLength_exe = this.paintLength;
@@ -518,26 +510,26 @@ export class ConstructionObject implements iConstructionObject {
 			this.paintLength_exe = noop;
 		}
 	}
-	getPrecision() {
+	getPrecision(): number {
 		return this.precision;
 	}
-	getRealPrecision() {
+	getRealPrecision(): number {
 		return Math.round($U.log(this.precision));
 	}
-	getLayer() {
+	getLayer(): number {
 		return this.layer;
 	}
 	setLayer(_l) {
 		this.layer = _l;
 		this.paintorder = this.serial + 100000 * this.layer;
 	}
-	getFontSize() {
+	getFontSize(): number {
 		return this.fontsize;
 	}
 	setFontSize(_s) {
 		this.fontsize = _s;
 	}
-	getCn() {
+	getCn(): iConstruction {
 		return this.Cn;
 	}
 	setName(_n) {
@@ -553,19 +545,19 @@ export class ConstructionObject implements iConstructionObject {
 	getVarName() {
 		return this.Cn.getVarName(this.name);
 	}
-	setShowName(_bool) {
+	setShowName(_bool:boolean) {
 		this.showname = _bool;
 		this.paintName_exe = (_bool) ? this.paintName : noop;
 	}
 	getShowName(): boolean {
 		return this.showname;
 	}
-	setNamePosition(v) { };
+	setNamePosition(v) {}
 	getNamePosition() {
 		return null;
 	}
-	setShape(v) { };
-	getShape() {
+	setShape(v) {}
+	getShape(): number {
 		return -1;
 	}
 	setIndicated(_ind) {
@@ -573,61 +565,61 @@ export class ConstructionObject implements iConstructionObject {
 		this.objMode = this.objModeTab[1 * _ind];
 		return _ind; // Optionnel : voir la methode this.validate de Construction.js
 	}
-	isIndicated() {
+	isIndicated(): boolean {
 		return this.indicated;
 	}
-	setSelected(_sel) {
-		this.selected = _sel;
-		this.objMode = this.objModeTab[2 * _sel];
+	setSelected(_sel:any) {// what's going on here??
+		this.selected = _sel;// should this be a number?
+		this.objMode = this.objModeTab[2 * _sel];// something weird is going on here?
 	}
 	isSelected(): boolean {
 		return this.selected;
 	}
-	setHidden(_sel) {
-		_sel = Math.abs(_sel * 1);
-		this.hidden = (isNaN(_sel)) ? 1 : parseInt(_sel) % 3;
+	setHidden(_sel:number) {
+		_sel = Math.abs(_sel * 1);// reassining input?
+		this.hidden = (isNaN(_sel)) ? 1 : parseInt(_sel+'') % 3;// something weird is going on here
 		this.paint = this.paintTab[this.hidden];
 		this.validate = this.validTab[this.hidden];
 	}
 	isHidden() {
-		return (this.hidden);
+		return this.hidden;
 	}
-	isSuperHidden() {
-		return (this.hidden === 2);
+	isSuperHidden(): boolean {
+		return this.hidden === 2;
 	}
-	setColor(_col) {
+	setColor(_col:string) {
 		this.color.set(_col);
 		this.fillcolor.setRGBA(this.color.getR(), this.color.getG(), this.color.getB(), this.fillcolor.getOpacity());
 	}
-	getColor() {
+	getColor(): Color {
 		return this.color;
 	}
-	setRGBColor(r, g, b) {
+	setRGBColor(r:number, g:number, b:number) {
 		var c = 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
 		this.setColor(c);
 	}
-	isFilledObject() {
+	isFilledObject(): boolean {
 		return false;
 	}
-	getOpacity() {
+	getOpacity(): number {
 		return this.fillcolor.getOpacity();
 	}
 	setOpacity(_f) {
 		this.fillcolor.setOpacity(_f);
 	}
-	getOversize() {
+	getOversize(): number {
 		return this.oversize;
 	}
-	getRealsize() {
+	getRealsize(): number {
 		return this.realsize;
 	}
-	getSize() {
+	getSize(): number {
 		return this.size;
 	}
 	setSize(_s) {
 		this.size = _s;
 	}
-	setMode(_mode) {
+	setMode(_mode:number) {
 		this.mode = _mode;
 		switch (this.mode) {
 			case 0:
@@ -666,10 +658,10 @@ export class ConstructionObject implements iConstructionObject {
 		this.paint = this.paintTab[this.hidden];
 		this.validate = this.validTab[this.hidden];
 	}
-	getMode() {
+	getMode(): number {
 		return this.mode;
 	}
-	setMacroMode(_mode) {
+	setMacroMode(_mode:number) {
 		this.macroMode = _mode;
 		switch (this.macroMode) {
 			case 0:
@@ -693,15 +685,15 @@ export class ConstructionObject implements iConstructionObject {
 		}
 		this.objMode = this.objModeTab[0];
 	}
-	getMacroMode() {
+	getMacroMode(): number {
 		return this.macroMode;
 	}
-	setMacroAutoObject() { };
-	setMacroSource(v) { };
-	isAutoObjectFlags() {
+	setMacroAutoObject() {}
+	setMacroSource(v) {}
+	isAutoObjectFlags(): boolean {
 		return false;
 	}
-	setEditMode(_mode) {
+	setEditMode(_mode:number) {
 		this.editMode = _mode;
 		switch (this.editMode) {
 			case 0:
@@ -713,59 +705,58 @@ export class ConstructionObject implements iConstructionObject {
 		}
 		this.objMode = this.objModeTab[0];
 	}
-	getEditMode() {
+	getEditMode(): number {
 		return this.editMode;
 	}
-	checkIfValid(_C) { };
-	getCode() {
+	checkIfValid(_C) { }
+	getCode(): string {
 		return '';
 	}
-	getFamilyCode() {
+	getFamilyCode(): string {
 		return '';
 	}
-	isInstanceType(_c) {
+	isInstanceType(_c): boolean {
 		return false;
 	}
-	isMoveable() {
+	isMoveable(): boolean {
 		return false;
 	}
-	free() {
-		return (this.getParentLength() === 0);
+	free(): boolean {
+		return this.getParentLength() === 0;
 	}
 	setFloat(_f) {
 		this.floatObj = _f;
-		if (_f)
-			this.Cn.setOrigin3D(this);
+		if (_f) {this.Cn.setOrigin3D(this);}
 	}
 	getFloat() {
 		return this.floatObj;
 	}
-	isPointOn() {
+	isPointOn(): boolean {
 		return false;
 	}
-	getAssociatedTools() {
+	getAssociatedTools(): string {
 		var at = '@callproperty';
 		if (this.isMoveable())
 			at += ',@objectmover';
 		return at;
 	}
-	paintObject(ctx) { };
-	paintName(ctx) { };
-	paintLength(ctx) { };
-	private valid_show_normal(ev) {
+	paintObject(ctx:CanvasRenderingContext2D) {}
+	paintName(ctx:CanvasRenderingContext2D) {}
+	paintLength(ctx:CanvasRenderingContext2D) {}
+	private valid_show_normal(ev): boolean {
 		return this.mouseInside(ev);
 	}
-	private valid_hidden_normal(ev) {
+	private valid_hidden_normal(ev): boolean {
 		return false;
 	}
-	private paint_show_normal(ctx) {
+	private paint_show_normal(ctx:CanvasRenderingContext2D) {
 		this.initContext(ctx);
 		this.paintObject(ctx);
 		this.paintName_exe(ctx);
 		this.paintLength_exe(ctx);
 	}
-	private paint_hidden_normal(ctx) { };
-	private paint_hidden_gomme(ctx) {
+	private paint_hidden_normal(ctx:CanvasRenderingContext2D) {}
+	private paint_hidden_gomme(ctx:CanvasRenderingContext2D) {
 		this.initContext(ctx);
 		this.hiddenContext(ctx);
 		this.paintObject(ctx);
@@ -817,11 +808,11 @@ export class ConstructionObject implements iConstructionObject {
 	isNoMouseInside() {
 		return (this.ORGMOUSEINSIDE !== null)
 	}
-	intersect(_C, _P) { };
-	projectXY(_x, _y) { };
-	project(p) { };
-	projectAlpha(p) { };
-	setAlpha(p) { };
+	intersect(_C, _P) {}
+	projectXY(_x, _y) {}
+	project(p) {}
+	projectAlpha(p) {}
+	setAlpha(p) {}
 	projectMagnetAlpha(p) {
 		this.projectAlpha(p);
 	}

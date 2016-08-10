@@ -113,7 +113,7 @@ interface iConstructionObject {
 	getShape(): number;
 	setIndicated(_ind:any): any;
 	isIndicated(): any;
-	setSelected(_sel:number);
+	setSelected(_sel);// this needs to be reviewed
 	isSelected():boolean;
 	setHidden(_sel:number);
 	isHidden(): number;

@@ -307,7 +307,7 @@ export class PointObject extends ConstructionObject implements iPointObject {
 	getY(): number {
 		return this.Y;
 	}
-	setXY(x, y) {
+	setXY(x:number, y:number) {
 		this.X = x;
 		this.Y = y;
 	}
@@ -323,9 +323,9 @@ export class PointObject extends ConstructionObject implements iPointObject {
 	}
 	// Seulement pour les points magnétiques :
 	projectMagnetAlpha(p) {
-	};
+	}
 	setMagnetAlpha(p) {
-	};
+	}
 	/*************************************
 	 ************************************* 
 	 ***********  3D part  ***************
