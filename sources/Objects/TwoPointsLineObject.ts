@@ -4,7 +4,7 @@ import {PrimitiveLineObject} from './PrimitiveLineObject';
 var $U = (<any>window).$U;
 
 export class TwoPointsLineObject extends PrimitiveLineObject {
-	constructor(_construction:iConstruction, _name:string, _P1, _P2, _isExtended) {
+	constructor(_construction:iConstruction, _name:string, _P1, _P2, _isExtended?:boolean) {
 		super(_construction, _name, _P1);
 		// var super = $U.extend(this, new PrimitiveLineObject(_construction, _name, _P1)); // Héritage
 		this.P2 = _P2;
