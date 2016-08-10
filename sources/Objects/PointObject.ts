@@ -164,7 +164,7 @@ export class PointObject extends ConstructionObject implements iPointObject {
 	getAway() {
 		return this.away;
 	}
-	setFillStyle() {
+	setFillStyle(v?) {
 		var len = this.getParentLength();
 		switch (len) {
 			case 0: this.fillStyle = this.prefs.color.point_free; break; // Point libre :
