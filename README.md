@@ -46,7 +46,7 @@ Utils.js/
 ## Roadmap / TODOs
 - [ ] transcribe as many files as possible
   - [ ] `Constructors` directory
-  - [ ] `Objects` directory
+  - [x] `Objects` directory
 - [ ] split `Utils.ts` into _utilities_ and _bootloading_
 - [ ] create as many `*.d.ts` files as possible
 - [ ] eliminate duplicate functionality
