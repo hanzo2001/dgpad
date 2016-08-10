@@ -6,7 +6,6 @@ import {AngleBisectorObject} from '../Objects/AngleBisectorObject';
 var $U = (<any>window).$U;
 
 export class AngleBisectorConstructor extends ObjectConstructor {
-	private img: HTMLImageElement;
 	constructor() {
 		super(); //Héritage
     // $U.extend(this, new ObjectConstructor()); //Héritage
