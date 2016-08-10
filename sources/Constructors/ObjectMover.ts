@@ -2,8 +2,6 @@
 
 import {ObjectConstructor} from './ObjectConstructor';
 
-var $U = (<any>window).$U;
-
 export class ObjectMover extends ObjectConstructor {
 	private draggedObject;
 	private x0: number;
@@ -34,7 +32,7 @@ export class ObjectMover extends ObjectConstructor {
 			zc.getConstruction().compute();
 		} else {
 			this.draggedObject = this.getC(0);
-			if ((this.draggedObject) && (this.draggedObject.getFamilyCode() === "point")) {
+			if (this.draggedObject && this.draggedObject.getFamilyCode() === "point") {
 				this.x0 = this.draggedObject.getX() - zc.mouseX(event);
 				this.y0 = this.draggedObject.getY() - zc.mouseY(event);
 			} else {
