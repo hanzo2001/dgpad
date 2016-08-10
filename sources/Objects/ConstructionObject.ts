@@ -471,7 +471,7 @@ export class ConstructionObject implements iConstructionObject {
 	setT(_t) {}
 	setMin(_t) {}
 	setMax(_t) {}
-	getValue(v): any {
+	getValue(a, b, c, d): any {
 		return NaN;
 	}
 	setDeps() {}
