@@ -6,7 +6,6 @@ import {AngleObject} from '../Objects/AngleObject';
 var $U = (<any>window).$U;
 
 export class AngleConstructor extends ObjectConstructor {
-	private img: HTMLImageElement;
 	constructor() {
 		super();
     // $U.extend(this, new ObjectConstructor()); //Héritage
