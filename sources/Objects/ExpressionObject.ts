@@ -121,6 +121,7 @@ export class ExpressionObject extends ConstructionObject {
 						this.setMethods();
 				}
 		};
+		this.dragTo = this._dragTo;
 	}
 	setIncrement(inc: number) {
 		this.cPT.setIncrement(inc);
@@ -390,7 +391,21 @@ export class ExpressionObject extends ConstructionObject {
 		//        this.OldX = 10 * Math.round(this.X / 10);
 		//        this.OldY = 10 * Math.round(this.Y / 10);
 	}
-	dragTo(_x, _y) {
+	computeDrag() {}
+	mouseInside(ev) {
+		this.agrandirCursor = false;
+		var mx = this.mouseX(ev),
+			my = this.mouseY(ev);
+		var inside = ((mx > this.X) && (mx < this.X + this.W) && (my < this.Y) && (my > this.Y - this.getFontSize()));
+		if ((!inside) && (this.isCursor())) {
+			var l = this.X + this.cLength - 20;
+			var sz = this.getSize();
+			inside = (mx > l) && (mx < this.X + this.cLength + 20) && (my > this.Y + this.cOffsetY - sz / 2 - 5) && (my < this.Y + this.cOffsetY + sz / 2 + 5);
+			this.agrandirCursor = inside;
+		}
+		return inside;
+	}
+	private _dragTo(_x, _y) {
 		if (this.agrandirCursor) {
 			var bar = (this.cPT.getX() - this.X) / this.cLength
 			this.cLength = Math.max(20 * Math.round((_x - this.X) / 20), 30);
@@ -410,21 +425,6 @@ export class ExpressionObject extends ConstructionObject {
 			//            this.cPT.setXY(this.cPT.getX() + (this.X - oldX), this.Y + this.cOffsetY);
 		}
 		this.computeAlpha();
-	}
-	computeDrag() {
-	}
-	mouseInside(ev) {
-		this.agrandirCursor = false;
-		var mx = this.mouseX(ev),
-			my = this.mouseY(ev);
-		var inside = ((mx > this.X) && (mx < this.X + this.W) && (my < this.Y) && (my > this.Y - this.getFontSize()));
-		if ((!inside) && (this.isCursor())) {
-			var l = this.X + this.cLength - 20;
-			var sz = this.getSize();
-			inside = (mx > l) && (mx < this.X + this.cLength + 20) && (my > this.Y + this.cOffsetY - sz / 2 - 5) && (my < this.Y + this.cOffsetY + sz / 2 + 5);
-			this.agrandirCursor = inside;
-		}
-		return inside;
 	}
 	private initCursorPos() {
 		var cmin = this.min.value();
