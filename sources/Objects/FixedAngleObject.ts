@@ -19,7 +19,7 @@ export class FixedAngleObject extends PrimitiveLineObject {
 	protected trigo: boolean;
 	protected sel_arc: boolean;
 	protected sel_ray: boolean;
-	protected setExp: (exy) => void;
+	setExp: (exy) => void;
 	constructor(_construction:iConstruction, _name:string, _P1, _P2, _trigo) {
 		super(_construction, _name, _P2);
 		//var superObject = $U.extend(this, new PrimitiveLineObject(_construction, _name, _P2));
