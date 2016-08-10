@@ -11,12 +11,12 @@ var $L = (<any>window).$L;
  */
 
 export class PrimitiveCircleObject extends ConstructionObject {
-	private lastx;
-	private lasty;
-	private lastr;
-	P1;
-	P2;// added by me!!
-	R: number;
+	protected lastx;
+	protected lasty;
+	protected lastr;
+	protected P1;// public in original
+	protected P2;// added by me!!
+	protected R: number;
 	constructor(_construction, _name, _P1) {
 		super(_construction, _name); // Héritage
 		//$U.extend(this, new ConstructionObject(_construction, _name)); // Héritage
