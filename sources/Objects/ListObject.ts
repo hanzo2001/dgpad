@@ -76,22 +76,22 @@ export class ListObject extends ConstructionObject implements iListObject {
 	}
 	setSegmentsSize(size:number) {
 		this.segSize = size;
-	};
+	}
 	getSegmentsSize(): number {
 		return this.segSize;
-	};
+	}
 	getAssociatedTools(): string {
 		return "@callproperty,@calltrash,@callcalc,@calllist,point";
-	};
+	}
 	isInstanceType(_c): boolean {
 		return (_c === "list");
-	};
+	}
 	getCode(): string {
 		return "list";
-	};
+	}
 	getFamilyCode(): string {
 		return "list";
-	};
+	}
 	setShape(shape:number) {
 		this.shape = shape;
 		switch (this.shape) {
@@ -100,10 +100,10 @@ export class ListObject extends ConstructionObject implements iListObject {
 			case 2: this.paintPoint = this.paintDiamond; break;
 			case 3: this.paintPoint = this.paintSquare; break;
 		}
-	};
+	}
 	getShape(): number {
 		return this.shape;
-	};
+	}
 	getPtNum(_i:number): number[] {
 		var k = 0;
 		let i=0, s=this.Ptab.length;
@@ -113,7 +113,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 			i++;
 		}
 		return [NaN, NaN];
-	};
+	}
 	getPtLength(): number {
 		var k = 0;
 		let i=0, s=this.Ptab.length;
@@ -122,7 +122,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 			i++;
 		}
 		return k;
-	};
+	}
 	projectXY(x:number, y:number): number[] {
 		// console.log("this.Ptab="+this.Ptab);
 		var p = this.Ptab[0];
@@ -163,12 +163,12 @@ export class ListObject extends ConstructionObject implements iListObject {
 			y1 = y2;
 		}
 		return [xmin, ymin];
-	};
+	}
 	project(p) {
 		// console.log("project");
 		var coords = this.projectXY(p.getX(), p.getY());
 		p.setXY(coords[0], coords[1]);
-	};
+	}
 	projectAlpha(p) {
 		if ((this.Ptab.length < 2) || (this.segSize === -1)) {return;}
 		var alp = p.getAlpha();
@@ -193,7 +193,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 			p.setXY(this.Ptab[nb].x, this.Ptab[nb].y);
 		}
 		// console.log("projectAlpha :" + this.Ptab[nb].x + "  " + this.Ptab[nb].y);
-	};
+	}
 	setAlpha(p) {
 		if (this.Ptab.length < 2) {return;}
 		var dmin = 1e20;
@@ -222,7 +222,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 			}
 			p.setAlpha([k, 0]);
 		}
-	};
+	}
 	// Pour les objets "locus". Initialise le polygone à partir de la donnée
 	// du nombre _nb de sommets voulus :
 	initLocusArray(_nb): LocusPoint[] {
@@ -231,10 +231,10 @@ export class ListObject extends ConstructionObject implements iListObject {
 		let i=0, s=this.Ptab.length;
 		while (i<s) {table.push(new LocusPoint(i++));}
 		return table;
-	};
+	}
 	setLocusAlpha(p, i:number) {
 		if (this.Ptab[i] !== undefined) {p.setXY(this.Ptab[i].x, this.Ptab[i].y);}
-	};
+	}
 	mouseInside(event:MouseEvent): boolean {
 		var mx = this.mouseX(event);
 		var my = this.mouseY(event);
@@ -250,10 +250,10 @@ export class ListObject extends ConstructionObject implements iListObject {
 			}
 		}
 		return false;
-	};
+	}
 	compute() {
 		this.initPtab();
-	};
+	}
 	paintObject(ctx: CanvasRenderingContext2D) {
 		var hilite = ctx.strokeStyle === this.prefs.color.hilite;
 		let i:number, s:number=this.Ptab.length;
@@ -372,25 +372,25 @@ export class ListObject extends ConstructionObject implements iListObject {
 
 		}
 
-	};
+	}
 	getSource(src) {
 		src.geomWrite(false, this.getName(), "List", this.EXP.getVarName());
-	};
+	}
 	private paintCircle(i:number, ctx:CanvasRenderingContext2D) {
 		ctx.arc(this.Ptab[i].x, this.Ptab[i].y, this.Ptab[i].pz, 0, Math.PI * 2, true);
 		// ctx.arc(this.Ptab[i].x, this.Ptab[i].y, me.getRealsize(), 0, Math.PI * 2, true);
-	};
+	}
 	private paintCross(i:number, ctx: CanvasRenderingContext2D) {
 		var sz = this.Ptab[i].pz * 0.9;
 		ctx.moveTo(this.Ptab[i].x - sz, this.Ptab[i].y + sz);
 		ctx.lineTo(this.Ptab[i].x + sz, this.Ptab[i].y - sz);
 		ctx.moveTo(this.Ptab[i].x - sz, this.Ptab[i].y - sz);
 		ctx.lineTo(this.Ptab[i].x + sz, this.Ptab[i].y + sz);
-	};
+	}
 	private paintSquare(i:number, ctx: CanvasRenderingContext2D) {
 		var sz = this.Ptab[i].pz * 1.8;
 		ctx.rect(this.Ptab[i].x - sz / 2, this.Ptab[i].y - sz / 2, sz, sz);
-	};
+	}
 	private paintDiamond(i:number, ctx: CanvasRenderingContext2D) {
 		var sz = this.Ptab[i].pz * 1.3;
 		ctx.moveTo(this.Ptab[i].x, this.Ptab[i].y - sz);
@@ -398,7 +398,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 		ctx.lineTo(this.Ptab[i].x, this.Ptab[i].y + sz);
 		ctx.lineTo(this.Ptab[i].x + sz, this.Ptab[i].y);
 		ctx.lineTo(this.Ptab[i].x, this.Ptab[i].y - sz);
-	};
+	}
 	private paintArrow(x1:number, y1:number, x2:number, y2:number, ctx: CanvasRenderingContext2D) {
 		var rot = -Math.atan2(x2 - x1, y2 - y1);
 		ctx.save();
@@ -412,7 +412,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 		ctx.closePath();
 		ctx.fill();
 		ctx.restore();
-	};
+	}
 	private paintText(p:Point, ctx: CanvasRenderingContext2D) {
 		var x0 = p.x;
 		var y0 = p.y;
@@ -433,7 +433,7 @@ export class ListObject extends ConstructionObject implements iListObject {
 		// ctx.moveTo(0, 0);
 		ctx.fillText(_t, 0, 0);
 		ctx.restore();
-	};
+	}
 	private initPtab() {
 		// var lst = this.EXP.getValue();
 		var lst = this.EXP.getE1().forcevalue();
@@ -565,5 +565,5 @@ export class ListObject extends ConstructionObject implements iListObject {
 		//     console.log("this.Ptab[" + i + "].g=" + this.Ptab[i].g);
 		//     console.log("this.Ptab[" + i + "].b=" + this.Ptab[i].b);
 		// }
-	};
+	}
 }
