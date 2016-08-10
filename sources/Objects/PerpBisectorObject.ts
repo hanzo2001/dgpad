@@ -12,7 +12,7 @@ export class PerpBisectorObject extends PrimitiveLineObject {
 	protected M;
 	A1;
 	A2;
-	constructor(_construction, _name, _A1, _A2) {
+	constructor(_construction:iConstruction, _name:string, _A1, _A2) {
 		var _M = new VirtualPointObject(0, 0);
 		super(_construction, _name, _M);
 		// var superObject = $U.extend(this, new PrimitiveLineObject(_construction, _name, M)); // Héritage
@@ -21,13 +21,12 @@ export class PerpBisectorObject extends PrimitiveLineObject {
 		this.A2 = _A2;
 		this.setParent(this.A1, this.A2)
 	}
-	getCode() {
+	getCode(): string {
 		return "perpbis";
 	}
-	isMoveable() {
+	isMoveable(): boolean {
 		// Si les extrémités sont des points libres :
-		if ((this.A1.getParentLength() === 0) && (this.A2.getParentLength() === 0)) return true;
-		return false;
+		return this.A1.getParentLength() === 0 && this.A2.getParentLength() === 0;
 	}
 	dragObject(_x, _y) {
 		var vx = _x - this.startDragX;
