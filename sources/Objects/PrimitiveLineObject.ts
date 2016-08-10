@@ -6,7 +6,7 @@ var $U = (<any>window).$U;
 /**
  * Issues with undefined methods: startDragX, startDragY AGAIN!!??
  * undefined getP2
- * misterious _P1 lurking around... must review
+ * misterious _P1 lurking around... must review: changed to `this.P1`
  */
 
 export class PrimitiveLineObject extends ConstructionObject {
@@ -502,7 +502,7 @@ export class PrimitiveLineObject extends ConstructionObject {
 		var X = _Q.getCoeffs();
 		var M = -this.NDY;
 		var N2 = this.NDX;
-		var P = -(M * _P1.getX() + N2 * _P1.getY());
+		var P = -(M * this.P1.getX() + N2 * this.P1.getY());
 		var A = X[0];
 		var B = X[1];
 		var C = X[2];
