@@ -8,9 +8,9 @@ var $L = (<any>window).$L;
 var $U = (<any>window).$U;
 
 export class FixedAngleConstructor extends ObjectConstructor {
-	private AOC;
-	private AOC180;
-	private trig;
+	private AOC: number;
+	private AOC180: number;
+	private trig: boolean;
 	constructor() {
 		super(); //Héritage
 		// $U.extend(this, new ObjectConstructor()); //Héritage
