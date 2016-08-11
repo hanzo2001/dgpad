@@ -1,3 +1,4 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 /// <reference path="../typings/Constructors/iPointConstructor.d.ts" />
 
 import {ObjectConstructor} from './ObjectConstructor';
@@ -5,18 +6,14 @@ import {PointObject} from '../Objects/PointObject';
 import {Expression} from '../Expression';
 
 export class PointConstructor extends ObjectConstructor implements iPointConstructor {
-	constructor() {
-		super();
-		//$U.extend(this, new ObjectConstructor()); //Héritage
-	}
 	getCode(): string {
 		return 'point';
 	}
 	getInitials(): string[] {
 		return ['line,circle,locus,function,quadric,area,circle3pts3D,list', 'line,circle,quadric'];
 	}
-	createObj(zc, ev): iPointObject {
-		var o = new PointObject(zc.getConstruction(), '_P', zc.mouseX(ev), zc.mouseY(ev));
+	createObj(zc:iCanvas, event:MouseEvent): iPointObject {
+		var o = new PointObject(zc.getConstruction(), '_P', zc.mouseX(event), zc.mouseY(event));
 		zc.addObject(o);
 		zc.namesManager.setName(o);
 		var deps = this.getCList();
@@ -51,7 +48,7 @@ export class PointConstructor extends ObjectConstructor implements iPointConstru
 		o.compute();
 		return o;
 	}
-	preview(ev, zc) {
+	preview(event:MouseEvent, zc:iCanvas) {
 		var deps = this.getCList();
 		var len = deps.length;
 		if (len > 0) {
@@ -64,15 +61,15 @@ export class PointConstructor extends ObjectConstructor implements iPointConstru
 			switch (len) {
 				case 1:
 					// point sur objet :
-					coords = deps[0].projectXY(zc.mouseX(ev), zc.mouseY(ev));
+					coords = deps[0].projectXY(zc.mouseX(event), zc.mouseY(event));
 					break;
 				case 2:
 					// point d'intersection :
 					if (deps[0].isCoincident(deps[1])) {
 						// Si les objets sont confondus, on prévisualise un point sur objet :
-						coords = deps[0].projectXY(zc.mouseX(ev), zc.mouseY(ev));
+						coords = deps[0].projectXY(zc.mouseX(event), zc.mouseY(eventev));
 					} else {
-						coords = deps[0].intersectXY(deps[1], zc.mouseX(ev), zc.mouseY(ev));
+						coords = deps[0].intersectXY(deps[1], zc.mouseX(event), zc.mouseY(event));
 					}
 					break;
 			}
