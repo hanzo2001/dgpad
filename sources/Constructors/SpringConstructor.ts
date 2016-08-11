@@ -7,11 +7,12 @@ var $APP_PATH = (<any>window).$APP_PATH;
 
 export class SpringConstructor extends ObjectConstructor {
 	private img: HTMLImageElement;
+	private h: number;
 	constructor() {
 		super();
     this.img = new Image();
     this.img.src = $APP_PATH + "NotPacked/images/tools/spring_const.svg";
-    this.img.h = 30;// not a typo, expando property !!??
+    this.h = 30;
     // var fce = $P.fce_seg;
     // var f = 0;
     // var ar = false;
@@ -47,20 +48,17 @@ export class SpringConstructor extends ObjectConstructor {
 		ctx.save();
 		ctx.translate(x0, y0);
 		ctx.rotate(a);
-		ctx.drawImage(this.img, 0, -this.img.h / 2, d, this.img.h);
+		ctx.drawImage(this.img, 0, -this.h / 2, d, this.h);
 		ctx.restore();
 		ctx.save();
-		if ((a < -$U.halfPI) || (a > $U.halfPI)) {
-				a += Math.PI;
-		}
+		if (a < -$U.halfPI || a > $U.halfPI) {a += Math.PI;}
 		ctx.translate((x0 + x1) / 2, (y0 + y1) / 2);
 		ctx.rotate(a);
 		ctx.textAlign = "center";
 		ctx.fillStyle = "rgba(100,100,100,1)";
 		ctx.font = "24px Arial";
-		var message = "";
 		var p = this.getC(0).getAnimationParams(x1, y1);
-		ctx.fillText(p.message, 0, -this.img.h / 2);
+		ctx.fillText(p.message, 0, -this.h / 2);
 		ctx.restore();
 	}
 }
