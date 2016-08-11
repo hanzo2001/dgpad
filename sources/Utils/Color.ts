@@ -52,10 +52,13 @@ export class Color implements iColor {
 	}
 	protected setCache(cache:number[]) {
 		// Performs RGB->RGBA conversion by default
+		var r, g, b, a;
 		!cache[3] && (cache[3] = 1);
 		[this.r,this.g,this.b,this.a] = cache;
-		this.hex = '#'+((this.r << 16) | (this.g << 8) | (this.b)).toString(16);
-		this.rgb = 'rgba('+[this.r,this.g,this.b].join(',')+')';
-		this.rgba = 'rgba('+[this.r,this.g,this.b,this.a].join(',')+')';
+		[r,g,b,a] = cache;
+		this.hex = '#'+((r << 16)|(g << 8)|(b)).toString(16);
+		this.hex = '#'+((r << 16)|(g << 8)|(b)).toString(16);
+		this.rgb = 'rgba('+[r,g,b].join(',')+')';
+		this.rgba = 'rgba('+[r,g,b,a].join(',')+')';
 	}
 }
