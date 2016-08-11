@@ -5,7 +5,7 @@ import {VirtualPointObject} from './VirtualPointObject';
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
 
-export class RayObject extends TwoPointsLineObject {
+export class SegmentObject extends TwoPointsLineObject {
 	constructor(_construction:iConstruction, _name:string, _P1, _P2) {
 		super(_construction, _name, _P1, _P2, true);
 		// var superObject = $U.extend(this, new TwoPointsLineObject(_construction, _name, _P1, _P2, true)); // Héritage
