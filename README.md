@@ -44,11 +44,14 @@ Utils.js/
 - `sources/Objects/PointObject.ts`
 
 ## Roadmap / TODOs
-- [ ] transcribe as many files as possible
-  - [ ] `Constructors` directory
+- [x] transcribe as many files as possible
+  - [x] `Constructors` directory
   - [x] `Objects` directory
 - [ ] split `Utils.ts` into _utilities_ and _bootloading_
 - [ ] create as many `*.d.ts` files as possible
+  - [ ] make typings for external libraries
+  - [ ] make typings for objects
+  - [ ] make typings for constructors
 - [ ] eliminate duplicate functionality
 - [ ] **SYNC:** incorporate changes introduced by Eric for **Blockly** on last push
 - [ ] improve `README`
