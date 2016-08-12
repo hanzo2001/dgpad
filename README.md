@@ -47,7 +47,10 @@ Utils.js/
 - [x] transcribe as many files as possible
   - [x] `Constructors` directory
   - [x] `Objects` directory
+  - [ ] transcribe `Interpreter.ts`
 - [ ] split `Utils.ts` into _utilities_ and _bootloading_
+- [ ] understand `Interpreter.ts`
+- [ ] change **browser/platform** detection to **feature** detection
 - [ ] create as many `*.d.ts` files as possible
   - [ ] make typings for external libraries
   - [ ] make typings for objects
@@ -68,6 +71,17 @@ Utils.js/
   3. Load FilePicker
   4. `window [load]` Main Init
   5. _IIFE_ create canvas
+
+## Understanding `Interpreter`
+
+- The interpreter is created in `Canvas->constructor` marked at `createSandbox`.
+- The interpreter lives inside a dynamically created, invisible `iframe` called the _sandbox_.
+- When the _sandbox_ loads, it is language-gnostic and knows what to load.
+- The _sandbox_ loads only the base language file, an optional secondary language file and the **Interpreter** itself.
+- Once the iframe has been loaded, the **Interpreter** is instantiated and initialized.
+- An AJAX request is sent to fetch `NotPacked/plug-ins.js`.
+- The contents of the file are **EVAL**ed and the defined macros are supposed to populate `Interpreter.$macros`.
+- **Interpreter** adds the macros to the `Canvas.MacrosManager` which generates a `Macro` for each one.
 
 ## Global vars
 
@@ -110,26 +124,26 @@ unknown
 an array that holds everything that has been loaded so far
 
 ##### $HEADSCRIPT
-[typescript]
+```typescript
 	// loads js files into the head
 	let $HEADSCRIPT: (src:string) => HTMLElement
-[/typescript]
+```
 
 ##### $INCLUDE
-[typescript]
+```typescript
 	// includes files into the head calling $HEADSCRIPT and stores them in $INCLUDED\_FILES
 	// Uniquement utilisé en mode developpement :
 	let $INCLUDE: (fname, external) => void
-[/typescript]
+```
 
 ##### $LOADMAIN
-[typescript]
+```typescript
 	// loads a file called Main.js
 	let $LOADMAIN: () => void
-[/typescript]
+```
 
 ##### $LOADLANGUAGE
-[typescript]
+```typescript
 	/**
 	 * A convoluted way of determining the language automagically...
 	 * Determine the language through the script tag's' data-lang attribute
@@ -137,53 +151,53 @@ an array that holds everything that has been loaded so far
 	 * I probably should let the user define it, not the agent
 	 */
 	let $LOADLANGUAGE: () => void
-[/typescript]
+```
 
 ##### $LOADPICKER
-[typescript]
+```typescript
 	/**
 	 * Loads the library FilePicker and sets the key
 	 * I still need to understand filepicker
 	 */
 	let $LOADPICKER: () => void
-[/typescript]
+```
 
 ##### $MAIN\_INIT
 makes use of an unidentified global $U
-[typescript]
+```typescript
 	/**
 	 * Initializes all canvas in the document that have an ID that starts with 'DGPad'
 	 */
 	let $MAIN_INIT: () => void
-[/typescript]
+```
 
 ##### $ECHOSRC
-[typescript]
+```typescript
 	/**
 	 * Loads the library FilePicker and sets the key
 	 * I still need to understand filepicker
 	 */
 	let $ECHOSRC: () => void
-[/typescript]
+```
 
 
 ##### $GETCSS
-[typescript]
+```typescript
 	/**
 	 * Either fetches a cssRule or attempts to delete one
 	 * (ruleName: string, deleteFlag?: string) => boolean | CSSStyleRule
 	 * deleteFlag should be an optional bool
 	 */
 	let $GETCSS: (ruleName: string, deleteFlag?: string) => boolean | CSSStyleRule
-[/typescript]
+```
 
 ##### $SCALECSS
-[typescript]
+```typescript
 	/**
 	 * Scales the ruleName to the global scale size
 	 */
 	let $SCALECSS: (rule: string, propertiesCSV: string) => void
-[/typescript]
+```
 
 ##### $U
 Undocumented. **Found**
@@ -192,9 +206,9 @@ Uninitialized `./Utils.js`
 A thousand lines of utilities, I'm considering moving the file to the new `Utils` directory.
 
 > `$MAIN_INIT` makes use of an -unidentified- global `$U`
-[typescript]
+```typescript
 	let $U:  {initCanvas:(id:string)=>void}
-[/typescript]
+```
 
 ##### $P
 Undocumented. **Found**
