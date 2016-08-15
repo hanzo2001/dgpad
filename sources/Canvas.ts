@@ -175,22 +175,22 @@ class Canvas extends ElementContainer implements iCanvas {
 		this.interpreter = null;
 
 		var createSandbox = (() => {
-			var el = document.createElement("iframe");
-			el.setAttribute('name', this.ID);
-			el.setAttribute('width', '0');
-			el.setAttribute('height', '0');
-			el.setAttribute('style', 'hidden');
-			el.setAttribute('frameborder', '0');
-			el.setAttribute('marginheight', '0');
-			el.setAttribute('marginwidth', '0');
-			el.setAttribute('scrolling', 'no');
+			var element = document.createElement("iframe");
+			element.setAttribute('name', this.ID);
+			element.setAttribute('width', '0');
+			element.setAttribute('height', '0');
+			element.setAttribute('style', 'hidden');
+			element.setAttribute('frameborder', '0');
+			element.setAttribute('marginheight', '0');
+			element.setAttribute('marginwidth', '0');
+			element.setAttribute('scrolling', 'no');
 			// Trouver éventuellement un paramètre de langue dans le script du body :
 			var lang = ($BODY_SCRIPT.hasAttribute("data-lang")) ? "?lang=" + $BODY_SCRIPT.getAttribute("data-lang").toUpperCase() : "";
-			el.setAttribute('src', $APP_PATH + 'NotPacked/Sandbox/sandbox.html' + lang);
-			document.body.appendChild(el);
-			el.onload = () => {
+			element.setAttribute('src', $APP_PATH + 'NotPacked/Sandbox/sandbox.html' + lang);
+			document.body.appendChild(element);
+			element.onload = () => {
 				this.interpreter = new window.frames[this.ID].Interpreter(window, this);
-				this.interpreter.owner = el.contentWindow;
+				this.interpreter.owner = element.contentWindow;
 				this.interpreter.copyNameSpace();
 				this.interpreter.setCaller(this.blocklyManager); // For print purpose
 				var request = new XMLHttpRequest();
@@ -200,11 +200,11 @@ class Canvas extends ElementContainer implements iCanvas {
 					this.interpreter.LoadPlugins(request.responseText);
 					// Si le canvas a une figure attachée (base64) :
 					if (this.docObject.hasAttribute("data-source")) {
-						this.OpenFile("", $U.base64_decode(this.docObject.getAttribute("data-source")));
+						this.OpenFile('', $U.base64_decode(this.docObject.getAttribute("data-source")));
 					} else {
 						// Si une figure a été postée sur index.php, on l'ouvre :
 						try {
-							this.OpenFile("", $U.base64_decode($DGPAD_FIGURE));
+							this.OpenFile('', $U.base64_decode($DGPAD_FIGURE));
 						} catch (e) {}
 					}
 				}
@@ -325,11 +325,11 @@ class Canvas extends ElementContainer implements iCanvas {
 	getBounds() {
 		return this.bounds;
 	}
-	setUndoBtn(active) {
-		this.mainpanel.setUndoBtn(active);
+	setUndoBtn(activate:boolean) {
+		this.mainpanel.setUndoBtn(activate);
 	}
-	setRedoBtn(active) {
-		this.mainpanel.setRedoBtn(active);
+	setRedoBtn(activate:boolean) {
+		this.mainpanel.setRedoBtn(activate);
 	}
 	forceArrowBtn() {
 		this.mainpanel.forceArrowBtn();
@@ -346,8 +346,8 @@ class Canvas extends ElementContainer implements iCanvas {
 	deselectAll() {
 		this.mainpanel.deselectAll();
 	}
-	selectNameBtn(b:string) {
-		this.mainpanel.selectNameBtn(b);
+	selectNameBtn(select:boolean) {
+		this.mainpanel.selectNameBtn(select);
 	}
 	ctrl_show(bool:boolean) {
 		if (bool) {
@@ -1019,7 +1019,7 @@ class Canvas extends ElementContainer implements iCanvas {
 		this.clearBackground();
 		if (this.OC && (this.OC.getC(0))) {
 			this.previewEvent = event;
-			this.OC.preview(event,this);
+			this.OC.preview(<MouseEvent>event,this);
 		} else {
 			this.previewEvent = null;
 		}
@@ -1046,8 +1046,8 @@ class Canvas extends ElementContainer implements iCanvas {
 		var ex = new Expression(this, s);
 		return ex.value();
 	}
-	InterpretMacro(s:any) {
-		this.interpreter.InterpretMacro(s);
+	InterpretMacro(macroString:string) {
+		this.interpreter.InterpretMacro(macroString);
 	}
 	getInterpreter(): any {
 		return this.interpreter;

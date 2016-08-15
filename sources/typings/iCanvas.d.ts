@@ -62,7 +62,7 @@ interface iCanvas extends iElementContainer {
 	selectPropBtn();
 	selectCalcBtn();
 	deselectAll();
-	selectNameBtn(_b:string);
+	selectNameBtn(_b:boolean);
 	ctrl_show(_bool:boolean);
 	// Managers :
 	getContext(): CanvasRenderingContext2D;
