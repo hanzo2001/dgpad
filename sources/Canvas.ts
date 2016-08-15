@@ -65,7 +65,7 @@ function mlStr(tag:string, atts?:HTMLAtts, txt?:string): string {
 	return r+'>';
 }
 
-class Canvas extends ElementContainer implements iCanvas {
+export class Canvas extends ElementContainer implements iCanvas {
 	mainpanel: ControlPanel;
 	bounds: any;
 	prefs: any;// clone of $P
