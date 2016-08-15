@@ -1,13 +1,14 @@
 /// <reference path="./GUI/iPanel.d.ts" />
+/// <reference path="./GUI/iiPadDOMElt.d.ts" />
 /// <reference path="./GUI/iVerticalBorderPanel.d.ts" />
 
 interface iMacro {
-	name;
-	shortname;
+	name: string;
+	shortname: string;
 	tagPossibleInitials();
-	init(_li, _cn);
-	addParam(_n);
-	getSource(): string;
+	init(li:iiPadDOMElt, cn:iConstruction);
+	addParam(p:any);
+	getSource();
 }
 
 interface iMacrosManager {
@@ -15,13 +16,13 @@ interface iMacrosManager {
 	refreshToolList();
 	refreshMacro();
 	endMacro();
-	addParam(_n);
+	addParam(v:any);
 	refreshConstructionPanel(_p, _t, _e);
 	showPanel();
 	hidePanel();
-	addTool(_n, _p, _e);
-	addPlugin(_n, _p, _e);
-	getSource();
+	addTool(name:string, params:string[], call): iMacro;
+	addPlugin(name:string, parameters:string[], call): iMacro;
+	getSource(): string;
 }
 
 interface iMacroPropertiesPanel extends iPanel {
@@ -29,8 +30,8 @@ interface iMacroPropertiesPanel extends iPanel {
 }
 
 interface iMacroPanel extends iVerticalBorderPanel {
-	addPlugins(_m);
-	addTool(_m);
+	addPlugins(macro:iMacro);
+	addTool(macro:iMacro);
 	showPlugins();
 	showTools();
 	addBlankLI();

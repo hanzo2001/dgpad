@@ -1,55 +1,63 @@
+/// <reference path="../typings/iCanvas.d.ts" />
+/// <reference path="../typings/GUI/iiPadDOMElt.d.ts" />
 
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
 
 export class Macro {
-	name;
-	shortname;
-	protected paramTypes;
-	protected exec;
-	protected canvas;
-	protected params;
-	protected Cn;
-	protected Li;
-	constructor(_canvas, _name, _p, _proc) {
-		this.name = _name;
-		this.shortname = _name.split("/");
+	name: string;
+	shortname: string;
+	protected paramTypes: string[];
+	protected exec: (...a) => void;// function
+	protected canvas: iCanvas;
+	protected params: any[];
+	protected Cn: iConstruction;
+	protected Li: iiPadDOMElt;
+	/**
+	 * The exec parameter is a function that expects params.length arguments of types params[i]
+	 */
+	constructor(canvas:iCanvas, name:string, params:string[], exec) {
+		this.name = name;
+		this.shortname = (a=>a[a.length-1])(name.split("/"));
 		this.shortname = this.shortname[this.shortname.length - 1];
-		this.paramTypes = _p;
-		this.exec = _proc;
-		this.canvas = _canvas;
+		this.paramTypes = params;
+		this.exec = exec;
+		this.canvas = canvas;
 		this.params = [];
 		this.Cn = null;
 		this.Li = null;
 	}
 	tagPossibleInitials() {
 		let v = this.Cn.elements();
-		for (let i = 0, len = v.length; i < len; i++) {
-			if (v[i].isInstanceType(this.paramTypes[this.params.length])) {
-				if (v[i].getMacroMode() === 0) {
+		let i=0, s=v.length;
+		while (i<s) {
+			let element = v[i];
+			if (element.isInstanceType(this.paramTypes[this.params.length])) {
+				if (element.getMacroMode() === 0) {
 					// S'il s'agit d'un neutre
-					v[i].setMacroMode(4);
+					element.setMacroMode(4);// Construction.paint = macroPaint
 				}
 			} else {
-				if (v[i].getMacroMode() !== 5) {
+				if (element.getMacroMode() !== 5) {
 					// S'il ne s'agit pas d'un initial déjà déclaré
-					v[i].setMacroMode(0);
+					element.setMacroMode(0);// Construction.paint = standardPaint
 				}
 			}
+			i++;
 		}
 	}
-	init(_li, _cn) {
+	init(li:iiPadDOMElt, cn:iConstruction) {
 		this.params = [];
-		this.Li = _li;
-		this.Cn = _cn;
+		this.Li = li;
+		this.Cn = cn;
 		this.nextStep();
 	}
-	addParam(_n) {
-		this.params.push(_n);
+	addParam(p:any) {
+		this.params.push(p);
 		this.nextStep();
 	}
 	getSource() {
-		let p='[]', t='[]';
+		let p='[]';
 		if (this.paramTypes.length > 0) {
 			p = '["' + this.paramTypes.join('","') + '"]';
 		}
@@ -59,15 +67,13 @@ export class Macro {
 		return txt;
 	}
 	private executeMacro() {
-		let s = "myexecutefunc=" + this.exec.toString();
-		s += '\n$macroFinals=myexecutefunc("' + this.params.join('","') + '")';
+		let s = `myexecutefunc=${this.exec.toString()}\n$macroFinals=myexecutefunc("${this.params.join('","')}")`;
 		this.canvas.undoManager.beginAdd();
 		this.canvas.InterpretMacro(s);
 		this.canvas.undoManager.endAdd();
 	}
-	private commentMacro(_i, _len, _tpe) {
-		let t = ' :<p class="macroLIclassComment">' + _i + '/' + _len + ' - ' + $L.object[_tpe] + ' ?</p>';
-		return t;
+	private commentMacro(i:number, len:number, type:string) {
+		return ` :<p class="macroLIclassComment">${i}/${len}-${$L.object[type]}?</p>`;
 	}
 	private nextStep() {
 		// S'il s'agit d'une macro sans initial :
@@ -80,16 +86,18 @@ export class Macro {
 		}
 		if (this.params.length < this.paramTypes.length) {
 			this.tagPossibleInitials();
-			// Curiosité : le innerHTML semble prendre beaucoup de temps sur touchpad
-			// D'où l'execution par setTimeout dans un autre Thread...
-			setTimeout(function() {
-				//this.Li.settxt(this.Li.macro.name + commentMacro(this.params.length + 1, this.paramTypes.length, this.paramTypes[this.params.length]));
-				this.Li.o().innerHTML = this.Li.macro.shortname + this.commentMacro(this.params.length + 1, this.paramTypes.length, this.paramTypes[this.params.length]);
-			}, 1);
+			setTimeout(() => {
+				let shortname = this.Li.macro.shortname;
+				let i = this.params.length + 1;
+				let len = this.paramTypes.length;
+				let type = this.paramTypes[this.params.length];
+				let comment = this.commentMacro(i, len, type);
+				this.Li.getDocObject().innerHTML = shortname+comment;
+			}, 10);// buffed from 1 to 10
 		} else {
 			this.executeMacro();
 			//this.canvas.macrosManager.endMacro();
-			this.canvas.getConstruction().setMode(5);
+			this.canvas.getConstruction().setMode(5);// Construction.paint = macroEXEPaint
 			this.canvas.paint();
 			this.params = [];
 			this.nextStep();

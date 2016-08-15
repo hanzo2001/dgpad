@@ -36,7 +36,7 @@ export class NamesManager implements iNamesManager {
 	refresh() {
 		this.panel.refreshkeyboard()
 	}
-	getName() {
+	getName(): string {
 		return this.panel.getName();
 	}
 	setName(_o) {
@@ -46,7 +46,7 @@ export class NamesManager implements iNamesManager {
 			this.panel.refreshkeyboard();
 		}
 	}
-	replaceName(_o) {
+	replaceName(_o): boolean {
 		if (this.panel.isVisible() && this.panel.isEditMode()) {
 			_o.setName(this.panel.getName());
 			_o.setShowName(true);

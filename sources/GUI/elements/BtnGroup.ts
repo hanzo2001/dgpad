@@ -1,17 +1,18 @@
+/// <reference path="../../typings/GUI/iBtnGroup.d.ts" />
 
-export class BtnGroup {
+export class BtnGroup implements iBtnGroup {
 	protected a: any[];
 	constructor() {
 		this.a = [];
 	}
-	add(button) {
+	add(button:Deselectable) {
 		this.a.push(button);
 	}
 	deselect() {
-		let i=0, s=this.a.length;
-		while (i<s) {
-			this.a[i++].deselect();
-		}
+		this.a.forEach(deselect);
 	}
 }
 
+function deselect() {
+	this.deselect();
+}

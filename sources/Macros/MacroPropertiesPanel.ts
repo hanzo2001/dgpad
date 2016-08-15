@@ -6,8 +6,8 @@ var $L = (<any>window).$L;
 var $APP_PATH = (<any>window).$APP_PATH;
 
 export class MacroPropertiesPanel extends Panel {
-	protected macropanel;
-	protected canvas;
+	protected macropanel: iMacroPanel;
+	protected canvas: iCanvas;
 	protected params: any[];
 	protected targets: any[];
 	protected exec;
@@ -25,10 +25,10 @@ export class MacroPropertiesPanel extends Panel {
 	protected span_final: GUIElement;
 	protected div_exec: GUIElement;
 	protected textarea_exec: GUIElement;
-	constructor(_canvas, _macropanel) {
-		super(_macropanel.getDocObject());
+	constructor(_canvas:iCanvas, macropanel:iMacroPanel) {
+		super(macropanel);
 		//$U.extend(this, new Panel(macropanel.getDocObject()));
-		this.macropanel = _macropanel;
+		this.macropanel = macropanel;
 		this.canvas = _canvas;
 		this.params = [];
 		this.targets = [];
@@ -39,7 +39,6 @@ export class MacroPropertiesPanel extends Panel {
 		this.nameDIV       = new GUIElement(this, "div");
 		this.form          = new GUIElement(this, "form");
 		this.name          = new GUIElement(this, "input");
-		this.inp           = <HTMLInputElement>this.name.getDocObject();
 		this.div_init      = new GUIElement(this, "div");
 		this.img_init      = new GUIElement(this, "img");
 		this.span_init     = new GUIElement(this, "span");
@@ -48,6 +47,7 @@ export class MacroPropertiesPanel extends Panel {
 		this.span_final    = new GUIElement(this, "span");
 		this.div_exec      = new GUIElement(this, "div");
 		this.textarea_exec = new GUIElement(this, "textarea");
+		this.inp           = <HTMLInputElement>this.name.getDocObject();
 
 		this.setAttr("className", "macroPropsDIV");
 		this.transition("translate_x", 0.2, -200);

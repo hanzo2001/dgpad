@@ -1,13 +1,14 @@
+/// <reference path="../typings/GUI/iBtnGroup.d.ts" />
 
 var $APP_PATH = (<any>window).$APP_PATH;
 
 export class ControlButton {
-	protected group;
+	protected group: iBtnGroup;
 	protected isOn: boolean;
 	protected active: boolean;
 	protected opacityFactor: number;
-	protected docObject;
-	constructor(owner, left:number, top:number, width:number, height:number, src:string, isOn:boolean, group, _proc) {
+	protected docObject: HTMLElement;
+	constructor(owner:iControlPanel, left:number, top:number, width:number, height:number, src:string, isOn:boolean, group:iBtnGroup, _proc:()=>void) {
 		this.docObject = document.createElement("div");
 		this.group = group;
 		if (this.group) {this.group.add(this);}
@@ -61,21 +62,21 @@ export class ControlButton {
 	}
 	setActive(bool:boolean) {
 		this.active = bool;
-		this.docObject.style.opacity = this.active ? "1" : this.opacityFactor;
+		this.docObject.style.opacity = this.active ? '1' : this.opacityFactor+'';
 	}
 	deselect() {
 		this.isOn = false;
-		this.docObject.style.opacity = this.opacityFactor;
+		this.docObject.style.opacity = this.opacityFactor+'';
 	}
 	select() {
 		if (this.group) {this.group.deselect();}
 		this.isOn = true;
 		this.docObject.style.opacity = "1";
 	}
-	isSelected() {
+	isSelected(): boolean {
 		return this.isOn;
 	}
-	getDocObject() {
+	getDocObject(): HTMLElement {
 		return this.docObject;
 	}
 }

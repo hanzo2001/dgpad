@@ -496,9 +496,9 @@ function drawPartialLine(ctx, xA, yA, xB, yB, iA, iB) {
 
 
 
-function extend(_obj, _superObject) {    
-	for (let sProperty in _superObject) {        
-		_obj[sProperty] = _superObject[sProperty];    
+function extend(_obj, _superObject) {
+	for (let sProperty in _superObject) {
+		_obj[sProperty] = _superObject[sProperty];
 	}
 	return _superObject;
 };
@@ -821,7 +821,7 @@ function extractDelta(e) {
 	else if (e.detail){n = e.detail * -40;}
 	else if (e.originalEvent && e.originalEvent.wheelDelta) {n = e.originalEvent.wheelDelta;}
 	return isNaN(n) ? 0 : n;
-};
+}
 
 function isFullLocalStorage() {
 	let n = 0;
@@ -830,7 +830,7 @@ function isFullLocalStorage() {
 		if (c && c.lock) {n++;}
 	}
 	return (n >= ($P.localstorage.max - 1));
-};
+}
 
 function addDomUtils(el): ExpandoDOMElement {
 	el.event_proc = <CommonEvent[]>[];
@@ -899,7 +899,7 @@ function addDomUtils(el): ExpandoDOMElement {
 function createDiv(_otherType?) {
 	let el = document.createElement((_otherType === undefined) ? "div" : _otherType);
 	return addDomUtils(el);
-};
+}
 
 function prompt(_mess, _default, _type, _proc, _w, _h, _inp_w) {
 	let w = _w ? _w : 350;
@@ -1008,7 +1008,6 @@ function prompt(_mess, _default, _type, _proc, _w, _h, _inp_w) {
 	}, 200);
 }
 
-
 function clearOneLocalStorage() {
 	// On parcours le localstorage tant qu'on rencontre un élément verrouillé :
 	let m = localStorage.length;
@@ -1025,8 +1024,7 @@ function clearOneLocalStorage() {
 		// Sinon, on supprime l'élement m :
 		localStorage.removeItem($P.localstorage.base + m);
 	}
-};
-
+}
 
 function shiftLocalStorages() {
 	for (let i = localStorage.length + 1; i > 1; i--) {
@@ -1038,11 +1036,11 @@ function shiftLocalStorages() {
 			localStorage.removeItem(k1);
 		}
 	}
-};
+}
 
 function setFilePickerDefaultBox(_s) {
 	localStorage.setItem("FilePickerDefaultBox", _s);
-};
+}
 
 function getFilePickerDefaultBox() {
 	let box = localStorage.getItem("FilePickerDefaultBox");
@@ -1050,7 +1048,7 @@ function getFilePickerDefaultBox() {
 		return box;
 	else
 		return "";
-};
+}
 
 function set$FPICKERFRAME(_p) {
 	$FPICKERFRAME = _p
@@ -1094,7 +1092,7 @@ function timer(_proc, _delay, _param) {
 		delay = _d;
 		this.start();
 	};
-};
+}
 
 function timers(_dlay) {
 	let currentDelay = 0,
@@ -1147,7 +1145,7 @@ function timers(_dlay) {
 		}
 		this.start();
 	};
-};
+}
 
 function TimeOut(_delay, _function) {
 	let time = 0;
@@ -1170,8 +1168,7 @@ function TimeOut(_delay, _function) {
 	this.isTimeout = function() {
 		return ((Date.now() - time) > delay);
 	};
-};
-
+}
 
 let isMobile = {
 	android: function() {
@@ -1208,11 +1205,10 @@ let isMobile = {
 	}
 };
 
-
 function isOldAndroid() {
 	let ua = navigator.userAgent;
 	return ((ua.indexOf("Android") >= 0) && (parseFloat(ua.slice(ua.indexOf("Android") + 8)) < 4.4));
-};
+}
 
 let isBrowser = {
 	firefox: function() {
@@ -1225,7 +1221,7 @@ function scaleViewportOnMobile() {
 		let viewport = document.getElementById('wholeViewport');
 		viewport.setAttribute("content", "width=device-width, maximum-scale=1.0, initial-scale=0.65 ,user-scalable=no");
 	}
-};
+}
 
 function initEvents(ZC, cTag) {
 	cTag.canvas = ZC;
@@ -1322,7 +1318,7 @@ function initCanvas(_id) {
 	////    let sss=eee.simplify("times(3,pow(x,minus(3,1)))");
 	//    let sss=eee.simplify("power(x,minus(3,1))");
 	//    console.log(sss);
-};
+}
 
 export var Utils = {
 	doublePI,

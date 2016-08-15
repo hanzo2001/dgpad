@@ -10,24 +10,26 @@ var $U = (<any>window).$U;
 var $SCALE = (<any>window).$SCALE;
 var $FPICKERFRAME = (<any>window).$FPICKERFRAME;
 
+var filepicker;
+
 export class ControlPanel extends HorizontalBorderPanel {
 	protected canvas: iCanvas;
-	protected propBtn;
-	protected left;
-	protected size;
-	protected margintop;
-	protected right;
-	protected copyDlog;
-	protected historyDlog;
-	protected modeGroup;
-	protected arrowBtn;
-	protected undoBtn;
-	protected redoBtn;
-	protected nameBtn;
-	protected gridBtn;
-	protected copyBtn;
-	protected calcBtn;
-	protected historyBtn;
+	protected left: number;
+	protected right: number;
+	protected size: number;
+	protected margintop: number;
+	protected modeGroup: BtnGroup;
+	protected copyDlog: ExportPanel;
+	protected historyDlog: HistoryPanel;
+	protected propBtn: ControlButton;
+	protected undoBtn: ControlButton;
+	protected redoBtn: ControlButton;
+	protected nameBtn: ControlButton;
+	protected gridBtn: ControlButton;
+	protected copyBtn: ControlButton;
+	protected calcBtn: ControlButton;
+	protected arrowBtn: ControlButton;
+	protected historyBtn: ControlButton;
 	constructor(canvas:iCanvas) {
 		super(canvas, canvas.prefs.controlpanel.size, false);
 		//$U.extend(this, new HorizontalBorderPanel(this.canvas, this.canvas.prefs.controlpanel.size, false));
@@ -35,9 +37,9 @@ export class ControlPanel extends HorizontalBorderPanel {
 		var left = 10 * $SCALE;
 		var size = 30 * $SCALE;
 		var margintop = 5 * $SCALE;
-		this.right = this.getBounds().width - left - size;
 		var hspace = 15 * $SCALE;
 		var smallhspace = 5 * $SCALE;
+		this.right = this.getBounds().width - left - size;
 		this.copyDlog = null;
 		this.historyDlog = null;
 		this.modeGroup = new BtnGroup();
@@ -93,11 +95,11 @@ export class ControlPanel extends HorizontalBorderPanel {
 		this.calcBtn.select();
 		this.calcMode();
 	}
-	setUndoBtn(_active) {
-		this.undoBtn.setActive(_active);
+	setUndoBtn(activate:boolean) {
+		this.undoBtn.setActive(activate);
 	}
-	setRedoBtn(_active) {
-		this.redoBtn.setActive(_active);
+	setRedoBtn(activate:boolean) {
+		this.redoBtn.setActive(activate);
 	}
 	selectArrowBtn() {
 		this.arrowBtn.select();
@@ -114,17 +116,16 @@ export class ControlPanel extends HorizontalBorderPanel {
 	deselectAll() {
 		this.modeGroup.deselect();
 	}
-	selectNameBtn(_b) {
-		if (_b) this.nameBtn.select()
-		else this.nameBtn.deselect();
+	selectNameBtn(select:boolean) {
+		select ? this.nameBtn.select() : this.nameBtn.deselect();
 	}
-	private addBtnLeft(_code, _sel, _group, _proc) {
+	private addBtnLeft(_code:string, _sel:boolean, _group:BtnGroup, _proc:()=>void): ControlButton {
 		var btn = new ControlButton(this, this.left, this.margintop, this.size, this.size, "NotPacked/images/controls/" + _code + ".png", _sel, _group, _proc);
 		this.left += this.size;
 		return btn;
 	}
-	private addSpaceLeft(h) {
-		this.left += h;
+	private addSpaceLeft(space:number) {
+		this.left += space;
 	}
 	private addSepLeft() {
 		var btn = new ControlButton(this, this.left, this.margintop, this.size, this.size, "NotPacked/images/controls/sep.png", true, null, null);
@@ -133,95 +134,74 @@ export class ControlPanel extends HorizontalBorderPanel {
 	private addNullLeft() {
 		var btn = new ControlButton(this, this.left, this.margintop, 0, this.size, "NotPacked/images/controls/sep.png", true, null, null);
 	}
-	private addBtnRight(_code, _sel, _group, _proc) {
+	private addBtnRight(_code:string, _sel:boolean, _group:BtnGroup, _proc:()=>void): ControlButton {
 		var btn = new ControlButton(this, this.right, this.margintop, this.size, this.size, "NotPacked/images/controls/" + _code + ".png", _sel, _group, _proc);
 		this.right -= this.size;
 		return btn;
 	}
-	private addSpaceRight(h) {
-		this.right -= h;
+	private addSpaceRight(space:number) {
+		this.right -= space;
 	}
-	private checkMode(_i) {
-		if (this.canvas.getMode() === _i) {
+	private checkMode(mode:number): boolean {
+		if (this.canvas.getMode() === mode) {
 			this.modeGroup.deselect();
 			this.canvas.setMode(0);
 			this.canvas.paint();
 			return true;
-		} else
-			return false;
+		}
+		return false;
 	}
 	private arrowMode() {
-		//        if (checkMode(1)) 
-		//        this.arrowBtn.select();
-		if (this.checkMode(1))
-			return;
+		// if (checkMode(1)) {this.arrowBtn.select();}
+		if (this.checkMode(1)) {return;}
 		this.canvas.setMode(1);
 		this.canvas.paint();
 	}
 	private fingerMode() {
-		//        fingerBtn.select();
-		if (this.checkMode(7))
-			return;
+		// fingerBtn.select();
+		if (this.checkMode(7)) {return;}
 		this.canvas.setMode(7);
 		this.canvas.paint();
 	}
 	private hideMode() {
-		if (this.checkMode(2))
-			return;
+		if (this.checkMode(2)) {return;}
 		this.canvas.setMode(2);
 		this.canvas.paint();
 	}
 	private trashMode() {
-		if (this.checkMode(3))
-			return;
+		if (this.checkMode(3)) {return;}
 		this.canvas.setMode(3);
 		this.canvas.paint();
 	}
 	private macroMode() {
-		if (this.checkMode(4))
-			return;
-		// if (this.canvas.namesManager.isVisible())
-		//     nameProc();
-		if (this.historyDlog)
-			this.historyProc();
-		if (this.copyDlog)
-			this.exportProc();
+		if (this.checkMode(4)) {return;}
+		// if (this.canvas.namesManager.isVisible()) {nameProc();}
+		if (this.historyDlog) {this.historyProc();}
+		if (this.copyDlog) {this.exportProc();}
 		this.canvas.setMode(4);
 		this.canvas.paint();
 	}
 	private calcMode() {
-		if (this.checkMode(8))
-			return;
-		// if (this.canvas.namesManager.isVisible())
-		//     nameProc();
-		if (this.historyDlog)
-			this.historyProc();
-		if (this.copyDlog)
-			this.exportProc();
+		if (this.checkMode(8)) {return;}
+		// if (this.canvas.namesManager.isVisible()) {nameProc();}
+		if (this.historyDlog) {this.historyProc();}
+		if (this.copyDlog) {this.exportProc();}
 		this.canvas.setMode(8);
 		this.canvas.paint();
 	}
 	private texMode() {
-		if (this.checkMode(10))
-			return;
-		// if (this.canvas.namesManager.isVisible())
-		//     nameProc();
-		if (this.historyDlog)
-			this.historyProc();
-		if (this.copyDlog)
-			this.exportProc();
+		if (this.checkMode(10)) {return;}
+		// if (this.canvas.namesManager.isVisible()) {nameProc();}
+		if (this.historyDlog) {this.historyProc();}
+		if (this.copyDlog) {this.exportProc();}
 		this.canvas.setMode(10);
 		this.canvas.paint();
 	}
 	private propsMode() {
-		if (this.checkMode(6))
-			return;
-		// if (this.canvas.namesManager.isVisible())
-		//     nameProc();
-		if (this.historyDlog)
-			this.historyProc();
-		if (this.copyDlog)
-			this.exportProc();
+		if (this.checkMode(6)) {return;}
+		// if (this.canvas.namesManager.isVisible()) {nameProc();}
+		if (this.historyDlog) {this.historyProc();}
+		if (this.copyDlog) {this.exportProc();}
 		this.canvas.setMode(6);
 		this.canvas.paint();
 	}
@@ -252,8 +232,9 @@ export class ControlPanel extends HorizontalBorderPanel {
 				this.arrowBtn.select();
 				this.arrowMode();
 			}
-			if (this.copyDlog)
+			if (this.copyDlog) {
 				this.exportProc();
+			}
 			this.historyDlog = new HistoryPanel(this.canvas, this.historyProc);
 			this.historyBtn.select();
 		}
@@ -273,8 +254,9 @@ export class ControlPanel extends HorizontalBorderPanel {
 			this.copyDlog = null;
 			this.copyBtn.deselect();
 		} else {
-			if (this.historyDlog)
+			if (this.historyDlog) {
 				this.historyProc();
+			}
 			if (!this.canvas.getConstruction().isConsultOrArrowMode()) {
 				this.arrowBtn.select();
 				this.arrowMode();
@@ -289,19 +271,18 @@ export class ControlPanel extends HorizontalBorderPanel {
 			// mimetype: 'text/plain',
 			openTo: $U.getFilePickerDefaultBox()
 		},
-			function (FPFile) {
-				filepicker.read(FPFile, function (data) {
-					this.canvas.OpenFile("", $U.utf8_decode(data));
-					if ($FPICKERFRAME !== null) {
-						$FPICKERFRAME.close();
-						$FPICKERFRAME = null;
-					}
-				});
+		function (FPFile) {
+			filepicker.read(FPFile, function (data) {
+				this.canvas.OpenFile("", $U.utf8_decode(data));
+				if ($FPICKERFRAME !== null) {
+					$FPICKERFRAME.close();
+					$FPICKERFRAME = null;
+				}
 			});
+		});
 	}
 	private uploadProc() {
-		if (this.canvas.getConstruction().isEmpty())
-			return;
+		if (this.canvas.getConstruction().isEmpty()) {return;}
 		var source = this.canvas.macrosManager.getSource() + this.canvas.getConstruction().getSource() + this.canvas.textManager.getSource();
 		filepicker.exportFile(
 			"http://dgpad.net/scripts/NotPacked/thirdParty/temp.txt", {
@@ -337,30 +318,5 @@ export class ControlPanel extends HorizontalBorderPanel {
 				console.log(FPError.toString());
 			}
 		);
-		//        filepicker.store(
-		//                $U.base64_encode(source),
-		//                {
-		//                    base64decode: true,
-		//                    mimetype: 'text/plain'
-		//                },
-		//        function(InkBlob) {
-		//            filepicker.exportFile(
-		//                    InkBlob,
-		//                    {suggestedFilename:"",extension: ".txt",openTo: $U.getFilePickerDefaultBox()},
-		//            function(InkBlob) {
-		//                if ($FPICKERFRAME !== null) {
-		//                    $FPICKERFRAME.close();
-		//                    $FPICKERFRAME = null;
-		//                }
-		//            },
-		//                    function(FPError) {
-		//                        console.log(FPError.toString());
-		//                    }
-		//            );
-		//        },
-		//                function(FPError) {
-		//                    console.log(FPError.toString());
-		//                }
-		//        );
 	}
 }

@@ -1,7 +1,5 @@
 $macros = {};
 
-
-
 $macros[$L.macros.repere] = {
     name: $L.macros.repere,
     parameters: ["point"],

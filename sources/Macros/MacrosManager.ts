@@ -1,3 +1,4 @@
+/// <reference path="../typings/GUI/iiPadDOMElt.d.ts" />
 
 import {Macro} from './Macro';
 import {MacroPanel} from './MacroPanel';
@@ -5,16 +6,14 @@ import {MacroPanel} from './MacroPanel';
 var $U = (<any>window).$U;
 
 export class MacrosManager {
-	protected canvas;
-	protected plugins;
-	protected tools;
-	protected currentTool;
-	protected macroPanel;
-	constructor(_canvas) {
-		this.canvas = _canvas;
-		// Macros de bibliothèque :
+	protected canvas: iCanvas;
+	protected plugins: iMacro[];// Macros de bibliothèque
+	protected tools: iMacro[];// Macros personnelles
+	protected currentTool: iMacro;
+	protected macroPanel: MacroPanel;
+	constructor(canvas:iCanvas) {
+		this.canvas = canvas;
 		this.plugins = [];
-		// Macros personnelles :
 		this.tools = [];
 		this.currentTool = null;
 		this.macroPanel = null;
@@ -35,8 +34,8 @@ export class MacrosManager {
 		this.canvas.getConstruction().setMode(4);
 		this.canvas.paint();
 	}
-	addParam(_n) {
-		if (this.currentTool) {this.currentTool.addParam(_n);}
+	addParam(p:any) {
+		if (this.currentTool) {this.currentTool.addParam(p);}
 	}
 	//Pour la construction de macros :
 	refreshConstructionPanel(_p, _t, _e) {
@@ -53,7 +52,7 @@ export class MacrosManager {
 	showPanel() {
 		this.currentTool = null;
 		if (!this.macroPanel) {
-			this.macroPanel = new MacroPanel(this.canvas, this.startMacro);
+			this.macroPanel = new MacroPanel(this.canvas, (li,m)=>this.startMacro(li,m));
 			this.loadPluginsList();
 			this.loadToolsList();
 		} else {
@@ -66,17 +65,17 @@ export class MacrosManager {
 			this.macroPanel = null;
 		}
 	}
-	addTool(_n, _p, _e) {
-		let m = new Macro(this.canvas, _n, _p, _e);
-		this.tools.push(m);
-		return m;
+	addTool(name:string, params:string[], call): iMacro {
+		let macro = new Macro(this.canvas, name, params, call);
+		this.tools.push(macro);
+		return macro;
 	}
-	addPlugin(_n, _p, _e) {
-		let m = new Macro(this.canvas, _n, _p, _e);
-		this.plugins.push(m);
-		return m;
+	addPlugin(name:string, parameters:string[], call): iMacro {
+		let macro = new Macro(this.canvas, name, parameters, call);
+		this.plugins.push(macro);
+		return macro;
 	}
-	getSource() {
+	getSource(): string {
 		if (this.tools.length === 0) {return "";}
 		let txt = "// Macros :\n";
 		txt += "$macros={};\n";
@@ -87,7 +86,7 @@ export class MacrosManager {
 		}
 		return txt;
 	}
-	private macrosSortFilter(a, b) {
+	private macrosSortFilter(a:iMacro, b:iMacro): number {
 		if (a.name.toUpperCase() < b.name.toUpperCase()) {return -1;}
 		if (a.name === b.name) {return 0;}
 		return 1;
@@ -105,13 +104,13 @@ export class MacrosManager {
 		this.macroPanel.showTools();
 	}
 	// Pour l'execution de macros :
-	private startMacro(_li, _m) {
-		if (this.currentTool === _m) {
+	private startMacro(li:iiPadDOMElt, macro:iMacro) {
+		if (this.currentTool === macro) {
 			this.endMacro();
 		} else {
-			this.currentTool = _m;
+			this.currentTool = macro;
 			this.canvas.getConstruction().setMode(5);
-			_m.init(_li, this.canvas.getConstruction());
+			macro.init(li, this.canvas.getConstruction());
 			this.canvas.paint();
 		}
 	}

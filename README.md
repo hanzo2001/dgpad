@@ -83,6 +83,8 @@ Utils.js/
 - The contents of the file are **EVAL**ed and the defined macros are supposed to populate `Interpreter.$macros`.
 - **Interpreter** adds the macros to the `Canvas.MacrosManager` which generates a `Macro` for each one.
 
+Currently, the interpreter is completely broken. I'm trying to grasp a full understanding of the inner workings of this monstruous string evaluator. The most likely route will be to leave the original interpreter alone and start a V2 model for further implementation.
+
 ## Global vars
 
 ##### $BODY\_SCRIPT
@@ -218,47 +220,9 @@ Uninitialized `./Docs/Preferencees.js`
 Undocumented. **Found**
 Uninitialized `./NotPacked/lang/LocalStrings.js`
 
-## Completed files
-
-- GUIElement
-  * Label
-  * SimpleDialog
-  * DlogContainer
-  * InputText
-  * ImageGroup
-  * ImageBox
-  * Iframe
-  * CloseBox
-  * Checkbox
-  * Button
-  * BtnGroup
-  * iPadDOMElt _may be considered an extension of GUIElement_ too much duplicated functionality
-  * iPadList _idem_
-  * ColorPicker **moved** to libs. It's self contained
-- DeleteAll
-- Panel
-  * VerticalBorderPanel
-  * HorizontalBorderPanel
-  * CentralPanel
-  * viewportListPanel
-  * progressBar
-  * BubblePanel _circular reference #1_
-  * BubbleListPanel _circular reference #1_
-- Macro
-  * MacroPropertiesPanel
-  * MacrosManager
-  * MacrosPanel
-- Properties
-  * most but `PropertiesPanel` and `props_colorPanel`
-- History
-  * HistoryPanel
-  * HistoryPanel_Elt
-
-### currently
-
-ExpresionObject, ListObject, CurvusOject
-
 ## ClusterFucks
+
+outdated
 
 ### CoordsSystem.js
 

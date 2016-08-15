@@ -2,12 +2,12 @@
 var $APP_PATH = (<any>window).$APP_PATH;
 
 export class windowOpenIFrame {
-	protected FPDiv;
-	protected FPFrame;
+	protected FPDiv: HTMLElement;
+	protected FPFrame: HTMLIFrameElement;
 	constructor(url) {
 		this.FPDiv = document.createElement("div");
-		this.FPDiv.setAttribute('width', window.innerWidth);
-		this.FPDiv.setAttribute('height', window.innerHeight);
+		this.FPDiv.style.width = window.innerWidth+'';
+		this.FPDiv.style.height = window.innerHeight+'';
 		this.FPDiv.style.position = "absolute";
 		this.FPDiv.style.left = "0px";
 		this.FPDiv.style.top = "0px";
@@ -20,11 +20,11 @@ export class windowOpenIFrame {
 		};
 		this.FPFrame = document.createElement("iframe");
 		//this.FPFrame.setAttribute("ID", "FP_" + canvas.getID());
-		this.FPFrame.setAttribute('width', FPsize.width);
-		this.FPFrame.setAttribute('height', FPsize.height);
-		this.FPFrame.setAttribute('frameborder', 0);
-		this.FPFrame.setAttribute('marginheight', 0);
-		this.FPFrame.setAttribute('marginwidth', 0);
+		this.FPFrame.width = FPsize.width+'';
+		this.FPFrame.height = FPsize.height+'';
+		//this.FPFrame.frameborder = 0+'';//HTML4
+		//this.FPFrame.marginheight = 0+'';//HTML4
+		//this.FPFrame.marginwidth = 0+'';//HTML4
 		this.FPFrame.style.position = "absolute";
 		this.FPFrame.style.left = (window.innerWidth - FPsize.width) / 2 + "px";
 		this.FPFrame.style.top = (window.innerHeight - FPsize.height) / 2 + "px";
@@ -42,16 +42,16 @@ export class windowOpenIFrame {
 		FPClose.style.top = ((window.innerHeight - FPsize.height) / 2 - 20) + "px";
 		FPClose.style.width = "30px";
 		FPClose.style.height = "30px";
-		FPClose.addEventListener('click', () => document.body.removeChild(this.FPDiv));
+		FPClose.addEventListener('click', () => this.close());
 		this.FPDiv.appendChild(this.FPFrame);
 		this.FPDiv.appendChild(FPClose);
 		this.show();
 		this.FPFrame.src = url;
 	}
-	div() {
+	div(): HTMLElement {
 		return this.FPDiv;
 	}
-	frame() {
+	frame(): HTMLIFrameElement {
 		return this.FPFrame;
 	}
 	show() {

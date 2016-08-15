@@ -121,13 +121,13 @@ export class NamesPanel implements iNamesPanel {
 		editbox.setTextFontSize(28);
 		editbox.setTextColor('#252525');
 	}
-	isEditMode() {
+	isEditMode(): boolean {
 		return this.replace_mode
 	}
 	setObserver(fn:() => string[]) {
 		this.getNames = fn;
 	}
-	setbounds(l, t, w, h) {
+	setbounds(l:number, t:number, w:number, h:number) {
 		this.left = l;
 		this.top = t;
 		this.width = w;
@@ -322,7 +322,7 @@ export class NamesPanel implements iNamesPanel {
 		this.md.add(t);
 		this.mods.push(t);
 	}
-	private initmods(_c:string, _m:string) {
+	private initmods(_c:string, _m:string[]) {
 		this.mods = [];
 		this.md.innerHTML = '';
 		let i=0, s=_m.length;
