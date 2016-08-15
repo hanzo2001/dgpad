@@ -1,14 +1,15 @@
+/// <reference path="../typings/iCanvas.d.ts" />
 
 var $U = (<any>window).$U;
 var $APP_PATH = (<any>window).$APP_PATH;
 
 export class FilePickerDIV {
-	protected canvas;
-	protected ParentDOM;
-	protected FPDiv;
-	protected FPsize;
-	protected FPFrame;
-	constructor(_c) {
+	protected canvas: iCanvas;
+	protected ParentDOM: HTMLElement;
+	protected FPDiv: HTMLElement;
+	protected FPsize: {width:number, height:number};
+	protected FPFrame: HTMLIFrameElement;
+	constructor(_c:iCanvas) {
 		this.canvas = _c;
 		this.ParentDOM = _c.getDocObject().parentNode;
 		this.FPDiv = document.createElement('div');
@@ -52,13 +53,13 @@ export class FilePickerDIV {
 		this.FPDiv.appendChild(this.FPFrame);
 		this.FPDiv.appendChild(FPClose);
 	}
-	div() {
+	div(): HTMLElement {
 		return this.FPDiv;
 	}
-	id() {
-		return ('FP_' + this.canvas.getID());
+	id(): string {
+		return 'FP_' + this.canvas.getID();
 	}
-	frame() {
+	frame(): HTMLIFrameElement {
 		return this.FPFrame;
 	}
 	show() {
