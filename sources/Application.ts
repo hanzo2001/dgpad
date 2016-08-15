@@ -1,5 +1,7 @@
 /// <reference path="./typings/iApplication.d.ts" />
 
+import {Canvas} from './Canvas';
+import {windowOpenIFrame} from './ControlPanel/windowOpenIFrame';
 declare var filepicker;
 
 type ScriptData = {
@@ -32,7 +34,7 @@ export class Application {
 	userAgent: string;
 	safari: boolean;
 	ios: boolean;
-	filePickerFrame;
+	filePickerFrame: windowOpenIFrame;
 	application: boolean;
 	ios_application: boolean;
 	constructor() {
@@ -139,7 +141,7 @@ export class Application {
 		let e = document.getElementById(id);
 		e.oncontextmenu = () => false;
 		let wheelevent = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel";
-		e.addEventListener(wheelevent,   (e) => canvas.mouseWheel(e), false);
+		e.addEventListener(wheelevent,   (e) => canvas.mouseWheel(<MouseEvent>e), false);
 		e.addEventListener('touchmove',  (e) => canvas.touchMoved(e), false);
 		e.addEventListener('touchstart', (e) => canvas.touchStart(e), false);
 		e.addEventListener('touchend',   (e) => canvas.touchEnd(e), false);
