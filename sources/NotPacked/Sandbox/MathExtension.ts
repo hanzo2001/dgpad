@@ -1,4 +1,4 @@
-/// <reference path="./MathExt.d.ts" />
+/// <reference path="./iMathExtension.d.ts" />
 
 var PI = Math.PI;
 var PI2 = 2 * PI;
@@ -6,11 +6,11 @@ var deg2rad = PI / 180;
 var isArray = Array.isArray;
 var isStr = v => typeof v === 'string';
 
-class MathExt implements iMathExt {
+class MathExtension implements iMathExtension {
 	private g: number;
-	coef3D;
-	doublePI;
-	simplePI;
+	coef3D: number;
+	doublePI: number;
+	simplePI: number;
 	constructor(deg?:boolean) {
 		this.g = deg ? deg2rad : 1;
 	}
@@ -39,15 +39,16 @@ class MathExt implements iMathExt {
 
 	Angle180(A:Point, O:Point, C:Point): Angle {
 		let a = this.Angle360(A, O, C);
-		return (a < this.simplePI ? a : this.doublePI - a) * this.g;
+		return a * this.g;// a will always be less than Pi
+		// return (a < this.simplePI ? a : this.doublePI - a) * this.g;
 	}
 	Angle360(A:Point, O:Point ,C:Point): Angle {
 		var xOA = A[0] - O[0];
 		var yOA = A[1] - O[1];
-		var xOC = C[0] - O[0]
+		var xOC = C[0] - O[0];
 		var yOC = C[1] - O[1];
-		var a = Math.atan2(yOA, xOA);
-		var c = Math.atan2(yOC, xOC);
+		var a = Math.atan2(yOA, xOA);// Domain: (-Pi/2, Pi/2), Diff: Pi
+		var c = Math.atan2(yOC, xOC);// 
 		return (c - a) * this.g;
 	}
 	test(test:boolean, tr:any, fl:any): any {
@@ -228,4 +229,9 @@ class MathExt implements iMathExt {
 	tan(x:number): number {
 		return Math.tan(x*this.g);
 	}
+	sqrt(x:number): number {
+		return Math.sqrt(x);
+	}
 }
+
+export let MathExt = new MathExtension(true);

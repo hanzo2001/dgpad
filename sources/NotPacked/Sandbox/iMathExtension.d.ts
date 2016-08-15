@@ -7,7 +7,7 @@ type Angle = number;
 type num = number | Complex;
 type ComplexSolutions = Complex[];
 
-interface iMathExt {
+interface iMathExtension {
 	coef3D: number;
 	doublePI: number;
 	simplePI: number;
@@ -38,4 +38,5 @@ interface iMathExt {
 	sin(x:number): number;
 	cos(x:number): number;
 	tan(x:number): number;
+	sqrt(x:number): number;
 }
