@@ -3,7 +3,7 @@
 import {Expression} from '../Expression';
 
 export class ObjectConstructor implements iObjectConstructor {
-	protected C: any[];
+	protected C: iConstructionObject[];
 	protected isNewPoint: boolean;
 	protected isSelectCreatePoint: boolean;
 	constructor() {
@@ -36,7 +36,7 @@ export class ObjectConstructor implements iObjectConstructor {
 	addC(o) {
 		this.C.push(o);
 	}
-	isAcceptedInitial(o): boolean {
+	isAcceptedInitial(o:iConstructionObject): boolean {
 		var bool = false;
 		var inis = this.getInitials();
 		if (this.C.length < inis.length) {
@@ -60,35 +60,37 @@ export class ObjectConstructor implements iObjectConstructor {
 			zc.getConstruction().addSelected(this.C[0]);
 		}
 	}
-	setInitialObjects(_sel) {
-		var len = _sel.length;
+	setInitialObjects(os:iConstructionObject[]) {
+		//var len = os.length;
 		this.C = [];
-		for (var i = 0; i < len; i++) {
-			if (this.isAcceptedInitial(_sel[i])) {
-				this.C.push(_sel[i]);
+		let i=0, s=os.length;
+		while (i<s) {
+			if (this.isAcceptedInitial(os[i])) {
+				this.C.push(os[i]);
 			} else {
 				return;
 			}
+			i++;
 		}
 	}
-	selectCreatePoint(zc, ev) {
+	selectCreatePoint(zc:iCanvas, event:Event) {
 		this.isSelectCreatePoint = true;
-		var cn = zc.getConstruction();
-		var newPt = cn.getFirstIndicatedPoint();
-		this.isNewPoint = (newPt === null);
-		if (this.isNewPoint) {
+		var Cn = zc.getConstruction();
+		var point = Cn.getFirstIndicatedPoint();
+		this.isNewPoint = !point;
+		if (this.isNewPoint) {// there is nothing indicated
 			var pc = zc.getPointConstructor();
-			if (cn.getIndicated().length > 0) {
-				pc.setInitialObjects(cn.getIndicated());
+			if (Cn.getIndicated().length) {
+				pc.setInitialObjects(Cn.getIndicated());
 			}
-			newPt = pc.createObj(zc, ev);
+			point = pc.createObj(zc, event);
 			pc.clearC();
 		}
-		this.C.push(newPt);
+		this.C.push(point);
 	}
 	createCallBack(zc, o) {
 	}
-	createObj(zc, ev) {
+	createObj(zc:iCanvas, event:Event) {
 		if (this.C.length > 0) {
 			var s = this.newObj(zc, this.C);
 			zc.addObject(s);
