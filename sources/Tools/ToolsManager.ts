@@ -133,11 +133,11 @@ export class ToolsManager implements iToolsManager {
 			this.showOneTool(this.tool, event);
 		}
 	}
-	private setCoords(event, _o) {
+	private setCoords(event:MouseEvent, o:iConstructionObject) {
 		let cX, cY, lenc, lenl, H, W, startx, starty, ts, w;
-		if (_o.getFamilyCode() === "point") {
-			cX = _o.getX();
-			cY = _o.getY();
+		if (o.getFamilyCode() === "point") {
+			cX = (<iPointObject>o).getX();
+			cY = (<iPointObject>o).getY();
 		} else {
 			cX = this.canvas.mouseX(event);
 			cY = this.canvas.mouseY(event);
