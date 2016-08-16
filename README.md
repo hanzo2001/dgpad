@@ -220,15 +220,61 @@ Uninitialized `./Docs/Preferencees.js`
 Undocumented. **Found**
 Uninitialized `./NotPacked/lang/LocalStrings.js`
 
+## Understand the Canvas Events
+
+During application bootstrap, many events are attached to the **canvas** element. All of them are methods of `Canvas`
+
+Event|Callback
+-----|--------
+`'wheelevent'` |`mouseWheel`
+`'touchmove'`  |`touchMoved`
+`'touchstart'` |`touchStart`
+`'touchend'`   |`touchEnd`
+`'touchcancel'`|`touchEnd`
+`'mousemove'`  |`mouseMoved`
+`'mousedown'`  |`mousePressed`
+`'mouseup'`    |`mouseReleased`
+`'click'`      |`mouseClicked`
+`'dragover'`   |`dragOver`
+`'drop'`       |`drop`
+
+### `Canvas.mousedown`: Understand the initiation of a click or drag
+Internally documented but still lacking parts
+
+### `Canvas.mouseup`: Understand the culmination of a click or drag
+Internally documented but still lacking parts
+
+### `Canvas.wheelevent`: Understand Zoom procedure
+
+1. `Application.initCanvas` adds event listener `Canvas.mousewheel`
+2. `Canvas.mousewheel` extracts **height** info through `Utils.extractDelta`
+4. `Canvas` finds `(x,y)` event page offset from bounds
+3. `Canvas` calls `Construction.zoom` and passes the info
+4. `Construction` updates the **changed** state for the `window`
+5. `Construction` calls `CoordsSystem.zoom`
+  1. clear the canvas
+  2. determine the center
+  3. verify height does not exceed the maximum allowed (confirm that the new **unit** value will not exceed the max)
+  4. **Iterate** over `Construction.elements`. Use `setXY` on free points, `setZoom` on `circle1` instances
+  5. fix new center
+  6. fix new **unit** value (this is going to be a source of precision problems)
+6. `Construction` attempts to  **Validate** all points... I do not understand this
+  1. what is `Construction.V: any[]`? closest guess: `instanceof ConstructionObject`
+  2. attempt to reset the **Indicated** objects. What does it mean to be _indicated_? **IMPORTANT:** the loop logic inside `applyValidateFilters`
+7. `Construction` attempts to **Compute All**
+8. Paint the `Construction`
+
+### `Canvas.touchMoved`: not understood
+
+1. prepare a `mouseMoved` callback
+2. pass the **Event** and the **callback** to `touchToMouse`
+3. ... WIP
+
 ## ClusterFucks
 
-outdated
+------
 
-### CoordsSystem.js
-
-There is a problem within the class. Some methods have the same name, most likely, some of the methods were privately defined and others are public methods.
-
-The file is most likely broken now!
+outdated info
 
 ### Canvas.js
 
