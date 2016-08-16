@@ -23,8 +23,8 @@ export class PointObject extends ConstructionObject implements iPointObject {
 	private Z3D_OLD: number;
 	private pt3D;
 	private EXY;
-	private lastX;
-	private lastY;
+	private lastX: number;
+	private lastY: number;
 	private order: number;
 	private inc: number;
 	private macrosource: (v) => any;
@@ -36,7 +36,7 @@ export class PointObject extends ConstructionObject implements iPointObject {
 	private currentMagnet;
 	private Alpha: number;
 	private paintProc: (ctx:CanvasRenderingContext2D) => void;
-	constructor(_construction, _name, _x, _y) {
+	constructor(_construction:iConstruction, _name:string, _x:number, _y:number) {
 		super(_construction, _name);
 		//var parent = $U.extend(this, new ConstructionObject(_construction, _name)); // Héritage
 		//$U.extend(this, new MoveableObject(_construction)); // Héritage
@@ -141,12 +141,10 @@ export class PointObject extends ConstructionObject implements iPointObject {
 	isMoveable(): boolean {
 		return this.getParentLength() < 2;
 	}
-	isCoincident(_C): boolean {
-		if (_C.isInstanceType('point')) {
-			// Si les points sont confondus :
-			if ($U.approximatelyEqual(this.X, _C.getX()) && $U.approximatelyEqual(this.Y, _C.getY())) {
-				return true;
-			}
+	isCoincident(o:iConstructionObject): boolean {
+		if (o.isInstanceType('point')) {
+			let p = <iPointObject>o;
+			return $U.approximatelyEqual(this.X, p.getX()) && $U.approximatelyEqual(this.Y, p.getY());
 		}
 		return false;
 	}
