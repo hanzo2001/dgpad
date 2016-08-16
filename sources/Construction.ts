@@ -197,7 +197,7 @@ export class Construction implements iConstruction {
 	isMode(...args:number[]): boolean {
 		let res = false;
 		let i=0, s=args.length;
-		while (i<s) {res = res || (this.mode === args[i]);}
+		while (i<s) {res = res || (this.mode === args[i++]);}
 		return res;
 	}
 	isConsultOrArrowMode(): boolean {
@@ -660,17 +660,14 @@ export class Construction implements iConstruction {
 		}
 		this.indicatedObjs = [];
 	}
-	getIndicated() {
+	getIndicated(): iConstructionObject[] {
 		return this.indicatedObjs;
 	}
 	getFirstIndicatedPoint() {
-		let len = this.indicatedObjs.length;
-		let P1 = null;
-		for (let i = 0; i < len; i++) {
-			if (this.indicatedObjs[i].isInstanceType("point")) {
-				P1 = this.indicatedObjs[i];
-				return P1;
-			}
+		let i=0, s=this.indicatedObjs.length;
+		while (i<s) {
+			let P1 = this.indicatedObjs[i++];
+			if (P1.isInstanceType("point")) {return P1;}
 		}
 		return null;
 	}
@@ -691,26 +688,25 @@ export class Construction implements iConstruction {
 	getSelected() {
 		return this.selectedObjs;
 	}
-	addSelected(obj) {
-		obj.setSelected(true);
-		this.selectedObjs.push(obj);
+	addSelected(o:iConstructionObject) {
+		o.setSelected(true);
+		this.selectedObjs.push(o);
 	}
 	clearSelected() {
-		let len = this.selectedObjs.length;
-		for (let i = 0; i < len; i++) {
-			this.selectedObjs[i].setSelected(false);
-		}
+		//let len = this.selectedObjs.length;
+		let i=0, s=this.selectedObjs.length;
+		while (i<s) {this.selectedObjs[i++].setSelected(false);}
 		this.selectedObjs = [];
 	}
-	getObjectsUnderMouse(ev) {
+	getObjectsUnderMouse(event:MouseEvent) {
 		let t = [];
 		let hmode = this.isHideMode();
-		for (let i = 0, len = this.V.length; i < len; i++) {
-			if (!this.V[i].isSuperHidden()) {
-				if ((hmode && this.V[i].getMode() === 2) || (!this.V[i].isHidden())) {
-					if (this.V[i].mouseInside(ev))
-						t.push(this.V[i]);
-				}
+		let i=0, s=this.V.length;
+		while (i<s) {
+			let v = this.V[i++];
+			// why do we check getMode and isHidden
+			if (!v.isSuperHidden() && (hmode && v.getMode() === 2 || !v.isHidden()) && v.mouseInside(event)) {
+				t.push(v);
 			}
 		}
 		return t;
@@ -766,54 +762,51 @@ export class Construction implements iConstruction {
 		}
 		return o.Scratch;
 	}
-	private rawValidate(ev) {
+	private rawValidate(event:Event) {
 		this.indicatedObjs = [];
 		this.selectedObjs = [];
 		let i=0, s=this.V.length;
 		while (i<s) {
-			if (this.V[i].setIndicated(this.V[i].validate(ev))) {
-				this.indicatedObjs.push(this.V[i]);
-			}
-			i++;
+			let v = this.V[i++];
+			if (v.setIndicated(v.validate(event))) {this.indicatedObjs.push(v);}
 		}
 	}
-	private applyValidateFilters(ev) {
-		let i = this.indicatedObjs.length;
-		if (i > 1) {
-			i -= 1;
-			while (i > -1) {
-				let obj = this.indicatedObjs[i];
-				// Si un point figure dans les this.indicatedObjs, on ne garde que 
-				// les point indicated :
-				if (obj.isInstanceType("point")) {
-					let t = [obj];
-					for (let j = i - 1; j >= 0; j--) {
-						obj = this.indicatedObjs[j];
-						if (obj.isInstanceType("point")) {
-							t.push(obj);
-						}
+	private applyValidateFilters(event:Event) {
+		let indicatedLength = this.indicatedObjs.length;
+		if (indicatedLength > 1) {
+			let unsetIndicated = (o:iConstructionObject) => {
+				o.setIndicated(false)
+			};
+			let setIndicated = (o:iConstructionObject) => {
+				o.setIndicated(true);
+				this.indicatedObjs.push(o);
+			};
+			/**
+			 * THIS IS ASS BACKWARDS: indicatedObjs.length is modified inside the loop!!!
+			 */
+			let i=indicatedLength-1;
+			while (i>=0) {// iterate backwards over indicated
+				let current = i;
+				let currentPoint = this.indicatedObjs[i--];
+				if (currentPoint.isInstanceType('point')) {// only do something if the indicated object is a point
+					let points = [currentPoint];// start points array with current
+					let j=current-1;
+					while (j>=0) {// iterate backwards over indicated but current
+						let nextPoint = this.indicatedObjs[j--];
+						if (nextPoint.isInstanceType('point')) {points.push(nextPoint);}// add next object to points if it is a point
 					}
-					this.clearIndicated();
-					let k=0, s=t.length;
-					while (k<s) {
-						t[k].setIndicated(true);
-						this.addIndicated(t[k++]);
-					}
-					break;
+					this.indicatedObjs.forEach(unsetIndicated);// stop indicating all
+					this.indicatedObjs = [];// clear indicated
+					let k=0, pointsLength=points.length;
+					points.forEach(setIndicated, this);
 				}
 				i--;
 			}
 		}
-		// if (ev.type === "mouseup") {
-		// 	len = this.indicatedObjs.length;
-		// 	for (i = 0; i < len; i++) {
-		// 		this.addSelected(this.indicatedObjs[i]);
-		// 	}
-		// }
 	}
-	validate(ev) {
-		this.rawValidate(ev);
-		this.applyValidateFilters(ev);
+	validate(event:MouseEvent) {
+		this.rawValidate(event);
+		this.applyValidateFilters(event);
 	}
 	// let clearAllIndicated = function() {
 	// 	for (let i = 0, len = this.V.length; i < len; i++) {
@@ -835,7 +828,7 @@ export class Construction implements iConstruction {
 	// 	}
 	// };
 	compute() {
-	};
+	}
 	// Recherche l'origine du repère 3D parmi les 
 	// parents du point _P :
 	private get3DOriginInParents(_P) {
@@ -1120,7 +1113,7 @@ export class Construction implements iConstruction {
 		}
 		this.computeMacro();
 	}
-	macroExecutionTag(obj) {
+	macroExecutionTag(obj:iConstructionObject) {
 		// Si il s'agit du mode execution de macro :
 		switch (obj.getMacroMode()) {
 			case 0:
