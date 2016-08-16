@@ -39,21 +39,19 @@ export class NamesManager implements iNamesManager {
 	getName(): string {
 		return this.panel.getName();
 	}
-	setName(_o) {
+	setName(o:iConstructionObject) {
 		if (this.panel.isVisible()) {
-			_o.setName(this.panel.getName());
-			_o.setShowName(true);
+			o.setName(this.panel.getName());
+			o.setShowName(true);
 			this.panel.refreshkeyboard();
 		}
 	}
-	replaceName(_o): boolean {
-		if (this.panel.isVisible() && this.panel.isEditMode()) {
-			_o.setName(this.panel.getName());
-			_o.setShowName(true);
-			this.panel.refreshkeyboard();
-			return true;
-		}
-		return false;
+	replaceName(o:iConstructionObject): boolean {
+		if (!this.panel.isVisible() || !this.panel.isEditMode()) {return false;}
+		o.setName(this.panel.getName());
+		o.setShowName(true);
+		this.panel.refreshkeyboard();
+		return true;
 	}
 	setObserver(fn:()=>string[]) {
 		if (this.panel != null) this.panel.setObserver(fn);
