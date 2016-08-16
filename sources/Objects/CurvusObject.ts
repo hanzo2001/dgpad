@@ -155,8 +155,6 @@ export class CurvusObject extends ConstructionObject {
 		for (var i = 0; i < this.NB; i++) {
 			xAB = (this.Ptab[i].x - p.getX()), yAB = (this.Ptab[i].y - p.getY());
 			if ((xAB === 0) && (yAB === 0)) {
-				// console.log('this.CX=' + this.CX + '  i=' + i + '  p.setAlpha(' + (i - this.CX) + ')');
-				// console.log('Cn.coordsSystem.x(i/2)=' + (Cn.coordsSystem.x(i / 2)));
 				this.compute === this.computeCartesian
 					? p.setAlpha(this.Cn.coordsSystem.x(i))
 					: p.setAlpha(i);
@@ -164,37 +162,6 @@ export class CurvusObject extends ConstructionObject {
 			}
 		}
 	}
-	// En chantier ci-dessous : étude naïve de la discontinuité :
-	//    private computeCartesian() {
-	//        if (this.E1) this.E1.compute();
-	//        if (this.min) this.min.compute();
-	//        if (this.max) this.max.compute();
-	//        computeMinMaxStepCartesian();
-	//        var k = this.MIN;
-	//        var y0 = NaN;
-	//        var y1 = NaN;
-	//        var y2 = NaN;
-	//        for (var i = 0; i < this.NB; i++) {
-	//            y2 = this.E1.value(k);
-	//            this.Ptab[i].x = Cn.coordsSystem.px(k);
-	//            this.Ptab[i].y = Cn.coordsSystem.py(y2);
-	//            this.Ptab[i].d = false;
-	//            if (isNaN(y0)) {
-	//                y0 = y2;
-	//            } else if (isNaN(y1)) {
-	//                y1 = y2;
-	//            } else if (Math.abs((y0 + y2) / 2 - y1) > 1e-1) {
-	//                // Discontinuité repérée :
-	//                this.Ptab[i].d = true;
-	//                y0 = NaN;
-	//                y1 = NaN;
-	//            } else {
-	//                y0 = y1;
-	//                y1 = y2;
-	//            }
-	//            k += this.STEP;
-	//        }
-	//    };
 	paintObject(ctx:CanvasRenderingContext2D) {
 		ctx.beginPath();
 		ctx.moveTo(this.Ptab[0].x, this.Ptab[0].y);
@@ -211,9 +178,9 @@ export class CurvusObject extends ConstructionObject {
 		ctx.fill();
 	}
 	getSource(src) {
-		var e1 = (this.E1 === null)  ? '' : this.E1.getSource();
-		var mn = (this.min === null) ? '' : this.min.getSource();
-		var mx = (this.max === null) ? '' : this.max.getSource();
+		var e1 = this.E1  === null ? '' : this.E1.getSource();
+		var mn = this.min === null ? '' : this.min.getSource();
+		var mx = this.max === null ? '' : this.max.getSource();
 		src.geomWrite(true, this.getName(), 'Curvus', mn, mx, e1);
 	}
 	setE1(_f) {
