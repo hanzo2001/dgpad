@@ -15,7 +15,7 @@ var dataId = 'bblLsPanel';
 export class BubbleListPanel extends Panel {
 	private static storage = new Storage<StoredData>(dataId);
 	protected panel: BubblePanel;
-	constructor(panel: BubblePanel, _t, width:number, height:number, titleheight:number, titleStr:string) {
+	constructor(panel:BubblePanel, _t, width:number, height:number, titleheight:number, titleStr:string) {
 		super(panel);
 		//$U.extend(this, new Panel(_panel.getDocObject()));
 		this.setAttr('className', 'coincidenceListDIV bulle');

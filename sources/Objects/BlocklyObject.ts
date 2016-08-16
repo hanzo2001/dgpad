@@ -79,7 +79,7 @@ export class BlocklyObject implements iBlocklyObject {
 	evaluate() {
 		if (this.EX) {
 			this.EX.forcevalue();
-			for (var o in this.childs) {
+			for (let o in this.childs) {
 				this.childs[o].compute();
 				this.childs[o].computeChilds();
 			}

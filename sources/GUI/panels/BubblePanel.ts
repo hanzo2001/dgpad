@@ -51,7 +51,6 @@ export class BubblePanel extends Panel {
 		this.close();
 	}
 	init() {
-		//let t = this.getOwnerBounds();
 		this.setBounds(this.x,this.y,this.width,this.height);
 		let action = $U.isMobile.any() ? 'touchstart' : 'mousedown';
 		if (!this.listener) {this.listener = this.closeIfNeeded.bind(this);}
