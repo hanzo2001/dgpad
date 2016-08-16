@@ -17,7 +17,7 @@ export class ConstructionObject implements iConstructionObject {
 	private subname;
 	private showname: boolean;
 	private indicated: boolean;
-	private selected: boolean;
+	private selected: boolean|number;
 	private hidden: number;
 	private color: Color;
 	private fillcolor: Color;
@@ -232,8 +232,8 @@ export class ConstructionObject implements iConstructionObject {
 	private PtsChildSortFilter(a, b): number {
 		return b.getChildLength() - a.getChildLength();
 	}
-	startDrag(_x, _y) {
-		if ((this.Cn.isDragOnlyMoveable()) && (!this.isMoveable())) return;
+	startDrag(_x:number, _y:number) {
+		if (this.Cn.isDragOnlyMoveable() && !this.isMoveable()) return;
 		$U.changed();
 		this.PtsChilds = [];
 		this.dragCoords = [];
@@ -419,8 +419,8 @@ export class ConstructionObject implements iConstructionObject {
 	getParentLength(): number {
 		return this.parentList.length;
 	}
-	getParentAt(_i) {
-		return this.parentList[_i];
+	getParentAt(index:number) {
+		return this.parentList[index];
 	}
 	deleteParent(_o) {
 		var i = this.parentList.indexOf(_o);
@@ -568,11 +568,11 @@ export class ConstructionObject implements iConstructionObject {
 	isIndicated(): boolean {
 		return this.indicated;
 	}
-	setSelected(_sel:any) {// what's going on here??
+	setSelected(_sel:number|boolean) {// what's going on here??
 		this.selected = _sel;// should this be a number?
-		this.objMode = this.objModeTab[2 * _sel];// something weird is going on here?
+		this.objMode = this.objModeTab[2 * ~~_sel];// something weird is going on here?
 	}
-	isSelected(): boolean {
+	isSelected(): boolean|number {
 		return this.selected;
 	}
 	setHidden(_sel:number) {
@@ -798,7 +798,7 @@ export class ConstructionObject implements iConstructionObject {
 			this.ORGMOUSEINSIDE = null;
 		}
 	}
-	setNoMouseInside(_mi) {
+	setNoMouseInside(_mi:boolean) {
 		if (_mi) {
 			this.noMouseInside();
 		} else {
