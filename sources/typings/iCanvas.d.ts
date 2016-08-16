@@ -98,7 +98,7 @@ interface iCanvas extends iElementContainer {
 	setObjectConstructor(_oc);// sets OC
 	isObjectConstructor(_oc): boolean;
 	setPointConstructor();// sets PC into OC
-	getPointConstructor(): any;// returns PC
+	getPointConstructor(): iPointConstructor;// returns PC
 	isToolVisible(): boolean;
 	setBackground(bk:string);
 	getBackground(): string;
