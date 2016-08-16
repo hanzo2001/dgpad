@@ -20,7 +20,7 @@ export class BlocklyManager implements iBlocklyManager {
 	private source: string;
 	private selected: string;
 	private workspace;
-	private OBJ;
+	private OBJ: iConstructionObject;
 	private from_edit: boolean;
 	private turtle: TurtleObject;
 	private printPanel: PrintPanel;
@@ -204,7 +204,7 @@ export class BlocklyManager implements iBlocklyManager {
 		if (bool) {
 			elt.style['visibility'] = 'visible';
 			elt.style['height'] = '25px';
-			this.turtle.show(this.OBJ);
+			this.turtle.show(<iPointObject>this.OBJ);
 			// this.turtle = new TurtleObject(this.canvas, this.OBJ);
 			this.canvas.paint();
 		} else {
@@ -412,7 +412,7 @@ export class BlocklyManager implements iBlocklyManager {
 	}
 	// Appelée chaque fois qu'on clique sur un objet
 	// pendant que le panel est ouvert :
-	tryEdit(o) {
+	tryEdit(o:iConstructionObject) {
 		// clearOBJ(); // Effacement éventuel du dernier objet
 		if (this.panel && (!this.panel.isHidden())) {
 			if (Blockly.selected && Blockly.selected.getName) {
@@ -424,8 +424,8 @@ export class BlocklyManager implements iBlocklyManager {
 		}
 		return false;
 	}
-	edit(_o) {
-		this.OBJ = _o;
+	edit(o:iConstructionObject) {
+		this.OBJ = o;
 		this.from_edit = true;
 		this.show();
 	}
