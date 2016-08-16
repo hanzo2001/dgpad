@@ -3,17 +3,18 @@
 import {ExpressionObject} from '../Objects/ExpressionObject';
 import {ListObject} from '../Objects/ListObject';
 import {BubblePanel} from '../GUI/panels/BubblePanel';
+import {BlocklyButtonObject} from '../Objects/BlocklyButtonObject';
 
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
 
 export class LongpressManager {
 	private canvas: iCanvas;
-	private Cn;
+	private Cn: iConstruction;
 	private panel: BubblePanel;
 	private x: number;
 	private y: number;
-	private tab;
+	private tab: any[];
 	constructor(_canvas) {
 		this.canvas = _canvas;
 		this.Cn = this.canvas.getConstruction();
@@ -21,17 +22,17 @@ export class LongpressManager {
 		this.x = 0;
 		this.y = 0;
 		this.tab = [
-			[$L.create_blockly_button, createBlocklyButton],
-			[$L.create_exp, createExp],
-			[$L.create_exp_pts, createExpPts],
-			[$L.create_exp_segs, createExpSegs],
-			[$L.create_cursor_int, createIntCursor],
-			[$L.create_cursor_cont, createContCursor],
-			[$L.create_widget_edit, createEditWidget]
+			[$L.create_blockly_button, () => this.createBlocklyButton()],
+			[$L.create_exp, () => this.createExp()],
+			[$L.create_exp_pts, () => this.createExpPts()],
+			[$L.create_exp_segs, () => this.createExpSegs()],
+			[$L.create_cursor_int, () => this.createIntCursor()],
+			[$L.create_cursor_cont, () => this.createContCursor()],
+			[$L.create_widget_edit, () => this.createEditWidget()]
 		];
 	}
-	isVisible() {
-		return (this.panel && this.panel.isVisible());
+	isVisible(): boolean {
+		return this.panel && this.panel.isVisible();
 	}
 	show(event:MouseEvent) {
 		this.x = this.canvas.mouseX(event);
@@ -41,19 +42,19 @@ export class LongpressManager {
 		this.panel = new BubblePanel(this.canvas, this.exec, close, event, this.tab, $L.longpress_message, 270, 240, 30);
 	}
 	private newExp(_ex) {
-		var OBJ = new ExpressionObject(this.Cn, "_a", "", "", "", _ex, this.x, this.y);
+		var o = new ExpressionObject(this.Cn, '_a', '', '', '', _ex, this.x, this.y);
 		if (this.canvas.namesManager.isVisible()) {
-			this.canvas.namesManager.setName(OBJ);
+			this.canvas.namesManager.setName(o);
 		} else {
-			OBJ.setName(this.getName("abcdefghijklmnopqrsuvw"));
+			o.setName(this.getName("abcdefghijklmnopqrsuvw"));
 		}
-		OBJ.setT("");
+		o.setT("");
 		var r = Math.random() * 128;
 		var g = Math.random() * 128;
 		var b = Math.random() * 128;
-		OBJ.setRGBColor(r, g, b);
-		this.canvas.addObject(OBJ);
-		return OBJ;
+		o.setRGBColor(r, g, b);
+		this.canvas.addObject(o);
+		return o;
 	}
 	private newList(_ex) {
 		var OBJ = new ListObject(this.Cn, "_l", _ex);
@@ -64,8 +65,8 @@ export class LongpressManager {
 		return OBJ;
 	}
 	private getList() {
-		var cx = this.Cn.coordsSystem.this.x(this.Cn.getWidth() / 2);
-		var cy = this.Cn.coordsSystem.this.y(this.Cn.getHeight() / 2);
+		var cx = this.Cn.coordsSystem.x(this.Cn.getWidth() / 2);
+		var cy = this.Cn.coordsSystem.y(this.Cn.getHeight() / 2);
 		var l = this.Cn.coordsSystem.l(this.Cn.getHeight()) / 4;
 		var L = l * (1 + Math.sqrt(5)) / 2;
 		// var str="["+(cx-L/2)+","+(cy-l/2)+"]";
@@ -76,10 +77,10 @@ export class LongpressManager {
 			[cx - L / 2, cy + l / 2],
 			[cx - L / 2, cy - l / 2]
 		];
-		for (var i = 0; i < t.length; i++) {
-			t[i] = "[" + t[i].toString() + "]";
-		};
-		return "[" + t.toString() + "]";
+		let i=0, s=t.length, u=new Array(s);
+		while (i<s) {u[i++] = `[${t[i].toString()}]`;}
+		return `[${u.join(',')}]`;
+		//return "[" + t.toString() + "]";
 	}
 	private createExp() {
 		this.newExp("(1+sqrt(5))/2");
@@ -92,8 +93,8 @@ export class LongpressManager {
 		this.canvas.paint();
 	}
 	private createExpSegs() {
-		var OBJ = this.newList(this.newExp(this.getList()));
-		OBJ.setSegmentsSize(1);
+		var o = this.newList(this.newExp(this.getList()));
+		o.setSegmentsSize(1);
 		this.Cn.compute();
 		this.canvas.paint();
 	}
@@ -105,19 +106,19 @@ export class LongpressManager {
 		return t[0];
 	}
 	private createIntCursor() {
-		var OBJ = this.newExp("");
-		if (!this.canvas.namesManager.isVisible()) OBJ.setName(this.getName("nmkabcuvwrst"));
-		OBJ.setMin("0");
-		OBJ.setMax("10");
-		OBJ.setIncrement(1);
+		var o = this.newExp("");
+		if (!this.canvas.namesManager.isVisible()) {o.setName(this.getName("nmkabcuvwrst"));}
+		o.setMin("0");
+		o.setMax("10");
+		o.setIncrement(1);
 		this.Cn.compute();
 		this.canvas.paint();
 	}
 	private createContCursor() {
-		var OBJ = this.newExp("0");
-		if (!this.canvas.namesManager.isVisible()) OBJ.setName(this.getName("nmkabcuvwrst"));
-		OBJ.setMin("-10");
-		OBJ.setMax("10");
+		var o = this.newExp("0");
+		if (!this.canvas.namesManager.isVisible()) {o.setName(this.getName("nmkabcuvwrst"));}
+		o.setMin("-10");
+		o.setMax("10");
 		this.Cn.compute();
 		this.canvas.paint();
 	}
