@@ -1,11 +1,11 @@
 /// <reference path="./typings/iCoordsSystem.d.ts" />
 /// <reference path="./typings/iConstruction.d.ts" />
 
+import {OXObject} from './Objects/OXObject';
+import {OYObject} from './Objects/OYObject';
+
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
-
-var OXObject;
-var OYObject;
 
 export class CoordsSystem implements iCoordsSystem {
 	private Cn: iConstruction;
@@ -61,8 +61,9 @@ export class CoordsSystem implements iCoordsSystem {
 		yz = (this.centerZoom || this.islockOx()) ? this.y0 : yz;
 		h = this.Unit * h > this.maxInt ? 1 : h;
 		var V = this.Cn.elements();
-		for (var i = 0, len = V.length; i < len; i++) {
-			if ((V[i].isInstanceType("point")) && V[i].free()) {
+		let i=0, s=V.length;
+		while (i<s) {
+			if (V[i].isInstanceType("point") && V[i].free()) {
 				// S'il s'agit d'un point libre :
 				V[i].setXY(xz + (V[i].getX() - xz) * h, yz + (V[i].getY() - yz) * h);
 			}
