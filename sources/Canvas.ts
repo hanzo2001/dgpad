@@ -99,7 +99,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 	private myTimeOut: any;
 	private handPath: Ghost;
 	private toolsManager: ToolsManager;
-	private draggedObject: any;
+	private draggedObject: iConstructionObject;
 	private pressedFilter: any;
 	private movedFilter: any;
 	private releasedFilter: any;
@@ -493,10 +493,10 @@ export class Canvas extends ElementContainer implements iCanvas {
 		return this.height;
 	}
 	mouseX(event:MouseEvent): number {
-		return (event.pageX - this.bounds.left);
+		return event.pageX - this.bounds.left;
 	}
 	mouseY(event:MouseEvent): number {
-		return (event.pageY - this.bounds.top);
+		return event.pageY - this.bounds.top;
 	}
 	mouse(event:MouseEvent): VirtualPointObject {
 		return new VirtualPointObject(this.mouseX(event), this.mouseY(event));
@@ -579,24 +579,25 @@ export class Canvas extends ElementContainer implements iCanvas {
 	stopChrono() {
 		this.myTimeOut.stopChrono();
 	}
-	addTool(_oc) /* toolsManager.addTool(_oc); */ {
+	addTool(_oc) {
 		this.toolsManager.addTool(_oc);
 	}
 	getConstructor(code:string) {
 		return this.toolsManager.getConstructor(code);
 	}
-	initTools(event:any, obj:any) {
+	initTools(event:any, obj:iConstructionObject) {
 		var inter = document.activeElement.getAttribute("interactiveinput");
 		if (inter !== null) {
 			$U.addTextToInput(document.activeElement, obj.getName(), inter);
 			return;
-		};
-		if ((obj.getCode() === "blockly_button") && (obj.insideButton(event))) {
-			obj.run();
+		}
+		let blockly_button = <iBlocklyButtonObject>(obj.getCode() === 'blockly_button' ? obj : null);
+		if (blockly_button && blockly_button.insideButton(event)) {
+			blockly_button.run();
 			return;
-		};
-		if (this.namesManager.replaceName(obj)) return;
-		if (this.blocklyManager.tryEdit(obj)) return;
+		}
+		if (this.namesManager.replaceName(obj)) {return;}// if the panel is active then replace and stop
+		if (this.blocklyManager.tryEdit(obj)) {return;}// idem
 		switch (this.Cn.getMode()) {
 			case 0:
 				// Outil de consultation :
@@ -672,7 +673,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 	setPointConstructor() {
 		this.OC = this.PC;
 	}
-	getPointConstructor(): any {
+	getPointConstructor(): PointConstructor {
 		return this.PC;
 	}
 	isToolVisible(): boolean {
@@ -692,29 +693,29 @@ export class Canvas extends ElementContainer implements iCanvas {
 	isCS(): boolean {
 		return this.Cn.coordsSystem.isCS();
 	}
-	selectMoveable(event:MouseEvent): any {
-		this.cleanInds();
-		var inds = this.Cn.getIndicated();
-		var len = inds.length;
-		for (var i = 0; i < len; i++) {
-			if ((inds[i].isMoveable()) && (inds[i].getCode() === "point") && (inds[i].getParentLength() === 1)) {
-				var obj = inds[i];
-				// Cn.clearIndicated();
-				// obj.setIndicated(true);
-				// Cn.addIndicated(obj);
-				obj.startDrag(this.mouseX(event), this.mouseY(event));
-				return obj;
+	selectMoveable(event:MouseEvent): iConstructionObject {
+		this.cleanInds();// clear areas from indicated
+		let indicateds = this.Cn.getIndicated();
+		let o:iConstructionObject, i=0, s=indicateds.length;
+		while (i<s) {// look for a moveable point with at least one parent
+			o = indicateds[i++];
+			if (o.isMoveable() && o.getCode() === "point" && o.getParentLength() === 1) {
+				o.startDrag(this.mouseX(event), this.mouseY(event));
+				return o;
 			}
 		}
-		for (var i = 0; i < len; i++) {
-			if (inds[i].isMoveable()) {
-				inds[i].startDrag(this.mouseX(event), this.mouseY(event));
-				return inds[i];
+		i=0;
+		while (i<s) {// look for a moveable object
+			o = indicateds[i++];
+			if (o.isMoveable()) {
+				o.startDrag(this.mouseX(event), this.mouseY(event));
+				return o;
 			}
 		}
-		if (len > 0) {
-			inds[0].startDrag(this.mouseX(event), this.mouseY(event));
-			return inds[0];
+		if (s) {// get the first object
+			o = indicateds[0];
+			o.startDrag(this.mouseX(event), this.mouseY(event));
+			return o;
 		}
 		return null;
 	}
@@ -735,62 +736,69 @@ export class Canvas extends ElementContainer implements iCanvas {
 	// Mouse Events :
 	mousePressed(event:MouseEvent) {
 		event.preventDefault();
-		if (this.pressedFilter) {
+		if (this.pressedFilter) {// if some filter has been set, process the filter and stop
 			this.pressedFilter(event);
 			return;
 		}
-		if (this.longpressManager.isVisible()) return;
-		if (this.coincidenceManager.isVisible()) return;
-		// if (this.blocklyManager.isSettingsVisible()) return;
+		if (this.longpressManager.isVisible()) {return;}// if the longpress is active stop
+		if (this.coincidenceManager.isVisible()) {return;}// if the conincidence menu is open stop
 		this.draggedObject = null;
 		this.dragCoords = null;
+		// actualCoords
 		this.actualCoords.x = this.mouseX(event);
 		this.actualCoords.y = this.mouseY(event);
-		// $ALERT("x="+actualCoords.x+" y="+actualCoords.y);
 		this.pressedCoords = {
 			x: this.actualCoords.x,
 			y: this.actualCoords.y,
-			t: $U.getTime()
+			t: $U.getTime()// if less than 800, consider this event to be a click
 		};
-		// actualCoords
 		// Si on a cliqué à côté des outils :
-		if (this.toolsManager.isVisible()) {
+		if (this.toolsManager.isVisible()) {// a tool is visible, close the tool, repaint the canvas
 			this.closeTools();
-			this.Cn.validate(event);
+			this.Cn.validate(event);// what is happening here?
 			this.paint(event);
 			// Fait en sorte que le mousereleased ne crée pas un point :
-			this.pressedCoords = {
+			this.pressedCoords = {// do not allow mouseReleased to create a point
 				x: NaN,
 				y: NaN
 			};
 			return;
 		}
-		// S'il s'agit d'un click droit :
-		if (event.which === 2 || event.which === 3) {
+		if (event.which === 2 || event.which === 3) {// anything but left click, start drag, stop
 			this.dragCoords = {
 				x: this.actualCoords.x,
 				y: this.actualCoords.y
 			};
 			return;
 		}
-		this.mousedown = true;
-		this.Cn.validate(event);
-		this.draggedObject = this.selectMoveable(event);
-		if (this.draggedObject === null && this.Cn.getMode() === 1) {
-			// Si on a tapé/cliqué "dans le vide" et qu'aucun objet
-			// n'est sous le doigt/souris (pour le longpress menu) :
-			this.longPressTimeout = setTimeout(() => {this.longPress(event);}, 500);
+		this.mousedown = true;// important for mouseMoved
+		this.Cn.validate(event);// what is happening here?
+		this.draggedObject = this.selectMoveable(event);// look for an indicated object
+		if (!this.draggedObject) {
+			// if there is nothing indicated
+			if (this.Cn.getMode() === 1) {
+				// Si on a tapé/cliqué "dans le vide" et qu'aucun objet
+				// n'est sous le doigt/souris (pour le longpress menu) :
+				// maybe this is a longpress
+				this.longPressTimeout = setTimeout(() => {this.longPress(event);}, 500);
+			}
+			else
+			if (this.Cn.getMode() === 0) {
+				// Si on a tapé/cliqué "dans le vide" et qu'aucun objet
+				// n'est sous le doigt/souris (pour le translate en mode présentation) :
+				// the event happened on the void and mode is 'consultation'
+				this.dragCoords = {
+					x: this.actualCoords.x,
+					y: this.actualCoords.y
+				};
+				return;
+			}
 		}
-		if (this.draggedObject === null && this.Cn.getMode() === 0) {
-			// Si on a tapé/cliqué "dans le vide" et qu'aucun objet
-			// n'est sous le doigt/souris (pour le translate en mode présentation) :
-			this.dragCoords = {
-				x: this.actualCoords.x,
-				y: this.actualCoords.y
-			};
-			return;
+		if (this.draggedObject) {
+			// not sure what's going on here
+			this.draggedObject.blocks.evaluate('onmousedown');
 		}
-		if (this.draggedObject) {this.draggedObject.blocks.evaluate("onmousedown");}
+		// something must have happened so repaint the canvas
 		this.paint(event);
 	}
 	translate(x:number, y:number) {
@@ -835,72 +843,73 @@ export class Canvas extends ElementContainer implements iCanvas {
 	}
 	mouseReleased(event:MouseEvent) {
 		event.preventDefault();
+		// stop the longpress event (if it hasn't happened already)
 		clearTimeout(this.longPressTimeout);
 		this.actualCoords.x = NaN;
 		this.actualCoords.y = NaN;
-		if (this.releasedFilter) {
+		if (this.releasedFilter) {// if some filter has been set, process the filter and stop
 			this.releasedFilter(event);
 			return;
 		}
-		this.mousedown = false;
+		this.mousedown = false;// only for mouseMoved, but it has to be done by now
 		this.dragCoords = null;
-		if (this.draggedObject) {
-			if (this.isClick(event)) {
+		if (this.draggedObject) {// there is a dragged object
+			if (this.isClick(event)) {// the event was a click
 				// Si on a cliqué sur l'objet :
-				if ((!this.coincidenceManager.checkCoincidences(event))) {
-					// Et s'il n'y a pas ambiguité, on lance les outils
-					// contextuels :
-					if (this.Cn.getIndicated().length > 1) {
-						this.Cn.addSelected(this.Cn.getIndicated()[0]);
-						this.Cn.addSelected(this.Cn.getIndicated()[1]);
+				if (!this.coincidenceManager.checkCoincidences(event)) {// there is no coincidence, open the context menu
+					// Et s'il n'y a pas ambiguité, on lance les outils contextuels :
+					let indicateds = this.Cn.getIndicated();
+					if (indicateds.length > 1) {// there is more than one indicated, add them to the selection
+						this.Cn.addSelected(indicateds[0]);
+						this.Cn.addSelected(indicateds[1]);
 					} else {
-						this.Cn.addSelected(this.draggedObject);
+						this.Cn.addSelected(this.draggedObject);// otherwise, just add the dragged object to the selection
 					}
-					this.paint(event);
-					this.initTools(event, this.draggedObject);
+					this.paint(event);// premature paint???
+					this.initTools(event, this.draggedObject);// this paints again after setting tools
 				}
-			} else {
-				this.draggedObject.blocks.evaluate("onmouseup"); // blockly
+			} else {// there is a dragged object and it's not a click
+				this.draggedObject.blocks.evaluate("onmouseup"); // blockly evaluation
 			}
-			// this.textManager.evaluateStrings(true);
+			// no more dragged object
 			this.draggedObject = null;
 		} else {
-			this.Cn.validate(event);
-			this.cleanInds();
-			var sels = this.Cn.getIndicated();
-			if (this.isClick(event)) {
-				if (sels.length === 0) {
-					if (this.Cn.isMode(1, 5, 7, 8)) {
+			// no dragged object from here on
+			this.Cn.validate(event);// not sure what this does! ??
+			this.cleanInds();// get rid of the areas from the indicated
+			var sels = this.Cn.getIndicated();// collect the indicated
+			if (this.isClick(event)) {// if this is a click
+				if (!sels.length) {// if there is nothing indicated
+					if (this.Cn.isMode(1, 5, 7, 8)) {// just a create a point
 						// On est dans le mode arrow, tracé ou execution de macro :
 						// On a cliqué dans le vide, on crée un point à la volée :
-						this.OC.selectCreatePoint(this, event);
-						var o = this.OC.createObj(this, event);
-						this.Cn.validate(event);
-						this.Cn.clearSelected();
-						if (this.Cn.isMode(5)) {
+						this.OC.selectCreatePoint(this, event);// a point is created here!?
+						var o = this.OC.createObj(this, event);// a new point is instantiated
+						this.Cn.validate(event);// not sure what this does! ??
+						this.Cn.clearSelected();// deselect all
+						if (this.Cn.isMode(5)) {// macroExeMode
 							this.macrosManager.refreshMacro();
 							this.Cn.macroExecutionTag(o);
 						}
-						this.paint(event);
+						this.paint(event);// repaint everything
 					}
-				} else {
+				} else {// there are indicated objects
 					// Si on a cliqué sur un objet :
-					if ((!this.coincidenceManager.checkCoincidences(event))) {
+					if (!this.coincidenceManager.checkCoincidences(event)) {// did not click on another object
 						// Et s'il n'y a pas ambiguité, on lance les outils
 						// contextuels :
 						this.Cn.addSelected(sels[0]);
 						if (sels.length > 1) {this.Cn.addSelected(sels[1]);}
-						// Cn.addSelected(sels[0]);
-						this.paint(event);
-						this.initTools(event, sels[0]);
+						this.paint(event);// premature paint??
+						this.initTools(event, sels[0]);// start the tools
 					}
 				}
-			} else {
+			} else {// this is not a click
 				// Sinon, il s'agit d'une caresse :
-				if (sels.length > 0) {
+				if (sels.length) {// something must be indicated
 					// On a caressé un objet (point sur) ou deux objets (intersection)
 					// On crée un point à la volée (dans le mode arrow, tracé ou execution de macro) :
-					if (this.Cn.isMode(1, 5, 7, 8)) {
+					if (this.Cn.isMode(1, 5, 7, 8)) {// create a point and then repaint
 						this.OC.setInitialObjects(sels);
 						this.OC.selectCreatePoint(this, event);
 						var o = this.OC.createObj(this, event);
@@ -912,7 +921,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 							this.Cn.macroExecutionTag(o);
 						}
 						this.paint(event);
-					} else if (this.Cn.isMode(2, 3, 4, 6, 9)) {
+					} else if (this.Cn.isMode(2, 3, 4, 6, 9)) {// start the tools
 						this.initTools(event, sels[0]);
 					}
 				}
@@ -929,8 +938,10 @@ export class Canvas extends ElementContainer implements iCanvas {
 	}
 	mouseWheel(event:MouseEvent) {
 		event.preventDefault();
-		var zoom = 1 + $U.extractDelta(event) / 2000;
-		this.Cn.zoom(this.mouseX(event), this.mouseY(event), zoom);
+		let zoom = 1 + $U.extractDelta(event) / 2000;
+		let x = this.mouseX(event);
+		let y = this.mouseY(event);
+		this.Cn.zoom(x, y, zoom);
 		this.Cn.validate(event);
 		this.Cn.computeAll();
 		this.paint(event);
@@ -940,7 +951,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 		this.touchToMouse(event, this.mousePressed);
 	}
 	touchMoved(event:TouchEvent) {
-		this.touchToMouse(event, this.mouseMoved);
+		this.touchToMouse(event, this.mouseMoved.bind(this));
 	}
 	touchEnd(event:TouchEvent) {
 		this.touchToMouse(event, this.mouseReleased);
@@ -1017,7 +1028,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 	paint(event?:Event, coords?:any) {
 		this.context.globalAlpha = 1;
 		this.clearBackground();
-		if (this.OC && (this.OC.getC(0))) {
+		if (this.OC && this.OC.getC(0)) {
 			this.previewEvent = event;
 			this.OC.preview(<MouseEvent>event,this);
 		} else {
@@ -1252,24 +1263,34 @@ export class Canvas extends ElementContainer implements iCanvas {
 		inds.sort(this.moveableSortFilter);
 		// Si le premier indiqué n'est pas un polygone et que
 		// le dernier indiqué en est un, on vire tous les polygones :
-		if ((inds.length > 1) && (inds[0].getCode() !== "area") && (inds[inds.length - 1].getCode() === "area")) {
-			while (inds[inds.length - 1].getCode() === "area") {
-				inds[inds.length - 1].setIndicated(false);
-				inds.splice(inds.length - 1, 1);
+		if (inds.length > 1 && inds[0].getCode() !== "area" && inds[inds.length - 1].getCode() === "area") {
+			// if the first one is a point and the last one is an area
+			while (inds[inds.length - 1].getCode() === "area") {// while the last one is an area
+				inds[inds.length - 1].setIndicated(false);// stop indicating it
+				inds.pop();// remove all the areas from the indicated
+				//inds.splice(inds.length - 1, 1);
 			}
 		}
 	}
-	private isClick(event:any): boolean {
-		var x0 = this.mouseX(event);
-		var y0 = this.mouseY(event);
-		var prec2 = this.prefs.precision.caress;
-		prec2 *= prec2;
-		return ((this.pressedCoords) && ($U.getTime() - this.pressedCoords.t) < 800) && (((this.pressedCoords.x - x0) * (this.pressedCoords.x - x0) + (this.pressedCoords.y - y0) * (this.pressedCoords.y - y0)) < prec2);
+	private isClick(event:MouseEvent): boolean {
+		var precision = this.prefs.precision.caress;
+		if (this.pressedCoords) {
+			let isLongPressTime = $U.getTime() - this.pressedCoords.t >= 800;
+			if (!isLongPressTime) {
+				let dx = this.pressedCoords.x - this.mouseX(event);
+				let dy = this.pressedCoords.y - this.mouseY(event);
+				let isDragGesture = dx*dx + dy*dy < precision*precision;
+				if (!isDragGesture) {return true;}
+			}
+		}
+		return false;
 	}
 	private longPress(event:any) {
 		this.longpressManager.show(event);
 	}
-	// Lorsque le navigateur mobile ne connaît pas les évenements "gesture"
+	/**
+	 * When the mobile browser does not understand gesture events
+	 */
 	private touchToMouse(event:TouchEvent, _proc:(ptme:any)=>void) {
 		event.preventDefault();
 		if (event.touches.length < 2) {
