@@ -114,7 +114,7 @@ interface iConstructionObject {
 	setIndicated(_ind:any): any;
 	isIndicated(): any;
 	setSelected(_sel);// this needs to be reviewed
-	isSelected():boolean;
+	isSelected():boolean|number;
 	setHidden(_sel:number);
 	isHidden(): number;
 	isSuperHidden(): boolean;
