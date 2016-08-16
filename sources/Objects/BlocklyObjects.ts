@@ -2,20 +2,27 @@
 
 import {BlocklyObject} from './BlocklyObject';
 
+type Source = {
+	xml: string,
+	sync: string,
+	childs: any[],
+	parents: any[]
+};
+
 export class BlocklyObjects implements iBlocklyObjects {
-	private Cn;
-	private OBJ;
+	private Cn: iConstruction;
+	private OBJ: iConstructionObject;
 	private MODE: string[];
-	private current;
+	private current: string;
 	private obj: {[id:string]: BlocklyObject};
-	constructor(_object, _construction) {
+	constructor(_object:iConstructionObject, _construction:iConstruction) {
 		this.Cn = _construction;
 		this.OBJ = _object;
 		this.MODE = [];
 		this.current;
 		this.obj = {};
 	}
-	setMode(_tab, _cur) {
+	setMode(_tab:string[], _cur:string) {
 		this.MODE = _tab;
 		this.obj = {};
 		let i=0, s=this.MODE.length;
@@ -33,10 +40,10 @@ export class BlocklyObjects implements iBlocklyObjects {
 		};
 		return true;
 	}
-	getCn() {
+	getCn(): iConstruction {
 		return this.Cn
 	}
-	getObj() {
+	getObj(): iConstructionObject {
 		return this.OBJ;
 	}
 	clear() {
@@ -47,67 +54,67 @@ export class BlocklyObjects implements iBlocklyObjects {
 	setCurrent(_c) {
 		this.current = _c;
 	}
-	getCurrent() {
+	getCurrent(): string {
 		return this.current;
 	}
-	getCurrentObj() {
+	getCurrentObj(): BlocklyObject {
 		return this.obj[this.current];
 	}
-	getCurrentXML() {
+	getCurrentXML(): string {
 		return this.obj[this.current].getXML();
 	}
-	get(_m) {
+	get(_m:string): BlocklyObject {
 		return this.obj[_m]
 	}
-	getXML(_m) {
+	getXML(_m:string): string {
 		return this.obj[_m].getXML();
 	}
-	getSNC(_m) {
+	getSNC(_m:string) {
 		return this.obj[_m].getSNC();
 	}
-	setChilds(_m, _childs) {
+	setChilds(_m:string, _childs) {
 		this.obj[_m].setChilds(_childs);
 	}
-	setParents(_m, _childs) {
+	setParents(_m:string, _childs) {
 		this.obj[_m].setParents(_childs);
 	}
-	evaluate(_m) {
-		if (this.obj[_m]) {this.obj[_m].evaluate();}
+	evaluate(eventType:string) {
+		if (this.obj[eventType]) {this.obj[eventType].evaluate();}
 	}
 	// Called on each workspace change (and load time) :
-	setBehavior(_m, _xml, _sync, _async) {
+	setBehavior(_m:string, _xml, _sync, _async) {
 		this.obj[_m].setBehavior(_m, _xml, _sync, _async)
 	}
 	getSource(): string {
-		var src = {};
+		var srcs = {};
 		let i=0, s=this.MODE.length;
 		while (i<s) {
-			var m = this.MODE[i];
+			var m = this.MODE[i++];
 			if (this.obj[m].getXML()) {
-				src[m] = {};
-				src[m]["xml"] = this.obj[m].getXML();
-				src[m]["sync"] = this.obj[m].getSNC();
+				let src = <Source>{};
+				src.xml = this.obj[m].getXML();
+				src.sync = this.obj[m].getSNC();
 				var tab = this.obj[m].getChilds();
-				if (tab.length > 0) {src[m]["childs"] = tab;}
+				if (tab.length > 0) {src.childs = tab;}
 				tab = this.obj[m].getParents();
-				if (tab.length > 0) {src[m]["parents"] = tab;}
+				if (tab.length > 0) {src.parents = tab;}
+				srcs[m] = src;
 			}
-			i++;
 		}
-		src["current"] = this.current;
-		return JSON.stringify(src);
+		srcs['current'] = this.current;
+		return JSON.stringify(srcs);
 	}
-	setSource(_src) {
+	setSource(_srcs:any) {
 		let i=0, s=this.MODE.length;
 		while (i<s) {
-			if (_src.hasOwnProperty(this.MODE[i])) {
-				var m = this.MODE[i];
-				this.obj[m].setBehavior(m, _src[m]["xml"], _src[m]["sync"], null);
-				if (_src[m].hasOwnProperty("childs"))  {this.obj[m].setChilds(_src[m]["childs"]);}
-				if (_src[m].hasOwnProperty("parents")) {this.obj[m].setParents(_src[m]["parents"]);}
+			let m = this.MODE[i++];
+			if (_srcs.hasOwnProperty(m)) {
+				let src = <Source>_srcs[m];
+				this.obj[m].setBehavior(m, src.xml, src.sync, null);
+				if (src.childs)  {this.obj[m].setChilds(src.childs);}
+				if (src.parents) {this.obj[m].setParents(src.parents);}
 			}
-			i++;
 		}
-		this.current = _src["current"];
+		this.current = _srcs["current"];
 	}
 }
