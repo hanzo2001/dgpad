@@ -1,5 +1,5 @@
 /// <reference path="../iBlockly.d.ts" />
-/// <reference path="../Utils/iColor.d.ts" />
+/// <reference path="../../Utils/Color/iColor.d.ts" />
 
 interface iConstructionObject {
 	Flag: boolean; // For various construction process
