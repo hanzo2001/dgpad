@@ -2,6 +2,7 @@
 /// <reference path="../../Utils/Color/iColor.d.ts" />
 
 interface iConstructionObject {
+	cFlags: boolean|boolean[]; // Cleaning up the mess of flags, very useful for recursive operations at Construction
 	Flag: boolean; // For various construction process
 	Flag2: boolean; // For various construction process
 	Scratch: number; // For various construction process
@@ -17,6 +18,10 @@ interface iConstructionObject {
 	getWidth: number;
 	getHeight: number;
 	dragTo: (_x:number, _y:number)=>void;
+	objToDelete: ()=>iConstructionObject;
+	set360: (b:boolean)=>void;
+	setTrigo;
+	setSegmentsSize: (size:number)=>void;
 	setExpression(v);
 	getRoot(): iConstructionObject;
 	newTimeStamp();
