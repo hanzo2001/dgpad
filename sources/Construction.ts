@@ -15,11 +15,11 @@ export class Construction implements iConstruction {
 	private mode3D: boolean;
 	private ORG3D;
 	private mode;
-	private V;
-	private AO;
-	private AV;
+	private V: iConstructionObject[];
+	private AO: {[name:string]: iConstructionObject};
+	private AV: {[name:string]: string};
 	private serial: number;
-	private VARS;
+	private VARS: {[name:string]: string};
 	private DEGmode: boolean;
 	private DragOnlyMoveable: boolean;
 	private indicatedObjs;
@@ -137,13 +137,13 @@ export class Construction implements iConstruction {
 	getTrackManager(): iTrackManager {
 		return this.canvas.trackManager;
 	}
-	getVarName(_n:string) {
-		return this.AV.hasOwnProperty(_n)
-			? this.AV[_n]
-			: this.getNewVarName(_n);
+	getVarName(name:string) {
+		return this.AV.hasOwnProperty(name)
+			? this.AV[name]
+			: this.getNewVarName(name);
 	}
-	isVarName(_n): boolean {
-		return this.AV.hasOwnProperty(_n);
+	isVarName(name:string): boolean {
+		return this.AV.hasOwnProperty(name);
 	}
 	getCanvas() {
 		return this.canvas;
@@ -224,19 +224,20 @@ export class Construction implements iConstruction {
 	isPropertiesMode(): boolean {
 		return this.mode === 6;
 	}
-	add(_obj) {
+	add(o:iConstructionObject) {
 		$U.changed();
-		this.AO[_obj.getName()] = _obj;
-		this.AV[_obj.getName()] = this.getVarName(_obj.getName());
-		this.V.push(_obj);
+		let n = o.getName();
+		this.AO[n] = o;
+		this.AV[n] = this.getVarName(n);
+		this.V.push(o);
 	}
 	// Quand on est sûr que le nom correspond au nom de variable :
-	Quickadd(_obj) {
-		let n = _obj.getName();
-		this.AO[n] = _obj;
+	Quickadd(o:iConstructionObject) {
+		let n = o.getName();
+		this.AO[n] = o;
 		this.AV[n] = n;
 		this.VARS[n] = n;
-		this.V[this.V.length] = _obj;
+		this.V.push(o);
 	}
 	deleteAll() {
 		this.mode3D = false;
@@ -453,7 +454,7 @@ export class Construction implements iConstruction {
 		ctx.shadowOffsetX = 0;
 		ctx.shadowOffsetY = 0;
 		for (let i = 0, len = Objs.length; i < len; i++) {
-			Objs[i].this.paint(ctx);
+			Objs[i].paint(ctx);
 		}
 		this.canvas.magnifyManager.magnifierPaint(coords);
 		this.canvas.blocklyManager.paintTurtle();
@@ -478,14 +479,14 @@ export class Construction implements iConstruction {
 					break;
 				case 1:
 					// Intermédiaire
-					Objs[i].this.paint(ctx);
+					Objs[i].paint(ctx);
 					break;
 				case 2:
 					// Initial
-					Objs[i].this.paint(ctx);
+					Objs[i].paint(ctx);
 					break;
 				case 3:
-					Objs[i].this.paint(ctx);
+					Objs[i].paint(ctx);
 					// Final
 					break;
 			}
@@ -570,85 +571,70 @@ export class Construction implements iConstruction {
 		while (this.slowfind(baseName + num, _o)) {num++;}
 		return (baseName + num);
 	}
-	private findFreePointsRecursive(_o) {
-		if (_o.Flag) {return;}
-		_o.Flag = true;
-		if ((_o.getCode() === "point") && (_o.isMoveable())) {_o.Flag2 = true;}
-		for (let i = 0, len = _o.getParentLength(); i < len; i++) {
-			let t = this.findFreePointsRecursive(_o.getParentAt(i));
-		}
-	}
 	// this.printAV = function() {
 	// 	for (let nom_indice in this.AV) {
 	// 		console.log(nom_indice + ":" + this.AV[nom_indice].getName());
 	// 	}
 	// }
-	private dependsOnRecursive(o, on): boolean {
-		o.Flag = true;
-		if (o === on) {return true;}
-		let o1 = o.getParent();
-		let len = o1.length;
-		for (let i = 0; i < len; i++) {
-			if ((o1[i] === o) || (o1[i].Flag)) {continue;}
-			if (this.dependsOnRecursive(o1[i], on)) {return true;}
-		}
-		return false;
-	}
-	private dependsOn(o, on): boolean {
-		let len = this.V.length;
-		for (let i = 0; i < len; i++) {
-			this.V[i].Flag = false;
-		}
-		return this.dependsOnRecursive(o, on);
-	}
 	// Cherche les points libres parmi tous les parents
 	// d'un objet donné, et renvoie ces parents dans un tableau :
-	findFreePoints(_o) {
-		if ((_o.getCode() === "point") && (_o.isMoveable()) && (_o.getParentLength() === 1))
-			return [_o];
-		let len = this.V.length;
-		for (let i = 0; i < len; i++) {
-			this.V[i].Flag = false;
-			this.V[i].Flag2 = false;
-		}
-		this.findFreePointsRecursive(_o);
-		let t = [];
-		for (let i = 0, len = this.V.length; i < len; i++) {
-			if (this.V[i].Flag2) {
-				t.push(this.V[i]);
+	findFreePoints(o:iConstructionObject): iConstructionObject[] {
+		if (o.getCode() === "point" && o.isMoveable() && o.getParentLength() === 1) {return [o];}
+		let v, r=[], i=0, s=this.V.length;
+		while (i<s) {this.V[i++].cFlags = [false, false];}
+		(function recursiveFindFreePoints(o:iConstructionObject) {
+			if (!o.cFlags[0]) {
+				o.cFlags[0] = true;
+				if (o.getCode() === 'point' && o.isMoveable()) {
+					!o.cFlags[1] && (o.cFlags[1] = true) && r.push(o);
+				}
+				let i=0, s=o.getParentLength();
+				while (i<s) {recursiveFindFreePoints(o.getParentAt(i++));}
 			}
-		}
-		return t;
+		}(o));
+		return r;
 	}
-	remove(_o) {
+	remove(o:iConstructionObject) {
 		$U.changed();
-		let i = this.V.indexOf(_o);
-		if (i !== -1) {
-			this.V.splice(i, 1);
-			if (_o.getName) {
-				delete this.AO[_o.getName()];
-				delete this.VARS[this.AV[_o.getName()]];
-				delete this.AV[_o.getName()];
+		let index = this.V.indexOf(o);
+		if (index !== -1) {
+			this.V.splice(index, 1);
+			if (o.getName) {
+				delete this.AO[o.getName()];
+				delete this.VARS[this.AV[o.getName()]];
+				delete this.AV[o.getName()];
 			}
 		}
-		for (let k = 0, len = this.V.length; k < len; k++) {
-			this.V[k].deleteChild(_o);
+		let i=0, s=this.V.length;
+		while (i<s) {
+			this.V[i++].deleteChild(o);
 		}
 	}
-	safelyDelete(_o) {
-		_o = (_o.objToDelete) ? _o.objToDelete() : _o;
-		let deleteObjs = [];
-		let len = this.V.length;
-		for (let i = 0; i < len; i++) {
-			if (this.dependsOn(this.V[i], _o)) {
-				deleteObjs.push(this.V[i]);
+	safelyDelete(o:iConstructionObject) {
+		o = o.objToDelete ? o.objToDelete() : o;
+		let recursiveDependsOn = function _recursiveDependsOn(a:iConstructionObject, b:iConstructionObject): boolean {
+			a.cFlags[0] = true;
+			if (a === b) {return true;}
+			let parents = <iConstructionObject[]>a.getParent();
+			let p:iConstructionObject, i=0, s=parents.length;
+			while (i<s) {
+				p = parents[i++];
+				if (p === a || p.cFlags[0]) {continue;}
+				if (_recursiveDependsOn(p, b)) {return true;}
 			}
+			return false;
+		};
+		let r=[], i=0, j, s=this.V.length;
+		while (i<s) {
+			let v = this.V[i++];
+			let len = this.V.length;
+			j=0;
+			while (j<s) {this.V[i].cFlags[0] = false;}
+			if (recursiveDependsOn(v, o)) {r.push(v);}
 		}
-		len = deleteObjs.length;
-		for (let i = 0; i < len; i++) {
-			this.remove(deleteObjs[i]);
-		}
-		return deleteObjs;
+		i=0, s=r.length;
+		while (i<s) {this.remove(r[i++]);}
+		return r;
 	}
 	addIndicated(obj) {
 		this.indicatedObjs.push(obj);
@@ -996,69 +982,48 @@ export class Construction implements iConstruction {
 		}
 		return "";
 	}
-	private tagDepsChain(o, on) {
-		if (o === on)
-			return true;
-		let bool = false;
-		for (let i = 0, len = o.getParentLength(); i < len; i++) {
-			// Le or est intelligent : si on veut parcourir tout l'arbre
-			// il faut forcer l'appel récursif avant le or.
-			let t = this.tagDepsChain(o.getParentAt(i), on);
-			bool = bool || t;
-		}
-		o.Flag2 = bool;
-		return bool;
-	}
 	// Trouve la chaine de dépendence depuis un objet enfant
 	// jusqu'à un parent donné, et renvoie les objets trouvés
 	// dans un tableau :
-	findDeps(_obj, _untilObj) {
-		// Préparation : tous les objets sont taggés false
-		for (let i = 0, len = this.V.length; i < len; i++) {
-			this.V[i].Flag = false;
-			this.V[i].Flag2 = false;
-		}
-		this.tagDepsChain(_obj, _untilObj);
-		_obj.Flag2 = false;
-		let t = [];
-		for (let i = 0, len = this.V.length; i < len; i++) {
-			if (this.V[i].Flag2) {
-				t.push(this.V[i]);
+	findDeps(o:iConstructionObject, until:iConstructionObject): iConstructionObject[] {
+		let r:iConstructionObject[]=[], v:iConstructionObject, i=0, s=this.V.length;
+		while (i<s) {this.V[i++].cFlags = [false, false];}
+		(function recursiveTagDependencyChain(a:iConstructionObject, b:iConstructionObject): boolean {
+			if (a === b) {
+				!a.cFlags[1] && r.push(a) && (a.cFlags[1] = true);
+				return true;
 			}
-		}
-		return t;
-	}
-	private findPtOn_recursive(_o) {
-		if (!_o.Flag2) {
-			_o.Flag2 = true;
-			_o.Flag = (_o.isPointOn());
-			for (let j = 0, l = _o.getParentLength(); j < l; j++) {
-				this.findPtOn_recursive(_o.getParentAt(j));
+			let d=false, t:boolean, i=0, s=a.getParentLength();
+			while (i<s) {
+				t = recursiveTagDependencyChain(a.getParentAt(i++), b);
+				d = d || t;
 			}
-		}
+			return o.cFlags[0] = d;
+		}(o, until));
+		i = r.indexOf(o);
+		i >= 0 && r.splice(i,1);
+		return r;
 	}
 	// Renvoie le premier point sur objet trouvé dans la chaine
 	// de dépendance de l'objet obj (le plus proche de obj).
 	// Si non trouvé, renvoie null :
-	findPtOn(_obj) {
-		// Préparation : tous les objets sont taggés false
-		for (let i = 0, len = this.V.length; i < len; i++) {
-			this.V[i].Flag = false;
-			this.V[i].Flag2 = false;
-		}
-		_obj.Flag2 = false;
-		this.findPtOn_recursive(_obj);
-		_obj.Flag = false;
-		let t = [];
-		for (let i = 0, len = this.V.length; i < len; i++) {
-			if (this.V[i].Flag) {
-				t.push(this.V[i]);
+	findPtOn(o:iConstructionObject): iConstructionObject {
+		let r:iConstructionObject[]=[], v:iConstructionObject, i=0, s=this.V.length;
+		while (i<s) {this.V[i++].cFlags = [false, false, false];}
+		o.cFlags[0] = false;
+		(function recursiveFindPtOn(o:iConstructionObject) {
+			let i:number, s:number;
+			if (!o.cFlags[0]) {
+				o.cFlags = [true, o.isPointOn()];
+				o.cFlags[1] && !o.cFlags[2] && r.push(o) && (o.cFlags[2] = true);
+				i=0, s=o.getParentLength();
+				while (i<s) {recursiveFindPtOn(o.getParentAt(i++));}
 			}
-		}
-		if (t.length > 0)
-			return t[t.length - 1];
-		else
-			return null;
+		}(o));
+		o.cFlags[1] = false;
+		i = r.indexOf(o);
+		i >= 0 && r.splice(i,1);
+		return r.length ? r[r.length - 1] : null;
 	}
 	private addParameter(_n) {
 		this.params.push(_n);
