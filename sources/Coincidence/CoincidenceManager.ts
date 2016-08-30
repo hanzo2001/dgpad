@@ -5,6 +5,20 @@ import {BubblePanel} from '../GUI/panels/BubblePanel';
 
 var $L = (<any>window).$L;
 
+let priorities:{[code:string]:number} = {
+	'point' : 0,
+	'line'  : 1,
+	'circle': 2,
+	'locus' : 3,
+	'angle' : 4,
+	'area'  : 5
+}
+
+function getPriority(o:iConstructionObject) {
+	let p = priorities[o.getFamilyCode()];
+	return p === undefined ? 10 : p;
+}
+
 export class CoincidenceManager implements iCoincidenceManager {
 	private canvas: iCanvas;
 	private panel: BubblePanel;
@@ -23,8 +37,9 @@ export class CoincidenceManager implements iCoincidenceManager {
 		// On va trier le tableau par famille d'objets :
 		var len = t.length;
 		let i=0, s=t.length;
-		while (i<s) {t[i++].Scratch = this.priority(t[i]);}
-		t.sort(this.sortFilter);
+		//while (i<s) {t[i++].Scratch = this.priority(t[i]);}// attach priority to object
+		let sorter = (a:iConstructionObject, b:iConstructionObject) => getPriority(a) - getPriority(b);
+		t.sort(sorter);
 		i=1;
 		while (i<s && t[i].Scratch === t[0].Scratch) {i++;}
 		// On ne va garder dans ce tableau que les objets d'une même
@@ -53,16 +68,17 @@ export class CoincidenceManager implements iCoincidenceManager {
 	close() {
 		this.panel = null;
 	}
-	exec(_o) {
+	exec(o:iConstructionObject) {
 		var cn = this.canvas.getConstruction();
 		cn.clearIndicated();
 		cn.clearSelected();
-		cn.addSelected(_o);
-		this.canvas.paint(this.event);
-		this.canvas.initTools(this.event, _o);
+		cn.addSelected(o);
+		this.canvas.paint(this.event);// premature paint?
+		this.canvas.initTools(this.event, o);
 	}
-	private priority(_o): number {
-		switch (_o.getFamilyCode()) {
+	/*
+	private priority(o): number {
+		switch (o.getFamilyCode()) {
 			case 'point': return 0;
 			case 'line':  return 1;
 			case 'circle':return 2;
@@ -75,4 +91,5 @@ export class CoincidenceManager implements iCoincidenceManager {
 	private sortFilter(_a, _b): number {
 		return (_a.Scratch - _b.Scratch);
 	}
+	*/
 }
