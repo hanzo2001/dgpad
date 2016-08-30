@@ -44,7 +44,7 @@ import {DOMStorage} from '../DOMStorage/DOMStorage';
 				if (!m) {m = q[--i], d--;}// mutate to parent, depth--
 			} else {// is not queued
 				q[++i] = m;// queue
-				if (m.lastChild) {m = m.lastChild, d++;}// child found, mutate, depth++
+				if (m.lastChild) {m = m.lastChild; d++;}// child found, mutate, depth++
 			}
 		}
 	}
