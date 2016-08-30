@@ -40,7 +40,7 @@ export class MacroPanel extends VerticalBorderPanel {
 		this.toolsList.show();
 	}
 	addBlankLI() {
-		this.toolsList.append(" ");
+		this.toolsList.append(' ');
 	}
 	deselectMacros() {
 		this.pluginsList.reInit();
@@ -55,7 +55,8 @@ export class MacroPanel extends VerticalBorderPanel {
 	clearToolList() {
 		var old = this.toolsList ? this.toolsList.getDocObject() : null;
 		if (old) {old.parentNode.removeChild(old);}
-		this.toolsList = new iPadList(this.getDocObject(), (li,m)=>this.proc(li,m), $L.macro_tools, 10, 210, 180, 196);
+		let proc = this.proc.bind(this);
+		this.toolsList = new iPadList(this.getDocObject(), proc, $L.macro_tools, 10, 210, 180, 196);
 	}
 	isMacroProps() {
 		return this.props !== null;
