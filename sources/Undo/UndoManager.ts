@@ -75,26 +75,35 @@ export class UndoManager implements iUndoManager {
 		while (i<s) {
 			let action = this.actions[i++];
 			let target = action.target;
-			let tab = $U.isArray(target) ? target : [target];
+			let tab = Array.isArray(target) ? target : [target];
 			if (tab.length === 1 && tab[0] === withTarget) {action.add = !action.add;}
-			i++;
 		}
 	}
 	setBtns() {
 		this.canvas.setUndoBtn(!this.isLeft());
 		this.canvas.setRedoBtn(!this.isRight());
 	}
-
-	private isLeft() {
+	private isLeft(): boolean {
 		return this.cursor === 0;
 	}
-	private isRight() {
+	private isRight(): boolean {
 		return this.cursor === this.actions.length;
 	}
 	private refreshCanvas() {
-		let simulatedEvent = document.createEvent("MouseEvent");
-		simulatedEvent.initMouseEvent("mouseup", true, true, window, 1, -100, -100, -100, -100, false,
-				false, false, false, 0, null);
+		let simulatedEvent = new MouseEvent('mouseup',{
+			bubbles: true,
+			cancelable: true,
+			view: window,
+			detail: 1,
+			screenX: -100, screenY: -100,
+			clientX: -100, clientY: -100,
+			ctrlKey: false, altKey: false,
+			shiftKey: false,metaKey: false,
+			button: 0,
+			relatedTarget: null
+		});
+		//let simulatedEvent = document.createEvent("MouseEvent");
+		//simulatedEvent.initMouseEvent("mouseup", true, true, window, 1, -100, -100, -100, -100, false, false, false, false, 0, null);
 		this.Cn.validate(simulatedEvent);
 		this.Cn.computeAll();
 		this.canvas.paint(simulatedEvent);
@@ -122,17 +131,17 @@ export class UndoManager implements iUndoManager {
 	private undo_redo(index:number) {
 		let action = this.actions[index];
 		action.add = !action.add;
-		let tab = $U.isArray(action.target) ? action.target : [action.target];
-		let i=0, s=tab.length;
+		let targets = $U.isArray(action.target) ? action.target : [action.target];
+		let i=0, s=targets.length;
 		while (i<s) {
 			if (action.add) {
-				tab[i] = this.add(tab[i]);
-				// Cn.add(tab[i]);
+				targets[i] = this.add(targets[i]);
+				// Cn.add(targets[i]);
 			} else {
-				this.remove(tab[i]);
-				// Cn.remove(tab[i]);
+				this.remove(targets[i]);
+				// Cn.remove(targets[i]);
 				// if (t.add)
-				// tab[i].setParentList(tab[i].getParent());
+				// targets[i].setParentList(targets[i].getParent());
 			}
 			i++;
 		}
