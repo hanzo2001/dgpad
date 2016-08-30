@@ -54,7 +54,7 @@ export class ToolsManager implements iToolsManager {
 	}
 	showTools(event) {
 		this.visible = true;
-		this.canvas.setMovedFilter(()=>this.mouseMoved);
+		this.canvas.setMovedFilter((e)=>this.mouseMoved(e));
 		this.targets = this.canvas.getConstruction().getSelected().slice();
 		if (this.targets.length) {
 			let myTools = <string[]>this.targets[0].getAssociatedTools().split(",");
