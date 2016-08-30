@@ -24,8 +24,9 @@ import {DeleteAll} from './DeleteAll';
 import {Ghost} from './Ghost/Ghost';
 import {VirtualPointObject} from './Objects/VirtualPointObject';
 import {PointConstructor} from './Constructors/PointConstructor';
+import {SVGCanvas} from './Utils/SVGCanvas/SVGCanvas';
 
-type SVGCanvas = {};
+//type SVGCanvas = {};
 
 var $U = (<any>window).$U;
 var $L = (<any>window).$L;
@@ -382,16 +383,16 @@ export class Canvas extends ElementContainer implements iCanvas {
 	}
 	exportSVG(): string {
 		for (var i = 0; i < 2; i++) {
-			this.context = new SVGCanvas(this.ID);
-			if (!this.context.setLineDash) {
-				this.context.setLineDash = function(_tab) {
-					this.context.mozDash = _tab;
-					this.context.webkitLineDash = _tab;
+			let context = new SVGCanvas(this.ID);// create a special context
+			if (!context.setLineDash) {
+				context.setLineDash = (a:number[]) => {
+					context.mozDash = a;
+					context.webkitLineDash = a;
 				};
 			}
 			this.Cn.clearIndicated();
 			this.Cn.clearSelected();
-			this.Cn.paint(this.context);
+			this.Cn.paint(context);// paint with the new context
 		}
 		var svg = this.context.canvas.toDataURL("image/svg+xml");
 		this.context = this.getNewContext();
@@ -414,7 +415,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 			parent.appendChild(script1);
 		}
 	}
-	getiBookPlugin(_hide_control_panel:boolean, fname:string, _callback) /* _callback((new JSZip()).generate())*/ {
+	getiBookPlugin(_hide_control_panel:boolean, fname:string, _callback) {
 		var w = this.width;
 		var h = this.height;
 		var f = fname === '' ? 'ibook.wdgt' : fname;
@@ -423,7 +424,8 @@ export class Canvas extends ElementContainer implements iCanvas {
 		var src = this.getSource();
 		src = $U.base64_encode(src);
 		var hide = _hide_control_panel;
-		var html = `<!DOCTYPE html>
+		var html = 
+`<!DOCTYPE html>
 <html>
 	<head>
 		<title></title>
@@ -586,7 +588,7 @@ export class Canvas extends ElementContainer implements iCanvas {
 		return this.toolsManager.getConstructor(code);
 	}
 	initTools(event:any, obj:iConstructionObject) {
-		var inter = document.activeElement.getAttribute("interactiveinput");
+		var inter = document.activeElement.getAttribute('interactiveinput');
 		if (inter !== null) {
 			$U.addTextToInput(document.activeElement, obj.getName(), inter);
 			return;
