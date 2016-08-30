@@ -65,16 +65,16 @@ interface iCanvas extends iElementContainer {
 	selectNameBtn(_b:boolean);
 	ctrl_show(_bool:boolean);
 	// Managers :
-	getContext(): CanvasRenderingContext2D;
+	getContext(): any;
 	exportPNG(): string;
 	exportSVG(): string;
 	loadZipPackage(_onload:()=>void);
 	getiBookPlugin(_hide_control_panel:boolean, _fname:string, _callback);// _callback((new JSZip()).generate())
 	getWidth(): number;
 	getHeight(): number;
-	mouseX(ev:any): number;
-	mouseY(ev:any): number;
-	mouse(ev:any): iVirtualPointObject;
+	mouseX(event:Event): number;
+	mouseY(event:Event): number;
+	mouse(event:Event): iVirtualPointObject;
 	getConstruction(): iConstruction;
 	addText(_m, _l, _t, _w, _h, _stl);// textManager.addTeXElement(_m, _l, _t, _w, _h, _stl);
 	// 0 pour consultation
@@ -94,7 +94,7 @@ interface iCanvas extends iElementContainer {
 	stopChrono();
 	addTool(_oc);// toolsManager.addTool(_oc);
 	getConstructor(code:string);
-	initTools(ev:any, obj:any);
+	initTools(ev:any, obj:iConstructionObject);
 	setObjectConstructor(_oc);// sets OC
 	isObjectConstructor(_oc): boolean;
 	setPointConstructor();// sets PC into OC
@@ -105,17 +105,17 @@ interface iCanvas extends iElementContainer {
 	showCS(_v);// Cn.coordsSystem.showCS(_v);
 	isCS(): boolean;
 	selectMoveable(ev:any): any;
-	setPressedFilter(_func:(ev:any)=>void);
-	setMovedFilter(_func:(ev:any)=>void);
-	setReleasedFilter(_func:(ev:any)=>void);
+	setPressedFilter(fn:(ev:any)=>void);
+	setMovedFilter(fn:(ev:any)=>void);
+	setReleasedFilter(fn:(ev:any)=>void);
 	clearFilters();
 	// Mouse Events :
 	mousePressed(ev:any);
 	translate(x:number, y:number);
-	mouseMoved(ev:any);
-	mouseReleased(ev:any);
-	mouseClicked(ev:any);
-	mouseWheel(ev:any);
+	mouseMoved(event:MouseEvent);
+	mouseReleased(event:MouseEvent);
+	mouseClicked(event:MouseEvent);
+	mouseWheel(event:MouseEvent);
 	// TouchEvents :
 	touchStart(tch:any);
 	touchMoved(tch:any);
@@ -123,9 +123,9 @@ interface iCanvas extends iElementContainer {
 	dragOver(ev:any);
 	drop(ev:any);
 	// only for computers :
-	keydown(ev:any): boolean;
+	keydown(event:KeyboardEvent): boolean;
 	// only for computers :
-	keypress(ev:KeyboardEvent);
+	keypress(event:KeyboardEvent);
 	// Only for animations :
 	paintAnim();
 	paint(event?:Event, coords?:any);//canvas.actualCoords
