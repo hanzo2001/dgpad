@@ -1,6 +1,6 @@
 /// <reference path="../typings/Objects/iConstructionObject.d.ts" />
 
-import {Color} from '../Utils/Color';
+import {Color} from '../Utils/Color/Color';
 import {BlocklyObjects} from './BlocklyObjects';
 
 var $U = (<any>window).$U;
@@ -68,6 +68,7 @@ export class ConstructionObject implements iConstructionObject {
 	paintName_exe;
 	paintLength_exe;
 	validate;
+	cFlags: boolean|boolean[];
 	Flag: boolean;
 	Flag2: boolean;
 	Scratch: number;
@@ -83,6 +84,10 @@ export class ConstructionObject implements iConstructionObject {
 	is360;
 	getArcRay;
 	dragTo: (x, y) => void;
+	getSegmentsSize;
+	objToDelete;
+	set360;
+	setTrigo;
 	constructor(_construction:iConstruction, _name:string) {
 		this.Cn = _construction;
 		this.name = this.Cn.getUnusedName(_name, this);
